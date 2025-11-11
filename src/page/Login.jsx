@@ -5,7 +5,6 @@ import CreateAccount from './Account'
 const Login = () => {
   return (
     <>
-        <Header />
       {/* <IntroAnalysisApp /> */}
       <CreateAccount />
     </>
