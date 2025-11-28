@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { PlusCircle } from "lucide-react";
 // import CodeTable from "./CodeTable";
 import Modal from "../components/ui/Modal";
@@ -31,7 +31,7 @@ const CodeGenerationPage = () => {
         setShowModal(false);
     };
 
-    // "0214638"
+    // "0214638"Input: arr = [1, 2, 4, 5, 7, 8, 3]
     //  "21463"
     const handleCopy = (code) => {
         navigator.clipboard

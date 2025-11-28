@@ -43,10 +43,12 @@ const SubscriptionModule = () => {
         setShowModal(true);
     };
 
+   
     const handleDelete = (index) => {
         const updatedPlans = plans.filter((_, i) => i !== index);
         setPlans(updatedPlans);
     };
+  
 
     return (
         <>
@@ -105,7 +107,7 @@ const SubscriptionModule = () => {
                         </tbody>
                     </table>
                 </div>
-            )}
+            )} 
 
             {showModal && (
                 <Modal
@@ -123,7 +125,7 @@ const SubscriptionModule = () => {
                         placeholder="Plan Name"
                         value={formData.planName}
                         onChange={handleInputChange}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4"
+                        className="w-full border border-gray-300 rounded-md px-3 py-2  focus:outline-none mb-4"
                     />
                     <input
                         type="text"

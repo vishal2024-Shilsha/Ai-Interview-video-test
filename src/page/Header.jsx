@@ -1,7 +1,7 @@
 import logo from '../assets/ebench_logo.png'
 
 export default function Header() {
-    // const avigate = useNavigate()
+  
   return (
     <header className="flex items-center justify-between fixed w-full z-50 bg-white shadow px-8 py-3">
       {/* Left Logo */}
@@ -22,3 +22,4 @@ export default function Header() {
     </header>
   );
 }
+

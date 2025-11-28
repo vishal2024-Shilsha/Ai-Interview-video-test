@@ -93,7 +93,7 @@
 
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Code2, Users, LayoutDashboard, X, LogOut, Package, ShoppingBag } from "lucide-react";
+import { Code2, Users, LayoutDashboard, X, LogOut, Package, ShoppingBag, Crown } from "lucide-react";
 import logo from "../../../assets/logo_white2.png";
 import { Gem } from "lucide-react";
 
@@ -101,20 +101,22 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    localStorage.clear()
     navigate("/"); 
   };
 
   // ✅ Sidebar Menus for both roles
   const adminMenu = [
     { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    {to:"/admin/vendor-management" , label:"Vendor Management" ,icon:Gem},
     { to: "/admin/code-generation", label: "Code Generation", icon: Code2 },
     { to: "/admin/subscription", label: "Subscription Management", icon: Gem },
   ];
 
   const vendorMenu = [
     { to: "/vendor", label: "Dashboard", icon: LayoutDashboard },
-    { to: "/vendor/products", label: "Product Management", icon: Package },
-    { to: "/vendor/orders", label: "Order Management", icon: ShoppingBag },
+    { to: "/vendor/user-management", label: "User Management", icon: Users },
+    { to: "/vendor/subscription", label: "Subscription", icon: Crown },
   ];
 
   const menuItems = role === "vendor" ? vendorMenu : adminMenu;
@@ -158,7 +160,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
       </div>
 
       {/* Logout */}
-      <div className="border-t border-[#96b7cc] p-4">
+      <div className="p-4">
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2 text-white rounded-md hover:bg-[#387aa3] transition"

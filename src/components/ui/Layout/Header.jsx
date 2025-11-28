@@ -6,7 +6,7 @@ const Header = ({ setSidebarOpen, role = "admin", userName = "" }) => {
   const displayName = userName || (role === "vendor" ? "Vendor" : "Admin");
 
   return (
-    <header className="bg-white shadow px-4 py-3 flex justify-between items-center">
+    <header className="bg-white shadow px-4 py-3 border-b border-[#ece8e8] flex justify-between items-center">
       {/* Left Section */}
       <div className="flex items-center gap-3">
         {/* Mobile Menu Button */}

@@ -43,8 +43,15 @@ import { Outlet } from "react-router-dom";
 const DashboardLayout = ({ role = "admin" }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  if(!localStorage.getItem('token')){
+    window.location.href = '/';
+    localStorage.clear()
+    return;
+  }
+
+
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-[#ffff]">
       {/* Sidebar */}
       <Sidebar
         sidebarOpen={sidebarOpen}
@@ -63,7 +70,7 @@ const DashboardLayout = ({ role = "admin" }) => {
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         <Header setSidebarOpen={setSidebarOpen} role={role} /> {/* 👈 optional role */}
-        <div className="flex-1 p-4 md:p-6 overflow-auto">
+        <div className="flex-1 p-4 md:p-0 overflow-auto">
           <Outlet />
         </div>
       </main>
