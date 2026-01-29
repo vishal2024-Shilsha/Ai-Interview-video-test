@@ -1,31 +1,3 @@
-// import { api } from './api';
-
-// export const authApi = api.injectEndpoints({
-//   endpoints: (builder) => ({
-//     login: builder.mutation({
-//       query: (credentials) => ({
-//         url: '/auth/login',
-//         method: 'POST',
-//         body: credentials,
-//       }),
-//       invalidatesTags: ['Auth'],
-//     }),
-//     logout: builder.mutation({
-//       query: () => ({
-//         url: '/auth/logout',
-//         method: 'POST',
-//       }),
-//       invalidatesTags: ['Auth', 'User', 'Vendor', 'Admin'],
-//     }),
-//   }),
-// });
-
-// export const { useLoginMutation, useLogoutMutation } = authApi;
-
-
-//====================
-
-// src/redux/services/authApi.js
 import { api } from "./api";
 
 export const authApi = api.injectEndpoints({

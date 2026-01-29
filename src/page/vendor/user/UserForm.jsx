@@ -1,12 +1,11 @@
-import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import PhoneInput from "react-phone-input-2";
 import Select from "react-select";
-// import { countryOptions } from "../utils/countryList"; // or
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import {motion} from 'framer-motion'
+import { useGetCountryDataQuery } from "../../../redux/services/externalApi";
 
 // ✅ Validation Schema
 const validationSchema = yup.object().shape({
@@ -52,7 +51,6 @@ const validationSchema = yup.object().shape({
     }),
 });
 
-console.log("yup")
 export default function UserForm({ onSubmit,isVendorAdding, onClose }) {
     const {
         register,
@@ -66,8 +64,16 @@ export default function UserForm({ onSubmit,isVendorAdding, onClose }) {
         mode: "onBlur",
     });
 
-    console.log("for", errors)
+    // console.log("for", errors) 
     const countryCode = watch("countryCode") || "in";
+  const {data:countryData,isLoading:countryLoading} = useGetCountryDataQuery();
+    // const 
+    const countryOptions =
+  countryData?.data?.map((item) => ({
+    label: item?.name,
+    value: item?.name,
+  })) || [];
+
 
     return (
         <motion.div
@@ -278,18 +284,12 @@ export default function UserForm({ onSubmit,isVendorAdding, onClose }) {
     );
 }
 
-export const countryOptions = [
-    { value: "in", label: "India" },
-    { value: "us", label: "United States" },
-    { value: "gb", label: "United Kingdom" },
-    { value: "ca", label: "Canada" },
-    { value: "au", label: "Australia" },
-    { value: "de", label: "Germany" },
-    { value: "fr", label: "France" },
-    { value: "jp", label: "Japan" },
-    { value: "cn", label: "China" },
-    { value: "ae", label: "United Arab Emirates" },
-    { value: "br", label: "Brazil" },
-    { value: "za", label: "South Africa" },
-    { value: "sg", label: "Singapore" },
-];
+// export const countryOptions =() => {
+//     console.log("fff",countryData)
+
+//     return countryData?.data?.length > 0
+//     ? countryData.data.map((item) =>   item?.name)
+//     : null;
+// }
+  
+

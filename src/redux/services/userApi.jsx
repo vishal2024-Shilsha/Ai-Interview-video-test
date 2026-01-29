@@ -8,10 +8,7 @@ export const userApi = api.injectEndpoints({
         return {
           url: `/candidate/details?candidate_id=${id}`,
           method: "GET",
-          headers:{
-            'X-Custom-Header' : `candidate_session=${token}`
-          }
-          // credentials: "include", // <-- only getProfile sends cookies
+          // credentials:'include'
         };
       },
       providesTags: ["User"],

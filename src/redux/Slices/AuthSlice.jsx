@@ -5,6 +5,7 @@ const initialState = {
   token: null,
   user: null, // optional: store user info
   isLoggedIn: false,
+  role:"null"
 };
 
 const authSlice = createSlice({
@@ -12,12 +13,14 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action) => {
-      const { token, user } = action.payload;
+      const { token, user,detail } = action.payload;
       state.token = token;
       state.user = user || null;
       state.isLoggedIn = true;
+      // state.role=role;
+      localStorage.setItem('user',JSON.stringify(detail))
       localStorage.setItem('token',token||null);
-      localStorage.setItem('user',user||null)
+      localStorage.setItem('role',user||null)
     },
     logout: (state) => {
       state.token = null;

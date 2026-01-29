@@ -51,7 +51,7 @@ const OtpVerification = () => {
         try {
             if (location?.state?.data) {
                 const result = await resetCode({ email, otp: finalOtp }).unwrap();
-                console.log("ram", result);
+                // console.log("ram", result);
                 if (result?.status) {
                     toast.success("OTP Verified Successfully!");
                     setTimeout(() => navigate("/reset-password",{state:{email:result?.email,
@@ -88,6 +88,7 @@ const OtpVerification = () => {
         }
     }
 
+   
     return (
         <div className="min-h-screen flex flex-col overflow-hidden">
             <Header />

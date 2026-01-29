@@ -1,4 +1,3 @@
-import React from "react";
 import { Pencil, Trash2 } from "lucide-react";
 
 export default function UserTable({ users, onEdit, onDelete }) {

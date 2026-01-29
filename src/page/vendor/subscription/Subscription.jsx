@@ -1,271 +1,92 @@
-// import React, { useState } from "react";
 
-// const plans = [
-//   {
-//     id: 0,
-//     name: "Free",
-//     priceMonthly: 0,
-//     priceYearly: 0,
-//     benefits: [
-//       "1 Project",
-//       "Basic Support",
-//       "Community Access"
-//     ],
-//     badge: "Free"
-//   },
-//   {
-//     id: 1,
-//     name: "Starter",
-//     priceMonthly: 19,
-//     priceYearly: 190,
-//     benefits: [
-//       "5 Projects",
-//       "Email Support",
-//       "Basic Analytics"
-//     ],
-//     badge: ""
-//   },
-//   {
-//     id: 2,
-//     name: "Pro",
-//     priceMonthly: 49,
-//     priceYearly: 490,
-//     benefits: [
-//       "50 Projects",
-//       "Priority Support",
-//       "Advanced Analytics"
-//     ],
-//     badge: "Most Popular"
-//   },
-//   {
-//     id: 3,
-//     name: "Enterprise",
-//     priceMonthly: 99,
-//     priceYearly: 990,
-//     benefits: [
-//       "Unlimited Projects",
-//       "Dedicated Manager",
-//       "Custom Integrations"
-//     ],
-//     badge: "Best Value"
-//   }
-// ];
-
-// export default function VendorSubscription() {
-//   const [billingCycle, setBillingCycle] = useState("monthly");
-//   const [selectedPlan, setSelectedPlan] = useState(plans[0]); // Default to Free plan
-//   const [promoCode, setPromoCode] = useState("");
-//   const [promoApplied, setPromoApplied] = useState(false);
-
-//   const handleApplyPromo = () => {
-//     if (promoCode.toUpperCase() === "SAVE20") {
-//       setPromoApplied(true);
-//       alert("Promo code applied! 20% discount.");
-//     } else {
-//       alert("Invalid promo code");
-//       setPromoApplied(false);
-//     }
-//   };
-
-//   return (
-//     <div className="max-w-7xl bg-gray-50 mx-auto p-8 space-y-12 font-sans text-gray-900">
-//       {/* Dashboard summary */}
-//   <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
-//     <div className="bg-gradient-to-r from-green-400 to-blue-500 rounded-2xl p-6 text-white shadow-lg flex flex-col justify-between">
-//       <div>
-//         <h3 className="text-xl font-bold mb-1">Current Plan</h3>
-//         <p className="text-3xl font-extrabold">{selectedPlan.name}</p>
-//       </div>
-//       <p className="mt-4 text-sm tracking-wide">Renewal in 15 days</p>
-//     </div>
-//     <div className="bg-white rounded-2xl p-6 shadow-md">
-//       <h3 className="text-lg font-semibold mb-3">Usage</h3>
-//       <div className="w-full bg-gray-200 rounded-full h-4 mb-2 overflow-hidden">
-//         <div className="bg-blue-600 h-4 rounded-full transition-all duration-500" style={{width: "40%"}}></div>
-//       </div>
-//       <p className="text-sm text-gray-600">Used 40% of your project quota</p>
-//     </div>
-//     <div className="bg-white rounded-2xl p-6 shadow-md">
-//       <h3 className="text-lg font-semibold mb-3">Last Payment</h3>
-//       <p className="text-gray-700">₹{billingCycle === "monthly" ? selectedPlan.priceMonthly : selectedPlan.priceYearly} / {billingCycle}</p>
-//       <p className="text-gray-700 mt-2">Paid on Oct 14, 2025</p>
-//     </div>
-//   </section>
-
-//       {/* Billing cycle toggle */}
-//       <section className="flex items-center justify-center space-x-5 text-lg">
-//         <span className={billingCycle === "monthly" ? "font-bold text-blue-700" : "text-gray-500"}>Monthly</span>
-//         <button 
-//           onClick={() => setBillingCycle(billingCycle === "monthly" ? "yearly" : "monthly")} 
-//           className="relative w-14 h-8 bg-gray-300 rounded-full cursor-pointer focus:outline-none"
-//           aria-label="Toggle billing cycle"
-//         >
-//           <span 
-//             className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ease-in-out ${billingCycle === 'yearly' ? 'translate-x-6' : ''}`}
-//           />
-//         </button>
-//         <span className={billingCycle === "yearly" ? "font-bold text-blue-700" : "text-gray-500"}>Yearly</span>
-//         {billingCycle === "yearly" && <span className="ml-4 text-green-600 font-semibold">Save 20%!</span>}
-//       </section>
-
-//       {/* Plans grid */}
-//       <section className="grid md:grid-cols-3 gap-8">
-//         {plans.map(plan => (
-//           <div 
-//             key={plan.id}
-//             onClick={() => setSelectedPlan(plan)}
-//             className={`relative p-6 rounded-3xl border-2 transition cursor-pointer shadow-lg hover:scale-105 transform duration-300
-//               ${selectedPlan.id === plan.id ? "border-blue-600 bg-blue-50 shadow-blue-300" : "border-gray-200 bg-white"}`}
-//           >
-//             {plan.badge && (
-//               <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold
-//                 ${plan.badge === "Free" ? "bg-green-500 text-white" : "bg-indigo-600 text-white"}`}>
-//                 {plan.badge}
-//               </div>
-//             )}
-//             <h4 className="text-2xl font-extrabold mb-2 text-blue-800">{plan.name}</h4>
-//             <p className="text-4xl font-extrabold text-gray-900 mb-3">
-//               ₹{billingCycle === "monthly" ? plan.priceMonthly : plan.priceYearly} 
-//               <span className="text-lg font-normal text-gray-600">/{billingCycle}</span>
-//             </p>
-//             <ul className="mb-6 space-y-2 text-gray-700">
-//               {plan.benefits.map((benefit, idx) => (
-//                 <li key={idx} className="flex items-center">
-//                   <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-//                     <path d="M5 13l4 4L19 7" />
-//                   </svg>
-//                   {benefit}
-//                 </li>
-//               ))}
-//             </ul>
-//             <button 
-//               className={`w-full py-3 text-white rounded-xl font-semibold transition 
-//                 ${selectedPlan.id === plan.id ? "bg-gray-400 cursor-default" : "bg-blue-600 hover:bg-blue-700"}`}
-//               disabled={selectedPlan.id === plan.id}
-//             >
-//               {selectedPlan.id === plan.id ? "Current Plan" : plan.priceMonthly === 0 ? "Select Free" : "Select Plan"}
-//             </button>
-//           </div>
-//         ))}
-//       </section>
-
-//       {/* Promo Code */}
-//       <section className="max-w-md mx-auto bg-blue-50 rounded-2xl p-6 shadow-md">
-//         <h4 className="font-semibold mb-4 text-blue-800">Apply Promo Code</h4>
-//         <div className="flex space-x-4">
-//           <input
-//             type="text"
-//             value={promoCode}
-//             onChange={e => setPromoCode(e.target.value)}
-//             placeholder="Enter code"
-//             className="flex-grow p-3 rounded-xl border border-blue-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-//           />
-//           <button 
-//             onClick={handleApplyPromo}
-//             className="bg-blue-600 text-white px-6 rounded-xl hover:bg-blue-700 transition"
-//           >
-//             Apply
-//           </button>
-//         </div>
-//         {promoApplied && <p className="mt-2 text-green-600 font-semibold">Promo code applied successfully!</p>}
-//       </section>
-//     </div>
-//   );
-// }
-
-
-//==============================
-import React, { useState } from 'react';
-import { Sparkles, Zap, Crown, Check, X, TrendingUp, Package, Users, BarChart3, Shield, Rocket } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Sparkles, Zap, Crown, Check, X, TrendingUp, Package, Users, BarChart3, Shield, Rocket, Loader } from 'lucide-react';
+import CheckoutPage from '../../../libs/CheckoutPage';
+// import { useNavigate } from 'react-router-dom';
+// import { base } from '../../../redux/services/api';
+import { useCreateCheckoutSubscriptionMutation } from '../../../redux/services/externalApi';
+import { useGetSubscriptionDetailQuery, useLazyGetSubscriptionDetailQuery, useSelectVendorSubscriptionMutation } from '../../../redux/services/vendorApi';
+import {
+    CheckCircle,
+    Calendar,
+    Coins,
+    ArrowRight,
+} from "lucide-react";
 
 const VendorSubscriptionPage = () => {
     const [currentPlan, setCurrentPlan] = useState('free');
+    const [countryOption, setCountryOption] = useState('global')
     const [billingCycle, setBillingCycle] = useState('monthly');
     const [hoveredPlan, setHoveredPlan] = useState(null);
+    const [checkoutPage, { isLoading:isLoadingCheckout, isErrorCheckout }] = useCreateCheckoutSubscriptionMutation()
+    const [selectVendorPlan, { isLoading: selectPlanLoading }] = useSelectVendorSubscriptionMutation()
 
-    // Current user's subscription data
-    const userSubscription = {
-        plan: 'free',
-        credits: 15,
-        totalCredits: 50,
-        productsListed: 5,
-        maxProducts: 10,
-        daysRemaining: 'Unlimited'
-    };
+    async function createCheckout() {
+        try {
+            const formdata = new URLSearchParams();
 
-    const plans = [
-        {
-            id: 'free',
-            name: 'Free',
-            icon: Package,
-            color: 'from-gray-400 to-gray-500',
-            bgColor: 'bg-gray-50',
-            borderColor: 'border-gray-300',
-            accentColor: 'text-gray-600',
-            price: { monthly: 0, yearly: 0 },
-            popular: false,
-            features: [
-                { name: 'Up to 10 products', included: true },
-                // { name: '50 credits per month', included: true },
-                // { name: 'Basic analytics', included: true },
-                // { name: 'Email support', included: true },
-                // { name: 'Product promotions', included: false },
-                { name: 'Priority listing', included: false },
-                { name: 'Advanced analytics', included: false },
-                { name: 'API access', included: false }
-            ]
-        },
-        {
-            id: 'gold',
-            name: 'Gold',
-            icon: Zap,
-            color: 'from-yellow-400 to-orange-500',
-            bgColor: 'bg-gradient-to-br from-yellow-50 to-orange-50',
-            borderColor: 'border-yellow-400',
-            accentColor: 'text-orange-600',
-            price: { monthly: 29, yearly: 290 },
-            popular: true,
-            features: [
-                { name: 'Up to 100 products', included: true },
-                { name: '500 credits per month', included: true },
-                // { name: 'Advanced analytics', included: true },
-                // { name: 'Priority email support', included: true },
-                // { name: 'Product promotions (5/month)', included: true },
-                // { name: 'Priority listing', included: true },
-                { name: 'Custom branding', included: false },
-                { name: 'API access', included: false }
-            ]
-        },
-        {
-            id: 'platinum',
-            name: 'Platinum',
-            icon: Crown,
-            color: 'from-purple-400 via-pink-400 to-purple-500',
-            bgColor: 'bg-gradient-to-br from-purple-50 to-pink-50',
-            borderColor: 'border-purple-400',
-            accentColor: 'text-purple-600',
-            price: { monthly: 99, yearly: 990 },
-            popular: false,
-            features: [
-                { name: 'Unlimited products', included: true },
-                // { name: 'Unlimited credits', included: true },
-                // { name: 'Real-time analytics', included: true },
-                // { name: '24/7 priority support', included: true },
-                // { name: 'Unlimited promotions', included: true },
-                { name: 'Top priority listing', included: true },
-                { name: 'Custom branding', included: true },
-                { name: 'Full API access', included: true }
-            ]
+            formdata.append('intent_id', intentId)
+
+            const result = await checkoutPage(formdata)
+            // console.log("res", result)
+            if (result?.data?.checkout_url) {
+                window.location.href = result?.data?.checkout_url;
+                return;
+            }
+        } catch (err) {
+            console.log("ere", err);
+            toast.error(err?.message ?? "Internal Server Error")
         }
-    ];
+    }
 
-    const getProgress = (current, total) => {
-        return total === 'Unlimited' ? 100 : (current / total) * 100;
+    const [
+        getSubscriptionDetail,
+        { data, isLoading, isError, error }
+    ] = useLazyGetSubscriptionDetailQuery();
+
+    useEffect(() => {
+        getSubscriptionDetail(countryOption)
+    }, [countryOption])
+
+    // console.log("ddlj", data)
+
+    const [selectedPlan, setSelectedPlan] = useState(null);
+    const [intentId, setIntentId] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [loadhandle, setLoadHandle] = useState(null);
+
+    const handleSubscribe = async (plan) => {
+        // console.log("ppp", plan);
+        setLoadHandle(plan?.id)
+        const formdata = new FormData();
+        formdata.append('plan_id', plan?.id);
+        formdata.append('country', countryOption)
+        try {
+            const result = await selectVendorPlan(formdata);
+            if (result?.data) {
+                setSelectedPlan(plan);
+                setIntentId(result?.data?.intent_id || null);
+                setIsModalOpen(true);
+            }
+            if (result?.error) {
+                return toast.error(result?.error?.data?.detail ?? "Somthing went  wrong")
+            }
+            console.log("rs", result);
+        } catch (err) {
+            toast.error(err ?? "Internal Server Error");
+        } finally {
+            setLoadHandle(false);
+        }
     };
 
-    const handleUpgrade = (planId) => {
-        alert(`Upgrading to ${planId.toUpperCase()} plan! Payment integration would go here.`);
+    const handleConfirm = (plan) => {
+        // console.log("Confirmed subscription for:", plan.name);
+        createCheckout()
     };
+
+    if(isLoading){
+        return <PageLoader/>
+    }
 
     return (
         <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-blue-50 p-6">
@@ -276,7 +97,7 @@ const VendorSubscriptionPage = () => {
                 <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
             </div>
 
-            <style>{`
+            <style>{` 
         @keyframes blob {
           0%, 100% { transform: translate(0, 0) scale(1); }
           33% { transform: translate(30px, -50px) scale(1.1); }
@@ -302,32 +123,61 @@ const VendorSubscriptionPage = () => {
 
             {/* Header */}
             <div className="max-w-7xl mx-auto mb-8 relative z-10">
-                <div className="text- mb-8">
-                    <h1 className="text-2xl font-bold text-[#286a94] mb-3 flex items-center justify-start gap-3">
-                        <div className="bg-gradient-to-r from-[#286a94] to-blue-500 p-3 rounded-2xl ">
-                            <Rocket className="w-5 h-5 text-white" />
-                        </div>
-                        Subscription Dashboard
-                    </h1>
-                    <p className="text-gray-600 text-sm">Manage your plan and unlock powerful features</p>
+                <div className="text- mb-8 flex justify-between">
+                    <div>
+                        <h1 className="text-2xl font-bold text-[#286a94] mb-3 flex items-center justify-start gap-3">
+                            <div className="bg-linear-to-r from-[#286a94] to-blue-500 p-2 rounded-2xl ">
+                                <Rocket className="w-4 h-4 text-white" />
+                            </div>
+                            Subscription Plan
+                        </h1>
+                        <p className="text-gray-600 text-sm">
+                            Choose the perfect plan for your needs. Upgrade your at any time.
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <label
+                            htmlFor="country"
+                            className="text-sm font-medium text-gray-600"
+                        >
+                            Select Country
+                        </label>
+
+                        <select
+                            name="country"
+                            value={countryOption}
+                            onChange={(e) => setCountryOption(e.target.value)}
+                            id="country"
+                            className="h-9 rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-700 
+               shadow-sm outline-none transition
+               focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                        >
+                            {data?.dropdown_options?.length > 0 &&
+                                data?.dropdown_options?.map((item) => {
+                                    return <option value={item}>{item}</option>
+                                })
+                            }
+                        </select>
+                    </div>
                 </div>
 
+
+
                 {/* Current Plan Overview */}
-                <div className="bg-white rounded-2xl p-6  mb-8 shadow-xl relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#286a94]/10 to-blue-500/10 rounded-full -mr-32 -mt-32"></div>
+                {/* <div className="bg-white rounded-2xl p-6  mb-8 shadow-xl relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-linear-to-br from-[#286a94]/10 to-blue-500/10 rounded-full -mr-32 -mt-32"></div>
 
                     <div className="flex items-center justify-between mb-6 relative z-10">
                         <div>
                             <h2 className="text-2xl font-bold text-gray-500 mb-1">Current Plan: {userSubscription.plan.toUpperCase()}</h2>
                             <p className="text-gray-600">Your subscription details and usage</p>
                         </div>
-                        <div className="bg-gradient-to-r from-[#286a94] to-blue-500 px-4 py-2 rounded-full shadow-lg">
+                        <div className="bg-linear-to-r from-[#286a94] to-blue-500 px-4 py-2 rounded-full shadow-lg">
                             <span className="text-white font-semibold">Active</span>
                         </div>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-6 relative z-10">
-                        {/* Credits */}
                         <div className="bg-linear-to-br from-yellow-50 to-orange-50 rounded-xl p-5 border-2 border-yellow-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
                             <div className="flex items-center justify-between mb-3">
                                 <span className="text-gray-700 font-semibold">Credits</span>
@@ -344,8 +194,8 @@ const VendorSubscriptionPage = () => {
                             </div>
                         </div>
 
-                        {/* Products */}
-                        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-5 border-2 border-blue-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
+                        
+                        <div className="bg-linear-to-br from-blue-50 to-cyan-50 rounded-xl p-5 border-2 border-blue-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
                             <div className="flex items-center justify-between mb-3">
                                 <span className="text-gray-700 font-semibold">Products Listed</span>
                                 <Package className="w-5 h-5 text-blue-500" />
@@ -361,8 +211,8 @@ const VendorSubscriptionPage = () => {
                             </div>
                         </div>
 
-                        {/* Days Remaining */}
-                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-5 border-2 border-green-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
+                        
+                        <div className="bg-linear-to-br from-green-50 to-emerald-50 rounded-xl p-5 border-2 border-green-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
                             <div className="flex items-center justify-between mb-3">
                                 <span className="text-gray-700 font-semibold">Subscription</span>
                                 <Shield className="w-5 h-5 text-green-500" />
@@ -373,16 +223,16 @@ const VendorSubscriptionPage = () => {
                             <div className="text-sm text-gray-600">No expiration</div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 {/* Billing Toggle */}
-                <div className="flex justify-center mb-18 mt-14">
+                {/* <div className="flex justify-center mb-18 mt-14">
                     <div className="bg-white rounded-full p-1.5 border-2 border-gray-200 shadow-lg">
                         <button
                             onClick={() => setBillingCycle('monthly')}
                             className={`px-8 py-3 rounded-full transition-all font-semibold ${billingCycle === 'monthly'
-                                    ? 'bg-gradient-to-r from-[#286a94] to-blue-500 text-white shadow-md'
-                                    : 'text-gray-600 hover:text-gray-800'
+                                ? 'bg-linear-to-r from-[#286a94] to-blue-500 text-white shadow-md'
+                                : 'text-gray-600 hover:text-gray-800'
                                 }`}
                         >
                             Monthly
@@ -390,97 +240,284 @@ const VendorSubscriptionPage = () => {
                         <button
                             onClick={() => setBillingCycle('yearly')}
                             className={`px-8 py-3 rounded-full transition-all font-semibold ${billingCycle === 'yearly'
-                                    ? 'bg-gradient-to-r from-[#286a94] to-blue-500 text-white shadow-md'
-                                    : 'text-gray-600 hover:text-gray-800'
+                                ? 'bg-linear-to-r from-[#286a94] to-blue-500 text-white shadow-md'
+                                : 'text-gray-600 hover:text-gray-800'
                                 }`}
                         >
                             Yearly
                             <span className="ml-2 text-xs bg-green-500 px-2 py-1 rounded-full text-white font-bold">Save 20%</span>
                         </button>
                     </div>
-                </div>
+                </div> */}
 
                 {/* Subscription Plans */}
                 <div className="grid md:grid-cols-3 gap-8 w-[95%] mx-auto">
-                    {plans.map((plan, idx) => {
-                        const Icon = plan.icon;
-                        const isCurrentPlan = userSubscription.plan === plan.id;
+                    {data?.plans.map((plan, idx) => {
+                        // return (
+                        //     <div
+                        //         key={plan?.id}
+                        //         onMouseEnter={() => setHoveredPlan(plan.id)}
+                        //         onMouseLeave={() => setHoveredPlan(null)}
+                        //         className={`relative bg-white rounded-2xl p-3 border-2 ${plan.borderColor} transition-all duration-300 ${hoveredPlan === plan.id ? 'scale-105 shadow-2xl -translate-y-2' : 'shadow-lg'
+                        //             } ${plan.popular ? 'ring-4 ring-[#286a94]/30' : ''}`}
+                        //         style={{ animationDelay: `${idx * 100}ms` }}
+                        //     >
+                        //         {/* {plan.popular && (
+                        //             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-50">
+                        //                 <div className="bg-linear-to-r from-[#286a94] to-blue-500 text-white px-2 py-1.5 rounded-full text-xs font-medium shadow-lg">
+                        //                     ⭐ MOST POPULAR
+                        //                 </div>
+                        //             </div>
+                        //         )} */}
+
+                        //         {/* {isCurrentPlan && (
+                        //             <div className="absolute top-4 right-4">
+                        //                 <div className="bg-green-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
+                        //                     CURRENT
+                        //                 </div>
+                        //             </div>
+                        //         )} */}
+
+                        //         <div className="text-center mb-6">
+                        //             <div className={`inline-block p-4 bg-linear-to-r ${plan.color} rounded-2xl mb-4 shadow-lg ${hoveredPlan === plan.id ? 'animate-float' : ''}`}>
+                        //                 {/* <Icon className="w-8 h-8 text-white" /> */}
+                        //             </div>
+                        //             <h3 className="text-xl font-bold text-gray-800 mb-2">{plan.name}</h3>
+                        //             {/* <div className="flex items-baseline justify-center gap-1">
+                        //                 <span className={`text-xl font-bold ${plan.accentColor}`}>
+                        //                     ${billingCycle === 'monthly' ? plan.price.monthly : plan.price.yearly}
+                        //                 </span>
+                        //                 <span className="text-gray-500 font-medium">/{billingCycle === 'monthly' ? 'mo' : 'yr'}</span>
+                        //             </div> */}
+                        //         </div>
+                        //         <li className="flex items-start gap-3">
+                        //                     {/* {feature.included ? (
+                        //                         <div className="bg-green-100 rounded-full p-0.5">
+                        //                             <Check className="w-4 h-4 text-green-600 shrink-0" />
+                        //                         </div>
+                        //                     ) : (
+                        //                         <div className="bg-gray-100 rounded-full p-0.5">
+                        //                             <X className="w-4 h-4 text-gray-400 shrink-0" />
+                        //                         </div>
+                        //                     )} */}
+                        //                     <span className={`text-sm ${true ? 'text-gray-700' : 'text-gray-400'}`}>
+                        //                         {plan.credits}
+                        //                     </span>
+                        //                 </li>
+
+                        //         <ul className="space-y-3 mb-5">
+                        //             {/* {plan.map((feature, i) => (
+
+                        //             ))} */}
+                        //         </ul>
+
+                        //         <button
+                        //             onClick={() => createCheckout(plan)}
+                        //             disabled={isCurrentPlan}
+                        //             className={`w-full py-3 text-sm rounded-xl font-bold transition-all ${isCurrentPlan
+                        //                 ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                        //                 : `bg-linear-to-r ${plan.color} text-white hover:shadow-xl hover:scale-105`
+                        //                 }`}
+                        //         >
+                        //             {
+                        //                 isLoading
+                        //                     ? 'Loading'
+                        //                     : isCurrentPlan
+                        //                         ? 'Current Plan'
+                        //                         : 'Upgrade Now'
+                        //             }
+
+                        //         </button>
+                        //     </div>
+                        // );
 
                         return (
                             <div
                                 key={plan.id}
-                                onMouseEnter={() => setHoveredPlan(plan.id)}
-                                onMouseLeave={() => setHoveredPlan(null)}
-                                className={`relative bg-white rounded-2xl p-3 border-2 ${plan.borderColor} transition-all duration-300 ${hoveredPlan === plan.id ? 'scale-105 shadow-2xl -translate-y-2' : 'shadow-lg'
-                                    } ${plan.popular ? 'ring-4 ring-[#286a94]/30' : ''}`}
-                                style={{ animationDelay: `${idx * 100}ms` }}
+                                className="group relative border border-gray-300 rounded-2xl p-6 bg-white
+             transition-all duration-300
+             hover:shadow-xl hover:-translate-y-2
+            //  hover:border-[#286a94]"
                             >
-                                {plan.popular && (
-                                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-50">
-                                        <div className="bg-linear-to-r from-[#286a94] to-blue-500 text-white px-2 py-1.5 rounded-full text-xs font-medium shadow-lg">
-                                            ⭐ MOST POPULAR
-                                        </div>
-                                    </div>
-                                )}
-
-                                {isCurrentPlan && (
-                                    <div className="absolute top-4 right-4">
-                                        <div className="bg-green-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
-                                            CURRENT
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="text-center mb-6">
-                                    <div className={`inline-block p-4 bg-gradient-to-r ${plan.color} rounded-2xl mb-4 shadow-lg ${hoveredPlan === plan.id ? 'animate-float' : ''}`}>
-                                        <Icon className="w-8 h-8 text-white" />
-                                    </div>
-                                    <h3 className="text-xl font-bold text-gray-800 mb-2">{plan.name}</h3>
-                                    <div className="flex items-baseline justify-center gap-1">
-                                        <span className={`text-xl font-bold ${plan.accentColor}`}>
-                                            ${billingCycle === 'monthly' ? plan.price.monthly : plan.price.yearly}
-                                        </span>
-                                        <span className="text-gray-500 font-medium">/{billingCycle === 'monthly' ? 'mo' : 'yr'}</span>
-                                    </div>
+                                {/* Header */}
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-xl font-semibold capitalize text-[#286a94]">
+                                        {plan.name}
+                                    </h3>
+                                    <Zap
+                                        size={22}
+                                        className="text-[#286a94] opacity-60 group-hover:opacity-100"
+                                    />
                                 </div>
 
-                                <ul className="space-y-3 mb-5">
-                                    {plan.features.map((feature, i) => (
-                                        <li key={i} className="flex items-start gap-3">
-                                            {feature.included ? (
-                                                <div className="bg-green-100 rounded-full p-0.5">
-                                                    <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
-                                                </div>
-                                            ) : (
-                                                <div className="bg-gray-100 rounded-full p-0.5">
-                                                    <X className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                                                </div>
-                                            )}
-                                            <span className={`text-sm ${feature.included ? 'text-gray-700' : 'text-gray-400'}`}>
-                                                {feature.name}
-                                            </span>
-                                        </li>
-                                    ))}
+                                {/* Duration */}
+                                <p className="mt-3 flex items-center gap-2 text-gray-500">
+                                    <Calendar size={18} className="text-indigo-500" />
+                                    {plan.duration_days} Days Access
+                                </p>
+
+                                {/* Price */}
+                                <div className="my-4 flex items-end gap-1">
+                                    <span className="text-2xl font-bold text-[#286a94]">
+                                        {plan.currency} {plan.price}
+                                    </span>
+                                </div>
+
+                                {/* Features */}
+                                <ul className="space-y-3 text-gray-600 mt-4">
+                                    <li className="flex items-center gap-2">
+                                        <Coins size={18} className="text-yellow-500" />
+                                        {plan.credits} Credits
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                        <CheckCircle size={18} className="text-green-500" />
+                                        Full Features
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                        <CheckCircle size={18} className="text-green-500" />
+                                        Priority Support
+                                    </li>
                                 </ul>
 
+                                {/* CTA */}
                                 <button
-                                    onClick={() => handleUpgrade(plan.id)}
-                                    disabled={isCurrentPlan}
-                                    className={`w-full py-3 text-sm rounded-xl font-bold transition-all ${isCurrentPlan
-                                            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                                            : `bg-gradient-to-r ${plan.color} text-white hover:shadow-xl hover:scale-105`
-                                        }`}
+                                    onClick={() => handleSubscribe(plan)}
+                                    disabled={loadhandle === plan.id}
+                                    className={`mt-6 w-full flex items-center justify-center gap-2
+    bg-[#286a94] text-white py-2.5 rounded-lg font-medium
+    transition-all duration-300
+    hover:bg-indigo-700 hover:shadow-md
+    active:scale-95
+    ${loadhandle === plan.id ? "opacity-70 cursor-not-allowed" : ""}
+  `}
                                 >
-                                    {isCurrentPlan ? 'Current Plan' : 'Upgrade Now'}
+                                    {loadhandle === plan.id ? (
+                                        "Loading..."
+                                    ) : (
+                                        <>
+                                            Subscribe Now
+                                            <ArrowRight
+                                                size={18}
+                                                className="transition-transform duration-300 group-hover:translate-x-1"
+                                            />
+                                        </>
+                                    )}
                                 </button>
+
                             </div>
-                        );
+                        )
+                        // return <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
+                        //     {data?.plans?.map((plan) => (
+
+                        //     ))}
+                        // </div>
+
                     })}
                 </div>
-                
+
             </div>
+
+            {/* Modal */}
+            {selectedPlan && (
+                <Modal
+                    isLoadingCheckout={isLoadingCheckout}
+                    plan={selectedPlan}
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onConfirm={handleConfirm}
+                />
+            )}
         </div>
     );
 };
 
 export default VendorSubscriptionPage;
+
+
+
+import { motion, AnimatePresence } from "framer-motion";
+import toast from 'react-hot-toast';
+import PageLoader from '../../../libs/PageLoader';
+
+export const Modal = ({ plan,isLoadingCheckout, isOpen, onClose, onConfirm }) => {
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <motion.div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                >
+                    <motion.div
+                        className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 relative"
+                        initial={{ scale: 0.8, opacity: 0, y: -50 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        exit={{ scale: 0.8, opacity: 0, y: -50 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    >
+                        {/* Close Button */}
+                        <button
+                            onClick={onClose}
+                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+                        >
+                            <X size={20} />
+                        </button>
+
+                        {/* Modal Header */}
+                        <h2 className="text-2xl font-bold text-[#286a94] mb-2">
+                            Confirm Subscription
+                        </h2>
+                        <hr className='text-[#d6dbdd] mb-4' />
+
+                        <p className="text-gray-600 mb-4">
+                            You're about to subscribe to the{" "}
+                            <span className="font-semibold text-indigo-900">{plan.name}</span>{" "}
+                            plan.
+                        </p>
+
+                        {/* Plan Details */}
+                        <ul className="space-y-3 mb-6">
+                            <li className="flex items-center gap-2 text-gray-700">
+                                <CheckCircle size={18} className="text-green-500" />
+                                Duration: {plan.duration_days} days
+                            </li>
+                            <li className="flex items-center gap-2 text-gray-700">
+                                <CheckCircle size={18} className="text-green-500" />
+                                Credits: {plan.credits}
+                            </li>
+                            <li className="flex items-center gap-2 text-gray-700">
+                                <CheckCircle size={18} className="text-green-500" />
+                                Price: {plan.currency} {plan.price}
+                            </li>
+                        </ul>
+
+                        {/* Action Buttons */}
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={onClose}
+                                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+                            >
+                                Cancel
+                            </button>
+                            <motion.button
+                                onClick={() => onConfirm(plan)}
+                                className="px-4 py-2 rounded-lg bg-[#286a94] text-white hover:bg-[#477d9e] transition flex items-center gap-2"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                               {isLoadingCheckout ? <> Loading <span><Loader /></span> </>  : <> Confirm <span> <CheckCircle size={18} /></span>  </> }
+                               
+                            </motion.button>
+                        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
+};
+
+
+
+// export default Modal;
+

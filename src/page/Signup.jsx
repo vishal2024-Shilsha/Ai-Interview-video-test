@@ -1,151 +1,65 @@
-// import React, { useState } from "react";
-// import Header from "./Header";
-// import { useSignupMutation } from "../redux/services/authApi";
-// import { useNavigate } from "react-router-dom";
-// import toast from "react-hot-toast";
-
-
-// const VendorSignup = () => {
-//     const [formData, setFormData] = useState({
-//         name: "",
-//         email: "",
-//         password: "",
-//     });
-//     const [signup, { isLoading }] = useSignupMutation();
-//     const navigate = useNavigate();
-
-//     const handleChange = (e) => {
-//         const { name, value } = e.target;
-//         setFormData({ ...formData, [name]: value });
-//     };
-
-//     const handleSubmit = async (e) => {
-//         e.preventDefault();
-//         console.log("Vendor Signup Data:", formData);
-//         try {
-//             const result = await signup(formData).unwrap();
-//             console.log("Signup success:", result);
-//             if(result?.status){
-//                 toast.success("signup sucessfully..")
-//                 setTimeout(() => {
-//                 navigate(`/otp-verify?email=${result?.email}`)
-//                 },1000)
-//             }
-//             // Navigate to OTP page if needed
-//         } catch (err) {
-//             console.error("Signup failed:", err);
-//         }
-//         // You can send formData to your backend API here
-//     };
-
-//     return (
-//         <>
-//             <Header />
-//             <div className="min-h-screen flex items-center justify-center bg-gray-100">
-//                 <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-//                     <h2 className="text-2xl font-bold mb-6 text-center text-[#286a94]">
-//                         Vendor Signup
-//                     </h2>
-
-//                     <form onSubmit={handleSubmit} className="space-y-5">
-//                         {/* Name Field */}
-//                         <div>
-//                             <label className="block text-gray-700 mb-2" htmlFor="name">
-//                                 Name
-//                             </label>
-//                             <input
-//                                 type="text"
-//                                 id="name"
-//                                 name="name"
-//                                 value={formData.name}
-//                                 onChange={handleChange}
-//                                 placeholder="Enter your name"
-//                                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-//                                 required
-//                             />
-//                         </div>
-
-//                         {/* Email Field */}
-//                         <div>
-//                             <label className="block text-gray-700 mb-2" htmlFor="email">
-//                                 Email
-//                             </label>
-//                             <input
-//                                 type="email"
-//                                 id="email"
-//                                 name="email"
-//                                 value={formData.email}
-//                                 onChange={handleChange}
-//                                 placeholder="Enter your email"
-//                                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-//                                 required
-//                             />
-//                         </div>
-
-//                         {/* Password Field */}
-//                         <div>
-//                             <label className="block text-gray-700 mb-2" htmlFor="password">
-//                                 Password
-//                             </label>
-//                             <input
-//                                 type="password"
-//                                 id="password"
-//                                 name="password"
-//                                 value={formData.password}
-//                                 onChange={handleChange}
-//                                 placeholder="Enter your password"
-//                                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-//                                 required
-//                             />
-//                         </div>
-
-//                         {/* Submit Button */}
-//                         <button
-//                             type="submit"
-//                             className="w-full bg-[#286a94] text-white font-semibold py-2 rounded-lg hover:bg-[#4588b3] transition duration-200"
-//                         >
-//                            {isLoading ? 'Signing...' : 'Sign Up'}
-//                         </button>
-//                     </form>
-//                 </div>
-//             </div>
-//         </>
-
-//     );
-// };
-
-// export default VendorSignup;
-
-
-//====================================
-
+import Select from 'react-select'
 import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useSignupMutation } from "../redux/services/authApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import Header from "./Header";
-import logo from "../assets/ebench_logo.png";
+import { useGetCountryDataQuery } from "../redux/services/externalApi";
 
 const VendorSignup = () => {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         password: "",
+        country: ""
     });
-    
-    const [showPassword,setShowPassword] = useState(false)
+
+    const [showPassword, setShowPassword] = useState(false)
     const [signup, { isLoading }] = useSignupMutation();
     const navigate = useNavigate();
+    const { data: countryList } = useGetCountryDataQuery();
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
+    const options = (countryList?.data || []).map((c) => ({
+        value: c,
+        searchLabel: c.name, // 👈 used for search
+        label: (
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <img
+                    src={c.flag ?? "img"}
+                    alt={c.name}
+                    style={{ width: 20, height: 14, objectFit: "cover" }}
+                />
+                <span>{c.name}</span>
+            </div>
+        )
+    }));
+
+
+    const [selectedOption, setSelectedOption] = useState(null);
+
+    useEffect(() => {
+        if (selectedOption?.value) {
+            setFormData((prev) => (
+                {
+                    ...prev,
+                    country: selectedOption?.value?.name ?? ""
+                }
+            ))
+        }
+    }, [selectedOption])
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        console.log("firm", formData)
         try {
             const result = await signup(formData).unwrap();
             if (result?.status) {
@@ -246,13 +160,24 @@ const VendorSignup = () => {
                     className="flex-1 flex flex-col px-10 justify-center bg-[#f0f0f0] min-h-full"
                 >
                     <div className="max-w-md w-full mx-auto bg-white shadow-md rounded-2xl p-8 mt-10">
-                        <img src={logo} alt="eBench Logo" className="w-40 mx-auto mb-6" />
 
                         <h2 className="text-2xl font-bold text-center text-[#286a94] mb-6">
                             Vendor Signup
                         </h2>
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
+                        <form onSubmit={handleSubmit} className="space-y-3">
+
+                            <div className=''>
+                                <label className="block text-gray-700 mb-1" htmlFor="select-option">Select Country</label>
+                                <Select
+                                    options={options}
+                                    onChange={setSelectedOption}
+                                    placeholder="Select Country"
+                                    getOptionLabel={(option) => option.searchLabel}
+                                    isSearchable
+                                />
+
+                            </div>
 
                             {/* Name Field */}
                             <div>
@@ -304,6 +229,9 @@ const VendorSignup = () => {
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 pr-12"
                                     required
                                 />
+
+
+
 
                                 {/* Eye Button */}
                                 <button

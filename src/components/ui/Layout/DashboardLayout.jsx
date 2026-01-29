@@ -9,7 +9,7 @@
 
 //   return (
 //     <div className="flex h-screen bg-gray-100">
-//       {/* Sidebar */}
+//       {/* Sidebar */}             
 //       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
 //       {/* Overlay for mobile */}
@@ -35,16 +35,20 @@
 // export default DashboardLayout;
 
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
 
-const DashboardLayout = ({ role = "admin" }) => {
+const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const role=localStorage.getItem('role')
   if(!localStorage.getItem('token')){
+    if(role==="admin"){
+    window.location.href = '/admin-login';
+    }else{
     window.location.href = '/';
+    }
     localStorage.clear()
     return;
   }

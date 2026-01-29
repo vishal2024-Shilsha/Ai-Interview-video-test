@@ -1190,7 +1190,7 @@ export default function RecordInterviewPage() {
   const candidateId = location?.state?.data ?? null;
   const [uploadTest,{isLoading}] = useUploadTestMutation();
 
-  console.log("local-video-ref", localVideoRef);
+  // console.log("local-video-ref", localVideoRef);
 
   const { micTestActive, micTestPassed, micLevelRef, startMicTest, stopMicTest } = useMicTest({ mediaStreamRef, canvasRef });
   const { listening, transcript, interim, startRecognition, stopRecognition, setTranscript } = useSpeechToText();
@@ -1199,8 +1199,7 @@ export default function RecordInterviewPage() {
 
   const onRecordingStop = (blob, url) => {
     // optional: store blob for upload
-    console.log("Received blob:", blob);
-
+    // console.log("Received blob:", blob);
   };
 
   const { recording, videoURL, startRecording, stopRecording, recordedBlob, setVideoURL } = useRecorder({ mediaStreamRef, onRecordingStop });
@@ -1273,7 +1272,7 @@ export default function RecordInterviewPage() {
     const file = new File([recordedBlob], "interview.webm", {
       type: "video/webm",
     });
-    console.log("ffff", file)
+    // console.log("ffff", file)
 
     const formData = new FormData();
     formData.append("file", file);
@@ -1284,7 +1283,7 @@ export default function RecordInterviewPage() {
       if(result?.data){
         toast.success("file uploaded successfully..")
         setTimeout(() => {
-      navigate('/success');
+      navigate('/test-success');
         },1500)
       }
     } catch (e) {
@@ -1296,7 +1295,6 @@ export default function RecordInterviewPage() {
   return (
     <>
       <Header />
-
       <div className="min-h-screen bg-linear-to-br pt-20 from-slate-50 via-white to-blue-50 p-6 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 18 }}
@@ -1424,7 +1422,7 @@ export default function RecordInterviewPage() {
                     <a href={videoURL} target="_blank" rel="noreferrer" className="block text-sm text-blue-700 underline">Open recorded video</a>
                     <div className="flex gap-2">
                       <button onClick={() => uploadVideo()} className="flex-1 px-4 py-2 rounded-lg bg-[#0f5e87] text-white font-semibold">{isLoading ? 'Uploading' : '⬆ Upload' } </button>
-                      <a href={videoURL} download="interview_recording.webm" className="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 text-center">⤓ Download</a>
+                      {/* <a href={videoURL} download="interview_recording.webm" className="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 text-center">⤓ Download</a> */}
                     </div>
                   </div>
                 )}

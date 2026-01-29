@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import UserForm from "./UserForm";
 import ImportUsers from "./ImportUsers";
 import { useAddVendorMutation, useGetAllUserByVendorQuery, useImportVendorMutation, useSendTestLinkToUserMutation } from "../../../redux/services/vendorApi";
-import { Eye, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import profileImg from '../../../assets/userImg.jpg'
 import useDebounce from "../../../libs/useDebounce";
 import Loader from "../../../libs/Loader";
 import toast from "react-hot-toast";
+import { useGetCountryDataQuery } from "../../../redux/services/externalApi";
 
 
 export default function UserManagement() {
@@ -31,6 +32,7 @@ export default function UserManagement() {
     { page, pageSize, search: debouncedQuery, filterNationality, filterResidence },
     { refetchOnMountOrArgChange: false }
   );
+  const {data:countryData,isLoading:countryLoading} = useGetCountryDataQuery();
 
   console.log("isError",error);
   if(error?.status===401){
@@ -87,6 +89,7 @@ export default function UserManagement() {
       }
 
     } catch (err) {
+      console.log("ererer",err)
       toast.error("Failed to send link");
     }
   };
@@ -123,7 +126,8 @@ export default function UserManagement() {
       else setShowImportModal(false);
 
     } catch (err) {
-      console.error(err);
+      toast.error(err?.data?.detail??"Internal Server Error")
+      console.error(err,"hey error i will see you");
     }
   }
 
@@ -138,7 +142,6 @@ export default function UserManagement() {
   return (
     <div className="p-6 pt-3 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
-
         {/* Header */}
         <div className="mb-5">
           <h1 className="text-xl font-semibold text-[#286a94]">User Management</h1>
@@ -164,21 +167,25 @@ export default function UserManagement() {
 
             {/* Filters */}
             <select value={filterNationality} onChange={(e) => setFilterNationality(e.target.value)}
-              className="px-3 py-2 rounded-md shadow shadow-[#dcdedf] text-[#286a94] bg-white">
+              className="px-3 py-2 outline-none w-48  rounded-md shadow shadow-[#dcdedf] text-[#286a94] bg-white">
               <option value="">Nationality (All)</option>
-              <option>India</option>
-              <option>United States</option>
-              <option>United Kingdom</option>
-              <option>Canada</option>
+              {
+                countryData?.data?.length>0 && 
+                countryData?.data?.map((item) => (
+                <option value={item?.name}>{item?.name}</option>
+                ))
+              }
             </select>
 
             <select value={filterResidence} onChange={(e) => setFilterResidence(e.target.value)}
-              className="px-3 py-2 rounded-md shadow shadow-[#dcdedf] text-[#286a94] bg-white">
-              <option value="">Country of Residence (All)</option>
-              <option>India</option>
-              <option>United States</option>
-              <option>United Kingdom</option>
-              <option>Canada</option>
+              className="px-3 py-2 w-48 rounded-md shadow shadow-[#dcdedf] text-[#286a94] bg-white">
+              <option value="" >Country of Residence (All)</option>
+               {
+                countryData?.data?.length>0 && 
+                countryData?.data?.map((item) => (
+                <option value={item?.name}>{item?.name}</option>
+                ))
+              }
             </select>
 
           </div>
@@ -280,12 +287,11 @@ export default function UserManagement() {
 
                       <td className="px-6 py-4">{u.nationality}</td>
                       <td className="px-6 py-4">{u.country_of_residence}</td>
-                      <td className="px-6 py-4">{u.mobile}</td>
+                      <td className="px-6 py-4">{'+'+u.mobile}</td>
                       <td className="px-6 py-4">{u.email}</td>
 
                       <td className="px-6 py-4">
                         <div className="flex justify-center gap-3 items-center">
-                          <Eye size={17} />
                           <Trash2
                             onClick={() => handleDelete(u.id)}
                             size={17}

@@ -39,7 +39,6 @@ export default function VendorForgotPassword() {
 
             {/* Main Layout */}
             <div className="flex-1 flex flex-col md:flex-row">
-
                 <motion.div
                     // initial={{ opacity: 0, x: -40 }}
                     // animate={{ opacity: 1, x: 0 }}

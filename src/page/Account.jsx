@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import logo from "../assets/ebench_logo.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ import { useLoginMutation } from "../redux/services/authApi";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../redux/Slices/AuthSlice";
 import { Eye, EyeOff } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "react-hot-toast";  //
 
 export default function CreateAccount() {
   const [vendorData, setVendorData] = useState({
@@ -35,21 +35,23 @@ export default function CreateAccount() {
       const formData = { ...vendorData };
 
       const result = await login(formData).unwrap();
-      console.log("rrees",result);
-      dispatch(setCredentials({ token: result?.access_token, user: result.user }));
+      // console.log("rrees",result);
+      dispatch(setCredentials({ token: result?.access_token, user: result.role,detail:{name:result?.name,email:result?.email,id:result?.vendor_id} }));
       console.log("Login successful!");
-      navigate("/vendor"); // redirect after login
+      navigate("/vendor/dashboard"); // redirect after login
     } catch (err) {
       toast.error(err?.data?.detail ?? "Internal Server Error")
-      console.error("Login failed:", err);
+      // console.error("Login failed:", err);
     }
   }
+
+  
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      {/* Main content container */}
+      {/* Main content */}
       <div className="flex-1 flex flex-col md:flex-row">
         {/* Left Section */}
         <motion.div className="flex-1 flex flex-col pt-28 px-10 bg-[#286a94] min-h-full">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from 'framer-motion'
 
 export default function ImportUsers({ onClose, onSubmit, isVendorImporting }) {
@@ -17,7 +17,6 @@ export default function ImportUsers({ onClose, onSubmit, isVendorImporting }) {
       setFile(selectedFile);
     }
   };
-
   const handleImport = () => {
     if (!file) return;
     onSubmit(file, true)

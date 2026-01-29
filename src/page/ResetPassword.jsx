@@ -25,8 +25,6 @@ const ResetPassword = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -62,7 +60,6 @@ const ResetPassword = () => {
             toast.error(error?.data?.message || "Something went wrong!");
         }
     };
-
     return (
         <div className="flex-1 min-h-screen flex flex-col md:flex-row">
             <Header />

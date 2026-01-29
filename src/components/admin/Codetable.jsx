@@ -1,4 +1,3 @@
-import React from "react";
 
 const CodeTable = ({ codes, handleCopy }) => {
   if (codes.length === 0)
@@ -7,6 +6,7 @@ const CodeTable = ({ codes, handleCopy }) => {
         No generated codes yet. Click “Generate Code” to create one.
       </div>
     );
+
 
   return (
     <div className="overflow-x-auto">

@@ -1,4 +1,3 @@
-
 import userImg from '../assets/userImg.jpg'
 // import { motion } from "framer-motion";
 // import { useNavigate } from "react-router-dom";
@@ -104,57 +103,55 @@ import userImg from '../assets/userImg.jpg'
 
 // new code
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useVerifyOtpMutation } from "../redux/services/authApi";
 import Header from "./Header";
-import { useCookiesGenerateQuery,useUploadTestMutation, useLazyGetProfileQuery, useVerifyUserOtpMutation } from '../redux/services/userApi';
+import { useCookiesGenerateQuery, useUploadTestMutation, useLazyGetProfileQuery, useVerifyUserOtpMutation } from '../redux/services/userApi';
 import toast from 'react-hot-toast';
 
 export default function ProfilePage() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const candidate_id = searchParams.get("candidate_id");  // read ?name=...
+    const candidate_id = searchParams.get("candidate_id");  // 
     const token = searchParams.get("token");
     const [loading, setLoading] = useState(true);
-
     const [isOtpOpen, setIsOtpOpen] = useState(false);
     const [otp, setOtp] = useState("");
     const [verifyOtp] = useVerifyUserOtpMutation();
     // console.log("verify",verifyOtp);
 
-    const { data: cookieData, isSuccess: cookieReady,isError } =
+    const { data: cookieData, isSuccess: cookieReady, isError, isLoading: dataLoading } =
         useCookiesGenerateQuery({ candidate_id, token });
 
-    const [fetchCandidate, { data: candidateData, isLoading }] = useLazyGetProfileQuery();
+    const [fetchCandidate, { data: candidateData, isLoading, isError: fetchDetailError }] = useLazyGetProfileQuery();
 
     const handleVerify = async () => {
         // console.log("first", otp.length<6);
-        if (otp.length<6) {
+        if (otp.length < 6) {
             toast.warning("Enter valid 6 digit OTP")
             return;
         }
         const form = new FormData();
-        form.append('candidate_id',candidate_id)
-        form.append('otp',otp)
+        form.append('candidate_id', candidate_id)
+        form.append('otp', otp)
         try {
             const res = await verifyOtp(form).unwrap();
             if (res?.status) {
                 toast.success("Authentication Successully")
                 setIsOtpOpen(false);
                 setTimeout(() => {
-                navigate("/record",{state:{data:token}}); // move to test page
-                },1000)
+                    navigate("/record", { state: { data: token } });
+                }, 1000)
             } else {
                 setOtp("")
             }
         } catch (err) {
-            console.log("err",err)
-            toast.error(err?.data?.detail??"Something went wrong")
+            console.log("err", err)
+            toast.error(err?.data?.detail ?? "Something went wrong")
         }
     };
-    // console.log("hello oops",isError)
 
     useEffect(() => {
         if (!cookieReady) return;
@@ -165,18 +162,16 @@ export default function ProfilePage() {
         }).unwrap()
             .then(res => console.log("Candidate Data Loaded", res))
             .catch(err => console.error(err));
-        
-        
+
     }, [cookieReady, candidate_id]);
-    
-    if (isLoading) {
+
+    if (isLoading || dataLoading) {
         return <FullScreenLoader />
     }
 
-    if(isError){
+    if (fetchDetailError || isError) {
         return <Unauthorized />
     }
-
 
     return (
         <>
@@ -202,19 +197,19 @@ export default function ProfilePage() {
                                 className="w-36 h-36 rounded-full border-2 border-[#dfe4e7] shadow-lg mb-4"
                                 whileHover={{ scale: 1.05 }}
                             />
-                            <h2 className="text-3xl font-bold text-[#286a94] mb-3">{candidateData?.candidate?.first_name + " "+ candidateData?.candidate?.last_name}</h2>
-                                                    {/* Left Profile Section
+                            <h2 className="text-3xl font-bold text-[#286a94] mb-3">{candidateData?.candidate?.first_name + " " + candidateData?.candidate?.last_name}</h2>
+                            {/* Left Profile Section
                                                     */}
                             {/* <p className="text-gray-600 mb-4">MERN Stack Developer | 2+ years experience</p>                                                     */}
 
                             <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-gray-700 shadow-inner w-full">
                                 <h3 className="text-[#286a94] font-semibold mb-2">Profile Details</h3>
                                 <ul className="space-y-1">
-                                    <li><strong>Email:</strong> {candidateData?.candidate?.candidate_email??"N/A"}</li>
-                                    <li><strong>Phone:</strong> {candidateData?.candidate?.mobile??"N/A" }</li>
-                                    <li><strong>Nationality:</strong> {candidateData?.candidate?.nationality??"N/A"} </li>
-                                    <li><strong>Country of Residence:</strong> {candidateData?.candidate?.country_of_residence??"N/A" } </li>
-                                    <li><strong>Birth Country:</strong> {candidateData?.candidate?.birth_country??"N/A" } </li>
+                                    <li><strong>Email:</strong> {candidateData?.candidate?.email ?? "N/A"}</li>
+                                    <li><strong>Phone:</strong> {'+' + candidateData?.candidate?.mobile ?? "N/A"}</li>
+                                    <li><strong>Nationality:</strong> {candidateData?.candidate?.nationality ?? "N/A"} </li>
+                                    <li><strong>Country of Residence:</strong> {candidateData?.candidate?.country_of_residence ?? "N/A"} </li>
+                                    <li><strong>Birth Country:</strong> {candidateData?.candidate?.birth_country ?? "N/A"} </li>
                                 </ul>
                             </div>
                         </div>
@@ -296,7 +291,7 @@ export default function ProfilePage() {
                         </button>
 
                         <button
-                            onClick={() => [setIsOtpOpen(false),setOtp("")]}
+                            onClick={() => [setIsOtpOpen(false), setOtp("")]}
                             className="w-full mt-2 text-gray-600 hover:text-gray-800 text-sm"
                         >
                             Cancel
@@ -312,7 +307,7 @@ export default function ProfilePage() {
 
 const FullScreenLoader = () => {
     return (
-        <div className="fixed inset-0 bg-white/70 flex items-center justify-center z-[9999]">
+        <div className="fixed inset-0 bg-white/70 flex items-center justify-center z-9999">
             <div className="w-14 h-14 border-4 border-[#286a94] border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
@@ -320,24 +315,24 @@ const FullScreenLoader = () => {
 
 
 function Unauthorized() {
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-6">
-      <div className="bg-white shadow-lg rounded-xl p-10 text-center max-w-md w-full">
-        
-        <div className="text-red-500 text-7xl font-bold">401</div>
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 px-6">
+            <div className="bg-white shadow-lg rounded-xl p-10 text-center max-w-md w-full">
 
-        <h1 className="text-2xl font-semibold text-gray-800 mt-4">
-          Unauthorized Access
-        </h1>
+                <div className="text-red-500 text-7xl font-bold">401</div>
 
-        <p className="text-gray-500 mt-2">
-          Your access link has expired or you do not have permission to view this page.
-        </p>
+                <h1 className="text-2xl font-semibold text-gray-800 mt-4">
+                    Unauthorized Access
+                </h1>
 
-        <p className="text-gray-400 text-sm mt-6">
-          Please contact support if you believe this is a mistake.
-        </p>
-      </div>
-    </div>
-  );
+                <p className="text-gray-500 mt-2">
+                    Your access link has expired or you do not have permission to view this page.
+                </p>
+
+                <p className="text-gray-400 text-sm mt-6">
+                    Please contact support if you believe this is a mistake.
+                </p>
+            </div>
+        </div>
+    );
 }
