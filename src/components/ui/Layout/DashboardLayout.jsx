@@ -1,44 +1,8 @@
-// import React, { useState } from "react";
-// import Sidebar from "./Sidebar";
-// // import Header from "./Header";
-// import { Outlet } from "react-router-dom";
-// import Header from "./Header";
-
-// const DashboardLayout = ({ children }) => {
-//   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-//   return (
-//     <div className="flex h-screen bg-gray-100">
-//       {/* Sidebar */}             
-//       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-
-//       {/* Overlay for mobile */}
-//       {sidebarOpen && (
-//         <div
-//           className="fixed inset-0 bg-black/40 z-30 md:hidden"
-//           onClick={() => setSidebarOpen(false)}
-//         />
-//       )}
-
-//       {/* Main Content */}
-//       <main className="flex-1 flex flex-col overflow-hidden">
-//         <Header setSidebarOpen={setSidebarOpen} />
-
-//         <div className="flex-1 p-4 md:p-6 overflow-auto">
-//             <Outlet/>
-//         </div>
-//       </main>
-//     </div>
-//   );
-// };
-
-// export default DashboardLayout;
-
-
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
+import { requestPermission } from "../../../redux/services/firebase";
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -52,6 +16,12 @@ const DashboardLayout = () => {
     localStorage.clear()
     return;
   }
+
+  useEffect(() => {
+    if(role !== "admin"){
+    requestPermission();
+    }
+  }, []);
 
 
   return (

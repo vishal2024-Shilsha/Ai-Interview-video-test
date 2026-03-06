@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { base } from "../../../redux/services/api";
+import toast from "react-hot-toast";
 
 const ProcessingPayment = () => {
   const [searchParams] = useSearchParams();
@@ -10,9 +11,9 @@ const ProcessingPayment = () => {
 
     const poll = async () => {
       try {
-        const res = await fetch(`${base}/payment-status?order_id=${orderId}`);
+        const res = await fetch(`${base}/vendor/payment-status?order_id=${orderId}`);
         const data = await res.json();
-        console.log("verify-data",data);
+        // console.log("verify-data",data);
         if(data?.status==="failed"){
              window.location.href = "/payment-failed"
         }
@@ -20,7 +21,8 @@ const ProcessingPayment = () => {
           window.location.href = "/payment-success";
         }
       } catch (err) {
-        console.error("Error checking payment status:", err);
+        toast.error(err?.message??"Something went wrong.")
+        // console.error("Error checking payment status:", err);
       }
     };
 

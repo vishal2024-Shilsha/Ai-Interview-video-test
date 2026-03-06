@@ -4,7 +4,7 @@ export const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getProfile: builder.query({
       query: ({id,token}) => {
-        console.log("Fetching profile for ID:", token);
+        // console.log("Fetching profile for ID:", token);
         return {
           url: `/candidate/details?candidate_id=${id}`,
           method: "GET",

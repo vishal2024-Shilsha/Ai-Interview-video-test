@@ -965,7 +965,6 @@ export function useMicTest({ mediaStreamRef, canvasRef }) {
     let passStart = null;
     micTimerRef.current = setInterval(() => {
       const lvl = micLevelRef.current;
-      console.log("lvl",lvl)
       if (lvl > PASS_RMS_THRESHOLD) {
         if (!passStart) passStart = performance.now();
         const held = (performance.now() - passStart) / 1000;
@@ -1129,13 +1128,13 @@ export function useRecorder({ mediaStreamRef, onRecordingStop }) {
     };
 
     recorder.onstop = () => {
-      console.log("Chunks on stop:", recordedChunksRef.current);
+      // console.log("Chunks on stop:", recordedChunksRef.current);
 
       const blob = new Blob(recordedChunksRef.current, {
         type: "video/webm",
       });
 
-      console.log("Blob created:", blob);
+      // console.log("Blob created:", blob);
 
       setRecordedBlob(blob);
 
@@ -1188,7 +1187,7 @@ export default function RecordInterviewPage() {
   const localVideoRef = useRef(null);
   const location = useLocation();
   const candidateId = location?.state?.data ?? null;
-  const [uploadTest,{isLoading}] = useUploadTestMutation();
+  const [uploadTest, { isLoading }] = useUploadTestMutation();
 
   // console.log("local-video-ref", localVideoRef);
 
@@ -1279,15 +1278,16 @@ export default function RecordInterviewPage() {
     formData.append("candidate_session", candidateId)
     try {
       const result = await uploadTest(formData);
-      console.log("result from api", result);
-      if(result?.data){
+      // console.log("result from api", result);
+      if (result?.data) {
         toast.success("file uploaded successfully..")
         setTimeout(() => {
-      navigate('/test-success');
-        },1500)
+          navigate('/test-success');
+        }, 1500)
       }
-    } catch (e) {
-      console.log("ee", e);
+    } catch (err) {
+      // console.log("ee", e);
+      toast.error(err?.message??"Something went wrong Pls try again.")
     }
 
   };
@@ -1421,7 +1421,7 @@ export default function RecordInterviewPage() {
                   <div className="space-y-2">
                     <a href={videoURL} target="_blank" rel="noreferrer" className="block text-sm text-blue-700 underline">Open recorded video</a>
                     <div className="flex gap-2">
-                      <button onClick={() => uploadVideo()} className="flex-1 px-4 py-2 rounded-lg bg-[#0f5e87] text-white font-semibold">{isLoading ? 'Uploading' : '⬆ Upload' } </button>
+                      <button onClick={() => uploadVideo()} className="flex-1 px-4 py-2 rounded-lg bg-[#0f5e87] text-white font-semibold">{isLoading ? 'Uploading' : '⬆ Upload'} </button>
                       {/* <a href={videoURL} download="interview_recording.webm" className="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 text-center">⤓ Download</a> */}
                     </div>
                   </div>

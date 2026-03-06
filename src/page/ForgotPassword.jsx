@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import logo from "../assets/ebench_logo.png";
 import Header from "./Header";
 import { useNavigate } from "react-router-dom";
-// import { useForgotPasswordMutation } from "../redux/services/authApi"; // your forgot API
 import { toast } from "react-hot-toast";
 import { useForgotPasswordMutation } from "../redux/services/authApi";
 
@@ -12,7 +11,6 @@ export default function VendorForgotPassword() {
     const [forgotPassword,{isLoading}] = useForgotPasswordMutation();
     const navigate = useNavigate();
 
-    //   const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!email) {
@@ -21,17 +19,14 @@ export default function VendorForgotPassword() {
  
         try {
             const result = await forgotPassword({ email }).unwrap();
-            console.log("rsss",result);
             toast.success(result?.message || "Reset link sent!");
             setTimeout(() => {
             navigate(`/otp-verify?email=${email}`,{state:{data:true}});
             },1500)
         } catch (err) {
-            console.log("er",err);
             toast.error(err?.data?.detail || "Unable to send reset link");
         }
     };
-
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -40,17 +35,9 @@ export default function VendorForgotPassword() {
             {/* Main Layout */}
             <div className="flex-1 flex flex-col md:flex-row">
                 <motion.div
-                    // initial={{ opacity: 0, x: -40 }}
-                    // animate={{ opacity: 1, x: 0 }}
                     className="flex-1 flex flex-col pt-28 px-10 bg-[#286a94] min-h-full"
                 >
                     <h1 className="text-3xl font-bold text-white mb-4"> Reset Your Password with <span className="text-white">eBench</span> </h1>
-                    {/* <p className="text-white leading-relaxed text-lg">
-                        Forgot your password? It happens! With eBench, resetting your account is
-                        simple, fast, and completely secure. Just enter your registered email,
-                        and you’ll receive a secure link to create a new password in moments.
-                    </p> */}
-
                     <p className="text-white mt-4 opacity-90">
                         Our system uses advanced encryption and verification methods to ensure your
                         account stays protected while giving you quick access whenever you need it.
@@ -97,8 +84,6 @@ export default function VendorForgotPassword() {
 
                 {/* RIGHT SECTION */}
                 <motion.div
-                    // initial={{ opacity: 0, x: 40 }}
-                    // animate={{ opacity: 1, x: 0 }}
                     className="flex-1 flex items-center justify-center flex-col px-10 py-16 bg-[#f0f0f0] min-h-full"
                 >
                     <div className="max-w-md w-full mx-auto bg-white shadow-md rounded-2xl p-8 mt-10">

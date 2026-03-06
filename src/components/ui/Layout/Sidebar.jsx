@@ -205,6 +205,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
       icon: Users,
     },
     { to: "/vendor/result-management", label: "Result Management", icon: FileUser },
+     { to: "/vendor/role-management", label: "Role Management", icon: FileUser },
     {
       label: "Subscription",
       icon: Crown,
@@ -237,7 +238,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
     );
 
     setOpenMenu(activeMenu ? activeMenu.label : null);
-  }, [location.pathname, menuItems]);
+  }, [ menuItems]);
 
   /* ---------- MOBILE CLOSE ---------- */
   const closeSidebarOnMobile = () => {

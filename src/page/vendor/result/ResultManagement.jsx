@@ -8,6 +8,7 @@ import PageLoader from '../../../libs/PageLoader'
 import { useNavigate } from 'react-router-dom'
 import { base } from '../../../redux/services/api'
 import toast from 'react-hot-toast'
+import { useResultManagementDetailBySubVendorQuery } from '../../../redux/services/subvendorApi'
 
 const ResultManagement = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const ResultManagement = () => {
   const [pageSize, setPageSize] = useState(10);
   const [country, setCountry] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const role=localStorage.getItem('role');
 
 
   const SCORE_RANGES = [
@@ -38,7 +40,16 @@ const ResultManagement = () => {
     data,
     isLoading,
     isError,
-  } = useResultManagementDataQuery({
+  } = role =='sub_vendor' ? useResultManagementDetailBySubVendorQuery({
+    limit: pageSize,
+    page,
+    search,
+    country,
+    minScore,
+    maxScore,
+    fromDate,
+    toDate,
+  }) : useResultManagementDataQuery({
     limit: pageSize,
     page,
     search,
@@ -110,7 +121,7 @@ const ResultManagement = () => {
 
     } catch (error) {
       toast.error(error?.message)
-      console.error('Download error:', error?.message);
+      // console.error('Download error:', error?.message);
     } finally {
       setPdfLoader(false)
     }
@@ -125,7 +136,13 @@ const ResultManagement = () => {
     return <ErrorPage />
   }
 
-  console.log("jojoj", selectedUsers)
+  function handleNavigate(){
+    if(localStorage.getItem('role')=="sub_vendor"){
+      navigate(`/subvendor/result-management/view?resultId=${u?.result_id}&candidateId=${u?.candidate_id}`)
+    }else{
+      navigate(`/vendor/result-management/view?resultId=${u?.result_id}&candidateId=${u?.candidate_id}`)
+    }
+  }
 
 
   return (

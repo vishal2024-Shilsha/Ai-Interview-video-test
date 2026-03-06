@@ -27,7 +27,7 @@ const validationSchema = yup.object().shape({
         const formattedValue = value.startsWith('+') ? value : `+${value}`;
         const phoneNumber = parsePhoneNumberFromString(formattedValue);
 
-        console.log('📞 Parsed:', phoneNumber);
+        // console.log('📞 Parsed:', phoneNumber);
 
         // 1️⃣ Check that the number is valid
         if (!phoneNumber?.isValid()) return false;
@@ -45,7 +45,7 @@ const validationSchema = yup.object().shape({
 
         return true; // ✅ passes validation
       } catch (err) {
-        console.error('Phone parse error:', err);
+        // console.error('Phone parse error:', err);
         return false;
       }
     }),

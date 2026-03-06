@@ -13,9 +13,9 @@ const VendorSignup = () => {
         name: "",
         email: "",
         password: "",
-        country: ""
+        country: "",
+        module: "company" // default
     });
-
     const [showPassword, setShowPassword] = useState(false)
     const [signup, { isLoading }] = useSignupMutation();
     const navigate = useNavigate();
@@ -58,8 +58,6 @@ const VendorSignup = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        console.log("firm", formData)
         try {
             const result = await signup(formData).unwrap();
             if (result?.status) {
@@ -69,7 +67,7 @@ const VendorSignup = () => {
                 }, 1000);
             }
         } catch (err) {
-            console.error("Signup failed:", err);
+            // console.error("Signup failed:", err);
             toast.error(err?.data?.detail || "Unable to signup");
         }
     };
@@ -161,11 +159,60 @@ const VendorSignup = () => {
                 >
                     <div className="max-w-md w-full mx-auto bg-white shadow-md rounded-2xl p-8 mt-10">
 
-                        <h2 className="text-2xl font-bold text-center text-[#286a94] mb-6">
+                        {/* <h2 className="text-2xl font-bold text-center text-[#286a94] mb-6">
                             Vendor Signup
-                        </h2>
+                        </h2> */}
 
                         <form onSubmit={handleSubmit} className="space-y-3">
+
+                            {/* Registered As */}
+                            <div>
+                                <label className="block text-gray-700 mb-2">Registered As</label>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    {/* Company */}
+                                    <label className={`flex items-center justify-between px-4 py-3 border rounded-xl cursor-pointer transition 
+      ${formData.module === "company" ? "border-[#286a94] bg-blue-50" : "border-gray-300"}`}>
+
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                type="radio"
+                                                name="module"
+                                                value="company"
+                                                checked={formData.module === "company"}
+                                                onChange={handleChange}
+                                                className="accent-[#286a94]"
+                                            />
+                                            <span className="font-medium text-gray-700">Company</span>
+                                        </div>
+
+                                        {formData.module === "company" && (
+                                            <span className="text-xs text-[#286a94] font-semibold">Selected</span>
+                                        )}
+                                    </label>
+
+                                    {/* Campus */}
+                                    <label className={`flex items-center justify-between px-4 py-3 border rounded-xl cursor-pointer transition 
+      ${formData.module === "campus" ? "border-[#286a94] bg-blue-50" : "border-gray-300"}`}>
+
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                type="radio"
+                                                name="module"
+                                                value="campus"
+                                                checked={formData.module === "campus"}
+                                                onChange={handleChange}
+                                                className="accent-[#286a94]"
+                                            />
+                                            <span className="font-medium text-gray-700">Campus</span>
+                                        </div>
+
+                                        {formData.module === "campus" && (
+                                            <span className="text-xs text-[#286a94] font-semibold">Selected</span>
+                                        )}
+                                    </label>
+                                </div>
+                            </div>
 
                             <div className=''>
                                 <label className="block text-gray-700 mb-1" htmlFor="select-option">Select Country</label>
@@ -182,7 +229,7 @@ const VendorSignup = () => {
                             {/* Name Field */}
                             <div>
                                 <label htmlFor="name" className="block text-gray-700 mb-1">
-                                    Full Name
+                                   {formData.module === "campus" ? 'Campus Name' : 'Company Name'}
                                 </label>
                                 <input
                                     type="text"

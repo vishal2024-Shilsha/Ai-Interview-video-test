@@ -8,9 +8,11 @@ import useDebounce from "../../../libs/useDebounce";
 import Loader from "../../../libs/Loader";
 import toast from "react-hot-toast";
 import { useGetCountryDataQuery } from "../../../redux/services/externalApi";
+import { useAddCandidateBySubVendorMutation, useGetAllCandidatesBySubVendorQuery, useImportCandidateBySubVendorMutation, useSendTestLinkToCandidatesMutation } from "../../../redux/services/subvendorApi";
 
 
 export default function UserManagement() {
+  const role = localStorage.getItem('role')
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState("");
@@ -24,18 +26,20 @@ export default function UserManagement() {
   // NEW STATES
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [showSendLinkModal, setShowSendLinkModal] = useState(false);
-
+  const [isCheckboxEnabled, setIsCheckboxEnabled] = useState(false);
   // Your existing API hooks
-  const [addVendor, { isLoading: isVendorAdding }] = useAddVendorMutation();
-  const [importVendor, { isLoading: isVendorImporting }] = useImportVendorMutation();
-  const { data, isLoading,error } = useGetAllUserByVendorQuery(
-    { page, pageSize, search: debouncedQuery, filterNationality, filterResidence },
-    { refetchOnMountOrArgChange: false }
-  );
-  const {data:countryData,isLoading:countryLoading} = useGetCountryDataQuery();
+  const [addVendor, { isLoading: isVendorAdding }] = role == "sub_vendor" ? useAddCandidateBySubVendorMutation() : useAddVendorMutation();
+  const [importVendor, { isLoading: isVendorImporting }] = role == "sub_vendor" ? useImportCandidateBySubVendorMutation() : useImportVendorMutation();
 
-  console.log("isError",error);
-  if(error?.status===401){
+  const { data, isLoading, error } = role == "sub_vendor" ? useGetAllCandidatesBySubVendorQuery({ page, pageSize, search: debouncedQuery, filterNationality, filterResidence },
+    { refetchOnMountOrArgChange: false }) : useGetAllUserByVendorQuery(
+      { page, pageSize, search: debouncedQuery, filterNationality, filterResidence },
+      { refetchOnMountOrArgChange: false }
+    );
+  const { data: countryData, isLoading: countryLoading } = useGetCountryDataQuery();
+
+  // console.log("isError",error);
+  if (error?.status === 401) {
     window.location.href = '/';
     localStorage.clear()
     return;
@@ -73,12 +77,12 @@ export default function UserManagement() {
   /** -----------------------------
    * SEND LINK HANDLER
    * ----------------------------- */
-  const [sendTestLinkToUser,{isLoading : isTestWorking}] = useSendTestLinkToUserMutation(); // <--- your mutation
+  const [sendTestLinkToUser, { isLoading: isTestWorking }] = localStorage.getItem('role') == "sub_vendor" ? useSendTestLinkToCandidatesMutation() : useSendTestLinkToUserMutation();
 
   const handleSendLink = async () => {
     try {
       const result = await sendTestLinkToUser({ candidate_ids: selectedUsers }).unwrap();
-      console.log("send-link", result)
+      // console.log("send-link", result)
       if (result?.status) {
         setTimeout(() => {
           toast.success("Test link sent successfully !");
@@ -89,7 +93,7 @@ export default function UserManagement() {
       }
 
     } catch (err) {
-      console.log("ererer",err)
+      // console.log("ererer",err)
       toast.error("Failed to send link");
     }
   };
@@ -126,8 +130,7 @@ export default function UserManagement() {
       else setShowImportModal(false);
 
     } catch (err) {
-      toast.error(err?.data?.detail??"Internal Server Error")
-      console.error(err,"hey error i will see you");
+      toast.error(err?.data?.detail ?? "Internal Server Error")
     }
   }
 
@@ -135,18 +138,33 @@ export default function UserManagement() {
     try {
       await deleteUser(userId).unwrap?.();
     } catch (err) {
-      console.error(err);
+      toast.error(err?.message ?? "Something went wrong")
+      // console.error(err);
     }
   }
-
+  
   return (
     <div className="p-6 pt-3 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-5">
-          <h1 className="text-xl font-semibold text-[#286a94]">User Management</h1>
-          <p className="text-sm pt-0.5 text-gray-500">Search, filter, import and manage users</p>
+        <div className="flex justify-between items-baseline mb-5">
+          <div className="">
+            <h1 className="text-xl font-semibold text-[#286a94]">User Management</h1>
+            <p className="text-sm pt-0.5 text-gray-500">Search, filter, import and manage users</p>
+          </div>
+          <div>
+            <button
+              onClick={() => {
+                setIsCheckboxEnabled(prev => !prev);
+                setSelectedUsers([]); 
+              }}
+              className="px-4 py-2 rounded-md bg-[#5197c2] text-white shadow"
+            >
+              {isCheckboxEnabled ? "Disable Selection" : "Select for Action"}
+            </button>
+          </div>
         </div>
+
 
         {/* Filters + Buttons */}
         <div className="flex flex-wrap items-center justify-between mb-6">
@@ -170,9 +188,9 @@ export default function UserManagement() {
               className="px-3 py-2 outline-none w-48  rounded-md shadow shadow-[#dcdedf] text-[#286a94] bg-white">
               <option value="">Nationality (All)</option>
               {
-                countryData?.data?.length>0 && 
+                countryData?.data?.length > 0 &&
                 countryData?.data?.map((item) => (
-                <option value={item?.name}>{item?.name}</option>
+                  <option value={item?.name}>{item?.name}</option>
                 ))
               }
             </select>
@@ -180,10 +198,10 @@ export default function UserManagement() {
             <select value={filterResidence} onChange={(e) => setFilterResidence(e.target.value)}
               className="px-3 py-2 w-48 rounded-md shadow shadow-[#dcdedf] text-[#286a94] bg-white">
               <option value="" >Country of Residence (All)</option>
-               {
-                countryData?.data?.length>0 && 
+              {
+                countryData?.data?.length > 0 &&
                 countryData?.data?.map((item) => (
-                <option value={item?.name}>{item?.name}</option>
+                  <option value={item?.name}>{item?.name}</option>
                 ))
               }
             </select>
@@ -193,7 +211,7 @@ export default function UserManagement() {
           <div className="flex items-center gap-2">
             {/* NEW BUTTON */}
             {
-              selectedUsers.length > 0 &&
+              isCheckboxEnabled &&
               <button
                 disabled={selectedUsers.length === 0}
                 onClick={() => setShowSendLinkModal(true)}
@@ -205,14 +223,14 @@ export default function UserManagement() {
             }
 
             {
-              selectedUsers.length === 0 &&
+              !isCheckboxEnabled &&
               <button onClick={openAddModal} className="px-4 py-2 rounded-md bg-[#5197c2] text-white shadow">
                 Add User
               </button>
             }
 
             {
-              selectedUsers.length === 0 &&
+              !isCheckboxEnabled&&
               <label onClick={() => setShowImportModal(true)}
                 className="px-4 py-2 rounded-md shadow-md cursor-pointer bg-[#5197c2] text-white">
                 Import CSV
@@ -230,13 +248,18 @@ export default function UserManagement() {
               <thead className="bg-gray-100">
                 <tr>
                   {/* NEW SELECT ALL COLUMN */}
-                  <th className="px-4 py-3">
-                    <input
-                      type="checkbox"
-                      onChange={toggleSelectAll}
-                      checked={users.length > 0 && users.every(u => selectedUsers.includes(u.id))}
-                    />
-                  </th>
+                  {isCheckboxEnabled && (
+                    <th className="px-4 py-3">
+                      <input
+                        type="checkbox"
+                        onChange={toggleSelectAll}
+                        checked={
+                          users.length > 0 &&
+                          users.every(u => selectedUsers.includes(u.id))
+                        }
+                      />
+                    </th>
+                  )}
 
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Name</th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Nationality</th>
@@ -259,18 +282,19 @@ export default function UserManagement() {
                     </td>
                   </tr>
                 ) : (
-                  users.map((u,index) => (
-                    <tr key={u.id} className={`text-sm text-gray-600 ${(index&1)==0 ? ' bg-gray-50' : ''}`}>
+                  users.map((u, index) => (
+                    <tr key={u.id} className={`text-sm text-gray-600 ${(index & 1) == 0 ? ' bg-gray-50' : ''}`}>
 
                       {/* ROW CHECKBOX */}
-                      <td className="px-4">
-                        <input
-                          type="checkbox"
-                          checked={selectedUsers.includes(u.id)}
-                          onChange={() => toggleSelectUser(u.id)}
-                        />
-                      </td>
-
+                      {isCheckboxEnabled && (
+                        <td className="px-4">
+                          <input
+                            type="checkbox"
+                            checked={selectedUsers.includes(u.id)}
+                            onChange={() => toggleSelectUser(u.id)}
+                          />
+                        </td>
+                      )}  
                       <td className="px-4 py-2">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center">
@@ -287,7 +311,7 @@ export default function UserManagement() {
 
                       <td className="px-6 py-4">{u.nationality}</td>
                       <td className="px-6 py-4">{u.country_of_residence}</td>
-                      <td className="px-6 py-4">{'+'+u.mobile}</td>
+                      <td className="px-6 py-4">{'+' + u.mobile}</td>
                       <td className="px-6 py-4">{u.email}</td>
 
                       <td className="px-6 py-4">
@@ -361,7 +385,7 @@ export default function UserManagement() {
                   onClick={handleSendLink}
                   className="px-4 py-2 rounded bg-[#286a94] text-white"
                 >
-                 {isTestWorking ? 'Sending' : 'Yes, Send'}
+                  {isTestWorking ? 'Sending' : 'Yes, Send'}
                 </button>
               </div>
             </div>

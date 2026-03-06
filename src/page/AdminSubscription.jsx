@@ -109,7 +109,7 @@ export default function SubscriptionModule() {
     };
 
     const handleOpenEdit = (plan) => {
-        console.log("pplan", plan);
+        // console.log("pplan", plan);
         setMode("edit");
         setFormData({
             ...plan,
@@ -133,7 +133,6 @@ export default function SubscriptionModule() {
             data.country=""
         }
       
-        console.log("hlwo",data,selectedOption)
         try {
             const result = mode === "edit" ? await updatePlanCountryWise(data) : await addPlanCountryWise(data)
             if (result?.data) {
@@ -153,7 +152,6 @@ export default function SubscriptionModule() {
     };
 
     const openDeletePopup = (p) => {
-        console.log("pplj", p)
         setSelectedId({
             id: p?.plan_id ? p?.plan_id : p?.id,
             country: p?.country ?? null
@@ -193,7 +191,6 @@ export default function SubscriptionModule() {
 
     const handleSetCredit = async () => {
         try {
-            console.log("hlw-word",creditPrice)
             if(!creditPrice){
                 toast.error("Please fill Addon Percentage")
                 return;
@@ -213,8 +210,6 @@ export default function SubscriptionModule() {
             toast.error("Error occurred..")
         }
     }
-    
-
 
     if (isLoading) return <PageLoader/>
 

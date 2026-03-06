@@ -7,10 +7,9 @@ export default function Header() {
       {/* Left Logo */}
       <div className="flex items-center">
         <img
-          src={logo} // <-- replace with your logo path (e.g., /assets/ebench.png)
+          src={logo}
           alt="eBench Logo"
           className="h-8 cursor-pointer"
-          // onClick={() => avigate('/')}
         />
       </div>
 

@@ -105,18 +105,16 @@ import userImg from '../assets/userImg.jpg'
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useVerifyOtpMutation } from "../redux/services/authApi";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "./Header";
-import { useCookiesGenerateQuery, useUploadTestMutation, useLazyGetProfileQuery, useVerifyUserOtpMutation } from '../redux/services/userApi';
+import { useCookiesGenerateQuery, useLazyGetProfileQuery, useVerifyUserOtpMutation } from '../redux/services/userApi';
 import toast from 'react-hot-toast';
 
 export default function ProfilePage() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const candidate_id = searchParams.get("candidate_id");  // 
+    const candidate_id = searchParams.get("candidate_id"); 
     const token = searchParams.get("token");
-    const [loading, setLoading] = useState(true);
     const [isOtpOpen, setIsOtpOpen] = useState(false);
     const [otp, setOtp] = useState("");
     const [verifyOtp] = useVerifyUserOtpMutation();
@@ -148,7 +146,7 @@ export default function ProfilePage() {
                 setOtp("")
             }
         } catch (err) {
-            console.log("err", err)
+            // console.log("err", err)
             toast.error(err?.data?.detail ?? "Something went wrong")
         }
     };
@@ -160,8 +158,6 @@ export default function ProfilePage() {
             id: candidate_id,
             token: cookieData?.token
         }).unwrap()
-            .then(res => console.log("Candidate Data Loaded", res))
-            .catch(err => console.error(err));
 
     }, [cookieReady, candidate_id]);
 

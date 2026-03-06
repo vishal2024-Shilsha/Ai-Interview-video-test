@@ -38,3 +38,5 @@ export const externalApi = api.injectEndpoints({
 });
 
 export const { useGetCountryDataQuery,useGetCountryCurrencyMutation,useCreateCheckoutSubscriptionMutation } = externalApi;
+
+

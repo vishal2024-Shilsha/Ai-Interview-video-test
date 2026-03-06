@@ -248,11 +248,6 @@ export default function VendorProfileMergedForm() {
     const [requiredBranchFields, setRequiredBranchFields] = useState({
         country: "",
         address: "",
-        pocName: "",
-        pocEmail: "",
-        pocMobile: "",
-        pocGender: "",
-        pocAddress: "",
     });
 
 
@@ -267,29 +262,20 @@ export default function VendorProfileMergedForm() {
     const save = async (e) => {
         e.preventDefault();
         console.log("requiredBranchFields", requiredBranchFields)
-        if (!requiredBranchFields?.country && !requiredBranchFields?.pocName && !requiredBranchFields?.pocEmail
-            && !requiredBranchFields?.pocGender && !requiredBranchFields?.pocMobile && !requiredBranchFields?.address
+        console.log("0909",(requiredBranchFields?.country || requiredBranchFields?.address))
+        if (!requiredBranchFields?.country || !requiredBranchFields?.address
         ) {
-            return toast.error("Please Fill all required information")
+            toast.error("Please Fill all required information")
+            return;
         }
         const formdata = new FormData();
         if (editId) {
             formdata.append(
-                'branches_data',
+                'branch',
                 JSON.stringify({
-                    ...(data?.company?.id && { company_id: data.company.id }),
+                    // ...(data?.company?.id && { company_id: data.company.id }),
                     country: requiredBranchFields?.country || "",
                     branch_location: requiredBranchFields?.address || "",
-                    pocs: [
-                        {
-                            ...(pocId && { id: pocId }),
-                            full_name: requiredBranchFields?.pocName || "",
-                            email: requiredBranchFields?.pocEmail || "",
-                            phone: `${requiredBranchFields?.pocMobile}` || "",
-                            address: requiredBranchFields?.pocAddress || "",
-                            gender: requiredBranchFields?.pocGender || ""
-                        }
-                    ]
                 })
             );
         } else {
@@ -299,16 +285,6 @@ export default function VendorProfileMergedForm() {
                     ...(data?.company?.id && { company_id: data.company.id }),
                     country: requiredBranchFields?.country || "",
                     branch_location: requiredBranchFields?.address || "",
-                    pocs: [
-                        {
-
-                            full_name: requiredBranchFields?.pocName || "",
-                            email: requiredBranchFields?.pocEmail || "",
-                            phone: `+${requiredBranchFields?.pocMobile}` || "",
-                            address: requiredBranchFields?.pocAddress || "",
-                            gender: requiredBranchFields?.pocGender || ""
-                        }
-                    ]
                 })
             );
         }
@@ -342,12 +318,7 @@ export default function VendorProfileMergedForm() {
     function handleClose() {
         setRequiredBranchFields({
             country: "",
-            address: "",
-            pocName: "",
-            pocEmail: "",
-            pocMobile: "",
-            pocGender: "",
-            pocAddress: "",
+            address: ""
         })
         setEditId(null);
         setEditing(false)
@@ -381,16 +352,10 @@ export default function VendorProfileMergedForm() {
     function EditHandler(param) {
         setEditId(param?.id)
         setPOCId(param?.pocId ?? null)
-        const { address, country, pocAddress, pocGender, pocMobile, pocName, pocEmail } = param
-        console.log("param", param);
+        const { address, country } = param
         setRequiredBranchFields({
             country,
-            address,
-            pocName,
-            pocEmail,
-            pocMobile,
-            pocGender,
-            pocAddress,
+            address
         })
         setEditing(true);
     }
@@ -610,7 +575,7 @@ export default function VendorProfileMergedForm() {
             <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-8 space-y-6">
                 <div className=" flex justify-between" >
                     <h2 className="text-lg font-semibold text-blue-900">
-                        Point of Contact Details
+                        Branch Details
                     </h2>
                 </div>
 
@@ -622,7 +587,7 @@ export default function VendorProfileMergedForm() {
                     >
                         <div className="flex justify-between items-center">
                             <h3 className="font-semibold">
-                                Point of Contact - {i + 1}
+                                Branch Details - {i + 1}
                             </h3>
                             <div className="flex gap-3">
                                 <button
@@ -643,40 +608,6 @@ export default function VendorProfileMergedForm() {
                         <div className="grid md:grid-cols-3 gap-4">
                             <Input label="Country" name="country" readOnly placeholder="Country" value={b.country} />
                             <Input label="Branch Address" name="address" readOnly placeholder="Branch Location" value={b.address} />
-                            <Input label="POC Name" name="pocName" readOnly placeholder="Employee Name" value={b.pocName} />
-                            <Input label="POC Email" name="pocEmail" readOnly placeholder="Employee Email" value={b.pocEmail} />
-                            <div>
-                                <label className="text-sm text-gray-600 font-semibold mb-1">Gender</label>
-                                <select
-                                    disabled={true}
-                                    name="pocGender"
-                                    value={b.pocGender}
-                                    className="border border-gray-300 rounded p-2 w-full"
-                                >
-                                    <option disabled value="">Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <Input
-                                label="POC Address"
-                                name="pocAddress"
-                                readOnly
-                                value={b?.pocAddress}
-                                placeholder="Employee Address"
-                            />
-
-                            <div>
-                                <label className="text-sm text-gray-600 font-semibold mb-1">POC Phone</label>
-                                <PhoneInput
-                                    country="in"
-                                    disabled
-                                    value={b.pocMobile}
-                                    inputStyle={{ width: "100%" }}
-                                />
-                            </div>
-
                         </div>
                     </div>
                 ))}
@@ -686,7 +617,7 @@ export default function VendorProfileMergedForm() {
                     onClick={() => setEditing(true)}
                     className="flex items-center gap-2 text-blue-600"
                 >
-                    <Plus size={16} /> Add POC
+                    <Plus size={16} /> Add Branch
                 </button>
 
             </div>
@@ -701,7 +632,7 @@ export default function VendorProfileMergedForm() {
 
                     {/* Modal Content */}
                     <div className="relative w-full max-w-xl overflow-y-auto max-h-80 md:max-h-full p-6 bg-white rounded-lg shadow-lg">
-                        <h2 className="mb-2 text-lg font-semibold">Employee Detail Form</h2>
+                        <h2 className="mb-2 text-lg font-semibold">Branch Detail Form</h2>
                         <hr className=" text-gray-300 mb-4" />
                         <form className="space-y-4" onSubmit={save}>
                             <div className="grid md:grid-cols-2 gap-4">
@@ -720,50 +651,8 @@ export default function VendorProfileMergedForm() {
                                     </select>
                                 </div>
 
-                                {/* <Input label="Country" name="country"  placeholder="Country"/> */}
                                 <Input label="Branch Address" name="address" onChange={handlePoChange} placeholder="Branch Location" value={requiredBranchFields.address} />
-                                <Input label="POC Name" name="pocName" onChange={handlePoChange} placeholder="Employee Name" value={requiredBranchFields.pocName} />
-                                <Input label="POC Email" name="pocEmail" onChange={handlePoChange} placeholder="Employee Email" value={requiredBranchFields.pocEmail} />
-                                <div className="flex flex-col">
-                                    <label className="text-sm text-gray-600 font-semibold mb-1">Gender</label>
-                                    <select
-                                        disabled={!editing}
-                                        name="pocGender"
-                                        onChange={handlePoChange}
-                                        value={requiredBranchFields.pocGender}
-                                        className="border border-gray-300 text-gray-500 rounded p-2 w-full"
-                                    >
-                                        <option disabled value="">Gender</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                                <Input
-                                    label="POC Address"
-                                    name="pocAddress"
-                                    value={requiredBranchFields?.pocAddress}
-                                    // value={b.pocAddress}
-                                    onChange={handlePoChange}
-                                    placeholder="Employee Address"
-                                />
-
-                                <div>
-                                    <label className="text-sm text-gray-600 font-semibold mb-1">POC Phone</label>
-                                    <PhoneInput
-                                        country="in"
-                                        value={requiredBranchFields.pocMobile}
-                                        inputStyle={{ width: "100%" }}
-                                        onChange={(v) =>
-                                            setRequiredBranchFields((p) => ({
-                                                ...p, pocMobile: v
-                                            }))
-                                        }
-                                    />
-                                </div>
-
-
-
+                                
                             </div>
                             <div className="flex flex-row gap-3">
                                 <button type="submit"
@@ -841,9 +730,9 @@ export default function VendorProfileMergedForm() {
 
 /* ================= REUSABLE ================= */
 
-const Divider = () => <div className="border-t border-gray-200" />;
+export const Divider = () => <div className="border-t border-gray-200" />;
 
-const Input = ({
+export const Input = ({
     label,
     required,
     error,
@@ -864,4 +753,5 @@ const Input = ({
         {error && <span className="text-xs text-red-500">{error}</span>}
     </div>
 );
+
 

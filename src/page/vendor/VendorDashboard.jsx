@@ -30,24 +30,8 @@ export default function VendorDashboard() {
     return <ErrorPage />
   }
 
-  // 1,2,2,3,3
-
-  function duplicate(head) {
-    let prev = head;
-    while (prev !== null && prev.next !== null) {
-      if (prev.data === prev.next.data) {
-        prev.next = prev.next.next
-      } else {
-        prev = prev.next;
-      }
-    }
-    return head;
-  }
-  //[1,2]
-
   return (
     <div className="min-h-screen bg-[#fafafa] p-6 pt-5 font-inter text-gray-800">
-
       {/* ---------------------- PROFILE HEADER WITH IMAGE ---------------------- */}
       <motion.div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm mb-10 flex items-center gap-8">
         <img src={profileImg} alt="Vendor Profile" className="w-32 h-32 rounded-2xl border border-gray-300 object-cover" />

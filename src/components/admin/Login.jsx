@@ -19,7 +19,7 @@ export default function AdminLoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     function changeHandler(e) {
         const { name, value } = e.target;
-        console.log("e.taer", name, value)
+        // console.log("e.taer", name, value)
         setFormdata({
             ...formdata,
             [name]: value
@@ -31,7 +31,7 @@ export default function AdminLoginPage() {
 
         try {
             const result = await adminLogin(formdata);
-            console.log("res", result)
+            // console.log("res", result)
             if (result?.data) {
                 toast.success("Admin Login Successfully..")
                 // dispatch(setCredentials({ token: result?.access_token, user: result.role,detail:{name:result?.name,email:result?.email,id:result?.vendor_id} }));
@@ -45,7 +45,7 @@ export default function AdminLoginPage() {
                 return null;
             }
         } catch (err) {
-            console.log("err", isError)
+            // console.log("err", isError)
             toast.error(err?.data?.details??"Error occurred..")
         }
     }

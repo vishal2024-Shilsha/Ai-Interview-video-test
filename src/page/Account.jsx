@@ -7,13 +7,14 @@ import { useLoginMutation } from "../redux/services/authApi";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../redux/Slices/AuthSlice";
 import { Eye, EyeOff } from "lucide-react";
-import toast from "react-hot-toast";  //
+import toast from "react-hot-toast";
 
 export default function CreateAccount() {
-  const [vendorData, setVendorData] = useState({
-    email: "",
-    password: "",
-  });
+ const [vendorData, setVendorData] = useState({
+  email: "",
+  password: "",
+  module: "company" // default login as company
+});
   const [showPassword, setShowPassword] = useState(false);
 
 
@@ -29,15 +30,15 @@ export default function CreateAccount() {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!vendorData?.email || !vendorData?.password) {
-      return;
+      return toast.error("Please fill all required information.");
     }
     try {
       const formData = { ...vendorData };
 
       const result = await login(formData).unwrap();
       // console.log("rrees",result);
-      dispatch(setCredentials({ token: result?.access_token, user: result.role,detail:{name:result?.name,email:result?.email,id:result?.vendor_id} }));
-      console.log("Login successful!");
+      dispatch(setCredentials({ token: result?.access_token, user: result.role, detail: { name: result?.name, email: result?.email, id: result?.vendor_id } }));
+      // console.log("Login successful!");
       navigate("/vendor/dashboard"); // redirect after login
     } catch (err) {
       toast.error(err?.data?.detail ?? "Internal Server Error")
@@ -45,14 +46,14 @@ export default function CreateAccount() {
     }
   }
 
-  
-
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
 
       {/* Main content */}
       <div className="flex-1 flex flex-col md:flex-row">
+        {/* Role Selection */}
+
         {/* Left Section */}
         <motion.div className="flex-1 flex flex-col pt-28 px-10 bg-[#286a94] min-h-full">
           <h1 className="text-3xl font-bold text-white mb-4">
@@ -90,6 +91,60 @@ export default function CreateAccount() {
           <div className="max-w-md w-full mx-auto bg-white shadow-md rounded-2xl p-8 mt-10">
             <img src={logo} alt="eBench Logo" className="w-40 mx-auto mb-6" />
             <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Login As */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Login as
+                </label>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Company */}
+                  <label className={`flex items-center justify-between px-4 py-3 border rounded-xl cursor-pointer transition
+      ${vendorData.module === "company"
+                      ? "border-[#286a94] bg-blue-50"
+                      : "border-gray-300"}`}>
+
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="radio"
+                        name="module"
+                        value="company"
+                        checked={vendorData.module === "company"}
+                        onChange={handleChange}
+                        className="accent-[#286a94]"
+                      />
+                      <span className="font-medium text-gray-700">Company</span>
+                    </div>
+
+                    {vendorData.module === "company" && (
+                      <span className="text-xs text-[#286a94] font-semibold">Selected</span>
+                    )}
+                  </label>
+
+                  {/* Campus */}
+                  <label className={`flex items-center justify-between px-4 py-3 border rounded-xl cursor-pointer transition
+      ${vendorData.module === "campus"
+                      ? "border-[#286a94] bg-blue-50"
+                      : "border-gray-300"}`}>
+
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="radio"
+                        name="module"
+                        value="campus"
+                        checked={vendorData.module === "campus"}
+                        onChange={handleChange}
+                        className="accent-[#286a94]"
+                      />
+                      <span className="font-medium text-gray-700">Campus</span>
+                    </div>
+
+                    {vendorData.module === "campus" && (
+                      <span className="text-xs text-[#286a94] font-semibold">Selected</span>
+                    )}
+                  </label>
+                </div>
+              </div>
 
               {/* Email Field */}
               <div>
@@ -139,7 +194,7 @@ export default function CreateAccount() {
                 {/* Forgot Password Link */}
                 <div className="text-right mt-2">
                   <Link
-                    to="/forgot-password" 
+                    to="/forgot-password"
                     className="text-sm text-blue-600 hover:underline"
                   >
                     Forgot Password?
@@ -152,7 +207,7 @@ export default function CreateAccount() {
                 type="submit"
                 className="w-full bg-[#286a94] text-white font-medium py-2 rounded-lg transition"
               >
-                {isLoading ? "Processing..." : "Login as Vendor"}
+                {isLoading ? "Processing..." : "Login"}
               </button>
 
               {/* Signup Link */}

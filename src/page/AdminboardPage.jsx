@@ -8,15 +8,13 @@ export default function Dashboard() {
   const navigate = useNavigate()
   // Simulating fetch from API
   const { data, isLoading, isError } = useAdminDashboardQuery();
-  // console.log("ddlj",data)
 
   if (isLoading) return <PageLoader/>
 
   if(isError){
-    return <>Something went wron</>
+    return <>Something went wrong</>
   }
   const { overview, vendors, subscription_plans, activity } = data;
-
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">

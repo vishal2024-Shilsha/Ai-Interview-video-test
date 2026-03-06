@@ -18,7 +18,7 @@ const VendorSubscriptionPage = () => {
     const [countryOption, setCountryOption] = useState('global')
     const [billingCycle, setBillingCycle] = useState('monthly');
     const [hoveredPlan, setHoveredPlan] = useState(null);
-    const [checkoutPage, { isLoading:isLoadingCheckout, isErrorCheckout }] = useCreateCheckoutSubscriptionMutation()
+    const [checkoutPage, { isLoading: isLoadingCheckout, isErrorCheckout }] = useCreateCheckoutSubscriptionMutation()
     const [selectVendorPlan, { isLoading: selectPlanLoading }] = useSelectVendorSubscriptionMutation()
 
     async function createCheckout() {
@@ -34,7 +34,7 @@ const VendorSubscriptionPage = () => {
                 return;
             }
         } catch (err) {
-            console.log("ere", err);
+            // console.log("ere", err);
             toast.error(err?.message ?? "Internal Server Error")
         }
     }
@@ -71,7 +71,7 @@ const VendorSubscriptionPage = () => {
             if (result?.error) {
                 return toast.error(result?.error?.data?.detail ?? "Somthing went  wrong")
             }
-            console.log("rs", result);
+            // console.log("rs", result);
         } catch (err) {
             toast.error(err ?? "Internal Server Error");
         } finally {
@@ -84,8 +84,8 @@ const VendorSubscriptionPage = () => {
         createCheckout()
     };
 
-    if(isLoading){
-        return <PageLoader/>
+    if (isLoading) {
+        return <PageLoader />
     }
 
     return (
@@ -386,12 +386,17 @@ const VendorSubscriptionPage = () => {
                                     className={`mt-6 w-full flex items-center justify-center gap-2
     bg-[#286a94] text-white py-2.5 rounded-lg font-medium
     transition-all duration-300
-    hover:bg-indigo-700 hover:shadow-md
+    
     active:scale-95
     ${loadhandle === plan.id ? "opacity-70 cursor-not-allowed" : ""}
+    ${plan?.is_active ? 'opacity-70 bg-gray-400 hover:bg-gray-400 cursor-not-allowed' : 'hover:bg-indigo-700 hover:shadow-md'}
   `}
                                 >
-                                    {loadhandle === plan.id ? (
+                                    {
+                                        plan?.is_active ? (<>
+                                        Current Plan
+                                        </>) : (<>
+                                        {loadhandle === plan.id ? (
                                         "Loading..."
                                     ) : (
                                         <>
@@ -402,6 +407,9 @@ const VendorSubscriptionPage = () => {
                                             />
                                         </>
                                     )}
+                                        </>)
+                                    }
+                                    
                                 </button>
 
                             </div>
@@ -439,7 +447,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import toast from 'react-hot-toast';
 import PageLoader from '../../../libs/PageLoader';
 
-export const Modal = ({ plan,isLoadingCheckout, isOpen, onClose, onConfirm }) => {
+export const Modal = ({ plan, isLoadingCheckout, isOpen, onClose, onConfirm }) => {
     return (
         <AnimatePresence>
             {isOpen && (
@@ -506,8 +514,8 @@ export const Modal = ({ plan,isLoadingCheckout, isOpen, onClose, onConfirm }) =>
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
-                               {isLoadingCheckout ? <> Loading <span><Loader /></span> </>  : <> Confirm <span> <CheckCircle size={18} /></span>  </> }
-                               
+                                {isLoadingCheckout ? <> Loading <span><Loader /></span> </> : <> Confirm <span> <CheckCircle size={18} /></span>  </>}
+
                             </motion.button>
                         </div>
                     </motion.div>

@@ -6,7 +6,7 @@ const PaymentSuccess = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate("/vendor/subscription/view"); // redirect after 3 seconds
+      navigate("/vendor/subscription/view");
     }, 2000);
 
     return () => clearTimeout(timer);

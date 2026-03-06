@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 import logo from "../assets/ebench_logo.png";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Header from "./Header";
 import { useResetPasswordMutation } from "../redux/services/authApi";
 // import { useResetPasswordMutation } from "../redux/services/authApi";  // If API exists
@@ -11,7 +11,7 @@ import { useResetPasswordMutation } from "../redux/services/authApi";
 const ResetPassword = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [resetPassword, { isLoading }] = useResetPasswordMutation();  // If API exists
+    const [resetPassword, { isLoading }] = useResetPasswordMutation();  
 
     const [formData, setFormData] = useState({
         newPassword: "",
@@ -46,16 +46,13 @@ const ResetPassword = () => {
     }
 
         try {
-            // -------- API CALL --------
             const result = await resetPassword(data).unwrap();
-            // console.log("ress",result)
             setTimeout(() => {
                 toast.success("Password reset successfully!");
             },1000)
             // navigate("/login");
 
-            toast.success("Password reset successfully");
-            navigate("/login");
+            // toast.success("Password reset successfully");
         } catch (error) {
             toast.error(error?.data?.message || "Something went wrong!");
         }

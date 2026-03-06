@@ -59,7 +59,6 @@ const OtpVerification = () => {
                 }
             } else {
                 const result = await verifyOtp({ email, otp: finalOtp }).unwrap();
-                console.log("ram", result);
                 if (result?.status) {
                     toast.success("OTP Verified Successfully!");
                     setTimeout(() => navigate("/"), 800);
@@ -79,7 +78,7 @@ const OtpVerification = () => {
         form.append('email', email);
         try {
             const result = await resendOtp(form).unwrap();
-            console.log("resss,,", result);
+            // console.log("resss,,", result);
             if (result?.status) {
                 toast.success("OTP send successfully. Check your mail.")
             }

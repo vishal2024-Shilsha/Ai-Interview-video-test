@@ -46,7 +46,7 @@ const VendorManagement = () => {
 
   async function handleSendLink() {
     const formdata = new FormData();
-    console.log("sdsd", selectedUsers)
+    // console.log("sdsd", selectedUsers)
     if (sign) {
       formdata.append('is_disabled', false);
     } else {
@@ -56,7 +56,7 @@ const VendorManagement = () => {
 
     try {
       const result = await aciveInactive(formdata);
-      console.log("ress", result)
+      // console.log("ress", result)
       if (isSuccess) {
         setSelectedUsers([])
         if (!sign) {
@@ -69,10 +69,11 @@ const VendorManagement = () => {
         }, 1000)
       }
       if (result?.error) {
-        toast.error(result?.error?.data?.detail ?? "Someting went wrong")
+        return toast.error(result?.error?.data?.detail ?? "Someting went wrong")
       }
     } catch (err) {
-      console.log("erer", err);
+      toast.error("Internal Server Error")
+      // console.log("erer", err);
     }
 
   }
@@ -86,7 +87,7 @@ const VendorManagement = () => {
       <div className="p-6 pt-3 bg-gray-50 min-h-screen">
         <div className="max-w-7xl mx-auto">
 
-          {/* Header */}
+          {/* Header*/}
           <div className="mb-5">
             <h1 className="text-xl font-semibold text-[#286a94]">Vendor Management</h1>
             <p className="text-sm pt-0.5 text-gray-500">Search, filter, import and manage users</p>

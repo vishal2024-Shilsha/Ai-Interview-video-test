@@ -161,7 +161,6 @@ export const vendorApi = api.injectEndpoints({
         method: "GET"
       })
     }),
-    // api relted to result-mangement..
     resultManagementData: builder.query({
       query: (
         {
@@ -215,12 +214,73 @@ export const vendorApi = api.injectEndpoints({
           return await response.blob();
         },
       })
+    }),
+    listofSubVendor:builder.query({
+      query:({search='',active='',plan='',page='',size=''}) =>({
+        url: `/vendor/sub-vendors?search=${search}&active=${active}&plan=${plan}&page=${page}&limit=${size}`,
+        method:"GET",
+        headers:{
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }),
+      providesTags: ['subvendor'],
+    }),
+    listofSubscription:builder.query({
+      query:() =>({
+        url: `/vendor/subscriptions/dropdown`,
+        method:"GET",
+        headers:{
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+    }),
+    registerSubVendor:builder.mutation({
+      query:(data) =>({
+        url:`/vendor/sub-vendors/create`,
+        method:"POST",
+        body:data,
+        headers:{
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }),
+      invalidatesTags:["subvendor"]
+    }),
+    activeDeactiveSubVendor:builder.mutation({
+      query:({id,formdata}) =>({
+        url:`/vendor/sub-vendors/${id}/status`,
+        method:"PATCH",
+        body:formdata,
+        headers:{
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }),
+      invalidatesTags:["subvendor"]
+    }),
+    assignSubVendorSubscription:builder.mutation({
+      query:({id,details}) =>({
+        url:`/vendor/sub-vendors/${id}/assign-plans`,
+        method:"POST",
+        body:details,
+        headers:{
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }),
+      invalidatesTags:["subvendor"]
+    }),
+    viewSubVendorDetails:builder.query({
+      query:(id) => ({
+        url:`/vendor/sub-vendors/${id}`,
+        method:"GET",
+        headers:{
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
     })
   }),
 });
 
-export const { useGetAllUserByVendorQuery, useAddVendorMutation,
-  useSendTestLinkToUserMutation, useImportVendorMutation,
+export const {useListofSubscriptionQuery,useViewSubVendorDetailsQuery, useAssignSubVendorSubscriptionMutation, useGetAllUserByVendorQuery, useAddVendorMutation,useListofSubVendorQuery,
+  useSendTestLinkToUserMutation, useImportVendorMutation,useRegisterSubVendorMutation,useActiveDeactiveSubVendorMutation,
   useGetVendorProfileQuery, useUpdateVendorProfileMutation, useAddCompanyProfileMutation,
   useUpdateCompanyProfileMutation, useAddBranchDetailsMutation, useDeleteBranchDetailsMutation,
   useUpdateBranchDetailsMutation, useGetSubscriptionDetailQuery, useLazyGetSubscriptionDetailQuery,
