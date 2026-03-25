@@ -4,54 +4,68 @@ import * as yup from "yup";
 import PhoneInput from "react-phone-input-2";
 import Select from "react-select";
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
-import {motion} from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useGetCountryDataQuery } from "../../../redux/services/externalApi";
+import { X } from "lucide-react";
 
-// ✅ Validation Schema
+// ✅ Validation Schema 
 const validationSchema = yup.object().shape({
-    firstName: yup.string().required("First Name is required").max(30, "Max 30 characters"),
-    lastName: yup.string().required("Last Name is required").max(30, "Max 30 characters"),
+    firstName: yup.string().required("First Name is required").max(30),
+    lastName: yup.string().required("Last Name is required").max(30),
+
     birthCountry: yup.object().nullable().required("Birth Country is required"),
     nationality: yup.object().nullable().required("Nationality is required"),
     countryOfResidence: yup.object().nullable().required("Country of Residence is required"),
-    email: yup.string().email("Invalid email format").required("Email is required"),
+
+    email: yup.string().email("Invalid email").required("Email is required"),
+
     mobileNumber: yup
-    .string()
-    .required('Mobile number is required')
-    .test('is-valid-phone', 'Invalid phone number', function (value) {
-      const { countryCode } = this.parent; // 👈 get the value from the same form
+        .string()
+        .required("Mobile number is required"),
 
-      if (!value) return false;
+    // 🎓 CAMPUS FIELDS
+    universityName: yup.string().when([], {
+        is: () => moduleType === "campus",
+        then: (schema) => schema.required("University is required"),
+    }),
 
-      try {
-        const formattedValue = value.startsWith('+') ? value : `+${value}`;
-        const phoneNumber = parsePhoneNumberFromString(formattedValue);
+    collegeName: yup.string().when([], {
+        is: () => moduleType === "campus",
+        then: (schema) => schema.required("College is required"),
+    }),
 
-        // console.log('📞 Parsed:', phoneNumber);
+    degree: yup.string().when([], {
+        is: () => moduleType === "campus",
+        then: (schema) => schema.required("Degree is required"),
+    }),
 
-        // 1️⃣ Check that the number is valid
-        if (!phoneNumber?.isValid()) return false;
+    specialization: yup.string().when([], {
+        is: () => moduleType === "campus",
+        then: (schema) => schema.required("Specialization is required"),
+    }),
 
-        // 2️⃣ Optionally ensure country matches
-        if (
-          countryCode &&
-          phoneNumber.country &&
-          phoneNumber.country.toLowerCase() !== countryCode.toLowerCase()
-        ) {
-          return this.createError({
-            message: `Phone number does not match selected country (${countryCode.toUpperCase()})`,
-          });
-        }
+    enrollmentYear: yup.string().when([], {
+        is: () => moduleType === "campus",
+        then: (schema) => schema.required("Enrollment year required"),
+    }),
 
-        return true; // ✅ passes validation
-      } catch (err) {
-        // console.error('Phone parse error:', err);
-        return false;
-      }
+   
+    cgpa: yup.string().when([], {
+        is: () => moduleType === "campus",
+        then: (schema) => schema.required("CGPA required"),
+    }),
+
+    
+
+    department: yup.string().when([], {
+        is: () => moduleType === "campus",
+        then: (schema) => schema.required("Department required"),
     }),
 });
 
-export default function UserForm({ onSubmit,isVendorAdding, onClose }) {
+const moduleType = localStorage.getItem('module')
+
+export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
     const {
         register,
         control,
@@ -64,31 +78,65 @@ export default function UserForm({ onSubmit,isVendorAdding, onClose }) {
         mode: "onBlur",
     });
 
-    // console.log("for", errors) 
     const countryCode = watch("countryCode") || "in";
-  const {data:countryData,isLoading:countryLoading} = useGetCountryDataQuery();
+    const { data: countryData, isLoading: countryLoading } = useGetCountryDataQuery();
     // const 
     const countryOptions =
-  countryData?.data?.map((item) => ({
-    label: item?.name,
-    value: item?.name,
-  })) || [];
+        countryData?.data?.map((item) => ({
+            label: item?.name,
+            value: item?.name,
+        })) || [];
 
+
+    const handleFormSubmit = (data) => {
+        debugger;
+        const payload = {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            email: data.email,
+            mobile: data.mobileNumber,
+
+            birth_country: data.birthCountry?.value,
+            nationality: data.nationality?.value,
+            country_of_residence: data.countryOfResidence?.value,
+
+            ...(moduleType === "campus" && {
+                university_name: data.universityName,
+                college_name: data.collegeName,
+                degree: data.degree,
+                specialization: data.specialization,
+                enrollment_year: data.enrollmentYear,
+                graduation_year: data.graduationYear,
+                cgpa: data.cgpa,
+                roll_number: data.rollNumber,
+                department: data.department,
+            }),
+        };
+
+        onSubmit(payload, false);
+    };
 
     return (
         <motion.div
-        className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <motion.div
-             initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-            className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6">
-                <h2 className="text-2xl font-semibold text-gray-500 mb-5 border-b pb-3">
-                    Add New User
-                </h2>
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="bg-white rounded-2xl h-96 overflow-auto shadow-xl w-full max-w-2xl p-6">
+                <div className=" mb-5 border-b border-gray-300 pb-3 flex justify-between items-center">
+                    <h2 className="text-2xl font-semibold text-gray-500 ">
+                        Add New User
+                    </h2>
+                    <div>
+                        <X className=" cursor-pointer" onClick={onClose} />
+                    </div>
+                </div>
+
+
 
                 <form
-                  onSubmit={handleSubmit((data) => onSubmit(data, false))}
-                className="grid grid-cols-2 gap-5">
+                    onSubmit={handleSubmit((data) => handleFormSubmit(data, false))}
+                    className="grid grid-cols-2 gap-5">
                     {/* First Name */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -97,7 +145,7 @@ export default function UserForm({ onSubmit,isVendorAdding, onClose }) {
                         <input
                             {...register("firstName")}
                             placeholder="Enter first name"
-                            className={`w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 ${errors.firstName ? "border-red-500" : "border-gray-300"
+                            className={`w-full border rounded-lg p-2 outline-none ${errors.firstName ? "border-red-500" : "border-gray-300"
                                 }`}
                         />
                         {errors.firstName && (
@@ -113,7 +161,7 @@ export default function UserForm({ onSubmit,isVendorAdding, onClose }) {
                         <input
                             {...register("lastName")}
                             placeholder="Enter last name"
-                            className={`w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 ${errors.lastName ? "border-red-500" : "border-gray-300"
+                            className={`w-full border rounded-lg p-2 outline-none ${errors.lastName ? "border-red-500" : "border-gray-300"
                                 }`}
                         />
                         {errors.lastName && (
@@ -138,9 +186,6 @@ export default function UserForm({ onSubmit,isVendorAdding, onClose }) {
                                     styles={{
                                         control: (base, state) => ({
                                             ...base,
-                                            borderColor: errors.birthCountry ? "#ef4444" : "#d1d5db",
-                                            borderRadius: "0.5rem",
-                                            boxShadow: state.isFocused ? "0 0 0 2px #3b82f6" : "none",
                                         }),
                                     }}
                                 />
@@ -169,8 +214,6 @@ export default function UserForm({ onSubmit,isVendorAdding, onClose }) {
                                         control: (base, state) => ({
                                             ...base,
                                             borderColor: errors.nationality ? "#ef4444" : "#d1d5db",
-                                            borderRadius: "0.5rem",
-                                            boxShadow: state.isFocused ? "0 0 0 2px #3b82f6" : "none",
                                         }),
                                     }}
                                 />
@@ -195,12 +238,11 @@ export default function UserForm({ onSubmit,isVendorAdding, onClose }) {
                                     options={countryOptions}
                                     placeholder="Select Country of Residence"
                                     classNamePrefix="react-select"
+                                    className=" outline-none"
                                     styles={{
                                         control: (base, state) => ({
                                             ...base,
                                             borderColor: errors.countryOfResidence ? "#ef4444" : "#d1d5db",
-                                            borderRadius: "0.5rem",
-                                            boxShadow: state.isFocused ? "0 0 0 2px #3b82f6" : "none",
                                         }),
                                     }}
                                 />
@@ -222,7 +264,7 @@ export default function UserForm({ onSubmit,isVendorAdding, onClose }) {
                             {...register("email")}
                             type="email"
                             placeholder="Enter email"
-                            className={`w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 ${errors.email ? "border-red-500" : "border-gray-300"
+                            className={`w-full border rounded-lg p-2 outline-none ${errors.email ? "border-red-500" : "border-gray-300"
                                 }`}
                         />
                         {errors.email && (
@@ -262,20 +304,179 @@ export default function UserForm({ onSubmit,isVendorAdding, onClose }) {
                         )}
                     </div>
 
+                    {moduleType === "campus" && (
+                        <>
+                            {/* University */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+
+                                    University</label>
+                                <input {...register("universityName")}
+                                    className={`w-full border rounded-lg p-2 outline-none ${errors.universityName ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                    placeholder="University Name"
+                                />
+                                {errors.universityName && <p className="text-sm text-red-500 mt-1">{errors.universityName.message}</p>}
+                            </div>
+
+                            {/* College */}
+                            <div>
+                                <label className="font-medium text-sm text-gray-700 mb-1">College</label>
+                                <input {...register("collegeName")}
+                                    className={`w-full border rounded-lg p-2 outline-none ${errors.collegeName ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                    placeholder="Collage Name"
+                                />
+                                {errors.collegeName && <p className="text-sm text-red-500 mt-1">{errors.collegeName.message}</p>}
+                            </div>
+
+                            {/* Degree */}
+                            <div>
+                                <label className="font-medium text-sm text-gray-700 mb-1">Degree</label>
+                                <input {...register("degree")}
+                                    className={`w-full border rounded-lg p-2 outline-none ${errors.degree ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                    placeholder="Degree Name"
+                                />
+                                {errors.degree && <p className="text-sm text-red-500 mt-1">{errors.degree.message}</p>}
+                            </div>
+
+                            {/* Department */}
+                            <div>
+                                <label className="font-medium text-sm text-gray-700 mb-1">Department</label>
+                                <input {...register("department")}
+
+                                    className={`w-full border rounded-lg p-2 outline-none  ${errors.department ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                    placeholder="Department Name"
+                                />
+                                {errors.department && <p className="text-sm text-red-500 mt-1">{errors.department.message}</p>}
+                            </div>
+
+                            {/* Specialization */}
+                            <div>
+                                <label className="font-medium text-sm text-gray-700 mb-1">Specialization</label>
+                                <input {...register("specialization")}
+                                    className={`w-full border rounded-lg p-2 outline-none ${errors.specialization ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                    placeholder="Specialization"
+                                />
+                                {errors.specialization && <p className="text-sm text-red-500 mt-1">{errors.specialization.message}</p>}
+                            </div>
+
+                            {/* Enrollment Year */}
+                            <div>
+                                <label className="font-medium text-sm text-gray-700 mb-1">Enrollment (Month / Year)</label>
+
+                                <input
+                                    type="month"
+                                    placeholder="Month Year"
+                                    {...register("enrollmentYear")}
+                                    className={`w-full border rounded-lg p-2 text-gray-500 outline-none 
+    ${errors.enrollmentYear ? "border-red-500" : "border-gray-300"}`}
+                                />
+                                <label
+                                    className="absolute left-2 top-2 text-gray-400 text-sm 
+    transition-all peer-focus:-top-2 peer-focus:text-xs 
+    peer-focus:text-[#286a94] peer-valid:-top-2 peer-valid:text-xs bg-white px-1"
+                                >
+                                    Month & Year
+                                </label>
+
+                                {errors.enrollmentYear && (
+                                    <p className="text-sm text-red-500 mt-1">
+                                        {errors.enrollmentYear.message}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Graduation Year */}
+                            {/* <div>
+                                <label>Graduation Date</label>
+                                <input type="date" {...register("graduationYear")}
+                                    className={`w-full border rounded-lg p-2 outline-none text-gray-500 ${errors.graduationYear ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                />
+                                {errors.graduationYear && <p className="text-sm text-red-500 mt-1">{errors.graduationYear.message}</p>}
+                            </div> */}
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Graduation (Month / Year)
+                                </label>
+
+                                {/* Month Input */}
+                                <input
+                                    type="month"
+                                    {...register("graduationYear")}
+                                    disabled={watch("isPursuing")}
+                                    className={`w-full border rounded-lg p-2 outline-none text-gray-500
+    ${errors.graduationYear ? "border-red-500" : "border-gray-300"}
+    ${watch("isPursuing") ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                                />
+
+                                {/* Still Pursuing */}
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="checkbox"
+                                        id="pursuing"
+                                        placeholder="Month Year"
+                                        checked={watch("isPursuing")}
+                                        onChange={(e) => {
+                                            const checked = e.target.checked;
+                                            setValue("isPursuing", checked);
+
+                                            // Clear date if pursuing
+                                            if (checked) {
+                                                setValue("graduationYear", "");
+                                            }
+                                        }}
+                                    />
+                                    <label htmlFor="pursuing" className="text-sm text-gray-600">
+                                        Still Pursuing
+                                    </label>
+                                </div>
+
+                                {/* Error */}
+                                {errors.graduationYear && (
+                                    <p className="text-sm text-red-500 mt-1">
+                                        {errors.graduationYear.message}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* CGPA */}
+                            <div>
+                                <label className="font-medium text-sm text-gray-700 mb-1">CGPA</label>
+                                <input {...register("cgpa")}
+                                    className={`w-full border rounded-lg p-2 outline-none ${errors.cgpa ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                    placeholder="CGPA"
+                                />
+                                {errors.cgpa && <p className="text-sm text-red-500 mt-1">{errors.cgpa.message}</p>}
+                            </div>
+
+                            {/* Roll Number */}
+                            <div>
+                                <label className="font-medium text-sm text-gray-700 mb-1">Roll Number (Optional)</label>
+                                <input {...register("rollNumber")}
+                                    className={`w-full border rounded-lg p-2 outline-none ${errors.rollNumber ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                    placeholder="Roll Number"
+                                />
+                                {errors.rollNumber && <p className="text-sm text-red-500 mt-1">{errors.rollNumber.message}</p>}
+                            </div>
+
+
+                        </>
+                    )}
+
                     {/* Buttons */}
                     <div className="col-span-2 flex justify-end gap-4 pt-4">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="px-4 py-2 rounded-lg border hover:bg-gray-100"
-                        >
-                            Cancel
-                        </button>
                         <button
                             type="submit"
                             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                         >
-                           {isVendorAdding ? 'Saving...' : 'Save User'} 
+                            {isVendorAdding ? 'Saving...' : 'Save User'}
                         </button>
                     </div>
                 </form>
@@ -291,5 +492,5 @@ export default function UserForm({ onSubmit,isVendorAdding, onClose }) {
 //     ? countryData.data.map((item) =>   item?.name)
 //     : null;
 // }
-  
+
 

@@ -74,7 +74,9 @@ export const SubvendorApi = api.injectEndpoints({
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           }
         }
-      )
+      ),
+      invalidatesTags:["Candidates"]
+
     }),
     resultManagementDetailBySubVendor: builder.query({
       query: (
@@ -124,9 +126,27 @@ export const SubvendorApi = api.injectEndpoints({
         method: "GET"
       })
     }),
+    subvendorProfile: builder.query({
+      query: () => ({
+        url: `/subvendor/profile`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        method: "GET"
+      })
+    }),
+    subVendorLogout:builder.mutation({
+      query:() =>({
+        url:`/subvendor/logout`,
+        method:"POST",
+        headers:{
+          Authorization:`Bearer ${localStorage.getItem('token')}`
+        }
+      })
+    })
   })
 })
 
 export const { useSubvendorDashboardApiQuery, useResultManagementDetailBySubVendorQuery,useViewResultByUserIdBySubVendorQuery, useEmployeeLoginMutation,useSendTestLinkToCandidatesMutation, useImportCandidateBySubVendorMutation, useAddCandidateBySubVendorMutation, useGetAllCandidatesBySubVendorQuery,
-  useSubVendorChangePasswordMutation, useSubVendorResetPasswordMutation,
-  useGetOrganisationDetailQuery } = SubvendorApi
+  useSubVendorChangePasswordMutation, useSubVendorResetPasswordMutation,useSubVendorLogoutMutation,
+  useGetOrganisationDetailQuery,useSubvendorProfileQuery } = SubvendorApi

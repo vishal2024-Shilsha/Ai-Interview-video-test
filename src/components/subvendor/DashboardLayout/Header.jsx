@@ -10,7 +10,7 @@ const Header = ({ setSidebarOpen }) => {
       <h1 className="font-semibold text-lg"></h1>
 
       <div className="flex items-center gap-3">
-        <> 🔔 </>
+        {/* <> 🔔 </> */}
         <div className="w-9 h-9 bg-white text-[#5b3cc4] rounded-full flex items-center justify-center font-bold">
           TM
         </div>

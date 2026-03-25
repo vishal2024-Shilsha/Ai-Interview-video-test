@@ -1,175 +1,482 @@
-import { useNavigate } from "react-router-dom";
-import { useViewSubscriptionListQuery } from "../../../redux/services/vendorApi";
-import PageLoader from "../../../libs/PageLoader";
+// import { useNavigate } from "react-router-dom";
+// import { useViewSubscriptionListQuery } from "../../../redux/services/vendorApi";
+// import PageLoader from "../../../libs/PageLoader";
 
-const VendorCountrySubscriptions = () => {
-  const navigate = useNavigate()
-  // const countrySubscriptions = [
-  //   {
-  //     country: "United States",
-  //     currency: "USD",
-  //     subscription: {
-  //       planName: "Premium Vendor",
-  //       price: 49,
-  //       billingCycle: "Monthly",
-  //       status: "Active",
-  //       startDate: "2025-01-01",
-  //       endDate: "2026-01-01",
-  //     },
-  //     transactions: [
-  //       {
-  //         transactionId: "TXN-US-001",
-  //         amount: 49,
-  //         date: "2025-01-01",
-  //         status: "Success",
-  //       },
-  //       {
-  //         transactionId: "TXN-US-002",
-  //         amount: 49,
-  //         date: "2025-02-01",
-  //         status: "Success",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     country: "India",
-  //     currency: "INR",
-  //     subscription: {
-  //       planName: "Standard Vendor",
-  //       price: 2999,
-  //       billingCycle: "Monthly",
-  //       status: "Active",
-  //       startDate: "2025-01-10",
-  //       endDate: "2026-01-10",
-  //     },
-  //     transactions: [
-  //       {
-  //         transactionId: "TXN-IN-101",
-  //         amount: 2999,
-  //         date: "2025-01-10",
-  //         status: "Success",
-  //       },
-  //     ],
-  //   },
-  // ];
-  const { data, isLoading } = useViewSubscriptionListQuery();
-  // console.log("first", data)
+// const VendorCountrySubscriptions = () => {
+//   const navigate = useNavigate()
+//   const { data, isLoading } = useViewSubscriptionListQuery();
+//   // console.log("first", data)
 
-  if (isLoading) {
-    return <PageLoader/>
-  }
+//   if (isLoading) {
+//     return <PageLoader />
+//   }
 
+
+
+//   return (
+//     <div className="min-h-screen bg-gray-100 p-6 pt-3">
+//       <div className="max-w-7xl mx-auto">
+//         <h1 className="text-xl font-bold text-gray-500 mb-1">
+//           Country-wise Subscription
+//         </h1>
+//         <p className="mb-5 text-sm text-gray-600"> vendor can view subscription details of Individual Country wise
+//           as well as global Country </p>
+//         {data?.subscriptions?.length > 0 ? (
+//           data.subscriptions.map((item, index) => (
+//             <div key={index} className="bg-white rounded-xl shadow mb-8 p-6">
+//               {/* Country Header */}
+//               <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
+//                 <div className="flex items-baseline gap-4 text-blue-950">
+//                   <h2 className="text-lg font-semibold">{item.country}</h2>
+//                 </div>
+
+//                 <span
+//                   className={`mt-2 md:mt-0 px-4 py-1 rounded-full text-sm font-medium
+//     ${item?.status === "active" ||
+//                       item?.status === "trial" ||
+//                       item?.status === "upgraded"
+//                       ? "bg-green-100 text-green-700"
+//                       : "bg-red-100 text-red-700"
+//                     }`}
+//                 >
+//                   {item?.status}
+//                 </span>
+//               </div>
+//               <hr className=" text-gray-300 border-grey-600 shadow-md mb-4" />
+
+//               {/* Subscription Details */}
+//               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-[#224986]">
+//                 <div>
+//                   <p className="text-sm text-gray-500">Plan</p>
+//                   <p className="font-medium text-grey-500">{item?.plan_name}</p>
+//                 </div>
+
+//                 <div>
+//                   <p className="text-sm text-gray-500">Price</p>
+//                   <p className="font-medium">
+//                     {item?.currency
+//                       ? `${item?.currency} ${item?.price}`
+//                       : "Free"
+//                     }
+//                   </p>
+//                 </div>
+
+//                 <div>
+//                   <p className="text-sm text-gray-500">Validity</p>
+//                   <p className="font-medium"> {new Date(item?.start_date).toLocaleDateString()} → {new Date(item?.end_date).toLocaleDateString()} </p>
+//                 </div>
+
+//                 <div>
+//                   <p className="text-sm text-gray-500">Credit</p>
+//                   <p className="font-medium">{item?.remaining_credits}</p>
+//                 </div>
+//               </div>
+
+//               {/* Transactions */}
+//               {item?.transactions?.length > 0 && (
+//                 <>
+//                   <h3 className="text-lg font-semibold text-gray-700 mb-3">Transactions</h3>
+
+//                   <div className="overflow-x-auto">
+//                     <table className="w-full border border-gray-200 rounded-lg">
+//                       <thead className="bg-gray-50">
+//                         <tr>
+//                           <th className="px-4 py-2 text-left text-sm text-gray-600">Transaction ID</th>
+//                           <th className="px-4 py-2 text-left text-sm text-gray-600">Amount</th>
+//                           <th className="px-4 py-2 text-left text-sm text-gray-600">Date</th>
+//                           <th className="px-4 py-2 text-left text-sm text-gray-600">Status</th>
+//                         </tr>
+//                       </thead>
+//                       <tbody>
+//                         {item?.transactions?.map((txn, i) => (
+//                           <tr key={i} className="border-t border-gray-300 text-gray-600">
+//                             <td className="px-4 py-2 text-sm">{txn.transactionId}</td>
+//                             <td className="px-4 py-2 text-sm">{item.currency} {txn.amount}</td>
+//                             <td className="px-4 py-2 text-sm">{txn.date}</td>
+//                             <td className="px-4 py-2 text-sm">
+//                               <span
+//                                 className={`px-3 py-1 rounded-full text-xs font-medium
+//                           ${txn.status === "Paid"
+//                                     ? "bg-green-100 text-green-700"
+//                                     : "bg-red-100 text-red-700"
+//                                   }`}
+//                               >
+//                                 {txn.status}
+//                               </span>
+//                             </td>
+//                           </tr>
+//                         ))}
+//                       </tbody>
+//                     </table>
+//                   </div>
+//                 </>
+//               )}
+//             </div>
+//           ))
+//         ) : (
+//           <div className="text-center py-10 bg-white">
+//             <p className="text-gray-500 mb-4">No subscription available</p>
+//             <button onClick={() => navigate('/vendor/subscription/plan')} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+//               Purchase
+//             </button>
+//           </div>
+//         )}
+
+/*
+
+
+*/
+//       </div>
+//     </div>
+//   );
+// };
+
+
+
+// export default VendorCountrySubscriptions;
+
+
+//=================================================================
+
+import { CreditCard, ShoppingCart } from "lucide-react";
+
+const tabs = [
+  { id: "subscriptions", label: "My Subscriptions", icon: CreditCard },
+  { id: "purchase", label: "Purchase Plan", icon: ShoppingCart },
+];
+
+const Index = () => {
+  const [activeTab, setActiveTab] = useState("subscriptions");
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 pt-3">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-xl font-bold text-gray-500 mb-1">
-          Country-wise Subscription
-        </h1>
-        <p className="mb-5 text-sm text-gray-600"> vendor can view subscription details of Individual Country wise
-          as well as global Country </p>
-        {data?.country_subscriptions?.length > 0 ? (
-          data.country_subscriptions.map((item, index) => (
-            <div key={index} className="bg-white rounded-xl shadow mb-8 p-6">
-              {/* Country Header */}
-              <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
-                <div className="flex items-baseline gap-4 text-blue-950">
-                  <h2 className="text-lg font-semibold">{item.country}</h2>
-                </div>
-
-                <span
-                  className={`mt-2 md:mt-0 px-4 py-1 rounded-full text-sm font-medium
-            ${item.subscription.status === "Active"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                    }`}
-                >
-                  {item.subscription.status}
-                </span>
-              </div>
-              <hr className=" text-gray-300 border-grey-600 shadow-md mb-4" />
-
-              {/* Subscription Details */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-[#224986]">
-                <div>
-                  <p className="text-sm text-gray-500">Plan</p>
-                  <p className="font-medium text-grey-500">{item.subscription.planName}</p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-gray-500">Price</p>
-                  <p className="font-medium">
-                    {item?.currency
-                      ? `${item.currency} ${item.subscription.price} / ${item.subscription.billingCycle}`
-                      : "Free"
-                    }
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-gray-500">Validity</p>
-                  <p className="font-medium">{item.subscription.startDate} → {item.subscription.endDate}</p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-gray-500">Credit</p>
-                  <p className="font-medium">{item?.subscription?.credits?.total_remaining_credits}</p>
-                </div>
-              </div>
-
-              {/* Transactions */}
-              {item.transactions.length > 0 && (
-                <>
-                  <h3 className="text-lg font-semibold text-gray-700 mb-3">Transactions</h3>
-
-                  <div className="overflow-x-auto">
-                    <table className="w-full border border-gray-200 rounded-lg">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="px-4 py-2 text-left text-sm text-gray-600">Transaction ID</th>
-                          <th className="px-4 py-2 text-left text-sm text-gray-600">Amount</th>
-                          <th className="px-4 py-2 text-left text-sm text-gray-600">Date</th>
-                          <th className="px-4 py-2 text-left text-sm text-gray-600">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {item.transactions.map((txn, i) => (
-                          <tr key={i} className="border-t border-gray-300 text-gray-600">
-                            <td className="px-4 py-2 text-sm">{txn.transactionId}</td>
-                            <td className="px-4 py-2 text-sm">{item.currency} {txn.amount}</td>
-                            <td className="px-4 py-2 text-sm">{txn.date}</td>
-                            <td className="px-4 py-2 text-sm">
-                              <span
-                                className={`px-3 py-1 rounded-full text-xs font-medium
-                          ${txn.status === "Paid"
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-red-100 text-red-700"
-                                  }`}
-                              >
-                                {txn.status}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </>
-              )}
-            </div>
-          ))
-        ) : (
-          <div className="text-center py-10 bg-white">
-            <p className="text-gray-500 mb-4">No subscription available</p>
-            <button onClick={() => navigate('/vendor/subscription/plan')} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-              Purchase
-            </button>
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:px-8">
+        {/* Tabs */}
+        <div className="mx-auto mb-8 max-w-md">
+          <div className="grid grid-cols-2 gap-1 rounded-lg bg-gray-200 p-1">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-all ${activeTab === tab.id
+                    ? "bg-white text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                  }`}
+              >
+                <tab.icon className="h-4 w-4" />
+                {tab.label}
+              </button>
+            ))}
           </div>
-        )}
+        </div>
 
+        {/* Content details fo */}
+        {activeTab === "subscriptions" && <MySubscriptions />}
+        {activeTab === "purchase" && <VendorSubscriptionPage />}
       </div>
     </div>
   );
 };
 
-export default VendorCountrySubscriptions;
+export default Index;
+
+
+import { CalendarDays, RefreshCw, Zap } from "lucide-react";
+
+const subscriptions = [
+  {
+    id: 1,
+    name: "Pro Plan",
+    status: "active",
+    price: 29,
+    interval: "month",
+    nextBilling: "Apr 25, 2026",
+    startDate: "Mar 25, 2025",
+    usage: 72,
+    usageLabel: "72 of 100 API calls used",
+    features: ["Unlimited Projects", "Priority Support", "Advanced Analytics", "Custom Integrations"],
+  },
+  {
+    id: 2,
+    name: "Storage Add-on",
+    status: "active",
+    price: 9,
+    interval: "month",
+    nextBilling: "Apr 25, 2026",
+    startDate: "Jan 10, 2026",
+    usage: 45,
+    usageLabel: "45 GB of 100 GB used",
+    features: ["100 GB Cloud Storage", "Auto Backups", "Version History"],
+  },
+  {
+    id: 3,
+    name: "Starter Plan",
+    status: "cancelled",
+    price: 9,
+    interval: "month",
+    nextBilling: "—",
+    startDate: "Jun 01, 2024",
+    usage: 0,
+    usageLabel: "No usage",
+    features: ["5 Projects", "Email Support"],
+  },
+];
+
+const statusStyles = {
+  active: "bg-green-400 text-white border-gray-300",
+  cancelled: "bg-red-500 text-white border-gray-100",
+};
+
+export const MySubscriptions = () => {
+  return (
+    <div className="space-y-6">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {[
+          { icon: Zap, label: "Active Plans", value: "2", color: "green" },
+          { icon: CreditCard, label: "Monthly Spend", value: "$38", color: "red" },
+          { icon: RefreshCw, label: "Next Renewal", value: "Apr 25", color: "blue" },
+        ].map((stat) => (
+          <div key={stat.label} className="rounded-lg border border-gray-100 bg-white p-5 shadow-sm">
+            <div className="flex items-center gap-4">
+              <div className={`flex h-10 w-10 items-center justify-center rounded-lg bg-${stat.color}-600`}>
+                <stat.icon className={`h-5 w-5 text-white`} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Subscription List */}
+      <div className="space-y-4">
+        {subscriptions.map((sub) => (
+          <div key={sub.id} className="rounded-lg border border-gray-100 bg-white shadow-sm overflow-hidden">
+            {/* Header */}
+            <div className="p-6 pb-0">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <h3 className="text-lg font-semibold text-gray-800">{sub.name}</h3>
+                  <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${statusStyles[sub.status]}`}>
+                    {sub.status === "active" ? "Active" : "Cancelled"}
+                  </span>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-2xl font-bold text-foreground">${sub.price}</span>
+                  <span className="text-sm text-muted-foreground">/{sub.interval}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 pt-4 space-y-4">
+              {sub.status === "active" && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">{sub.usageLabel}</span>
+                    <span className="font-medium text-foreground">{sub.usage}%</span>
+                  </div>
+                </div>
+              )}
+
+              <hr className="border-gray-200" />
+
+              <div className="flex flex-col sm:flex-row justify-between gap-4">
+                <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1.5">
+                    <CalendarDays className="h-3.5 w-3.5" />
+                    Started: {sub.startDate}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <RefreshCw className="h-3.5 w-3.5" />
+                    Next billing: {sub.nextBilling}
+                  </span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
+import { useState } from "react";
+// import SubscriptionCard from "./SubscriptionCard";
+
+const plans = [
+  {
+    name: "Starter",
+    price: 9,
+    interval: "month",
+    features: [
+      "Up to 5 projects",
+      "Email support",
+      "1 GB storage",
+      "Basic analytics",
+      "Community access",
+    ],
+  },
+  {
+    name: "Pro",
+    price: 29,
+    interval: "month",
+    isPopular: true,
+    isCurrentPlan: true,
+    features: [
+      "Unlimited projects",
+      "Priority support",
+      "100 GB storage",
+      "Advanced analytics",
+      "Custom integrations",
+      "API access",
+    ],
+  },
+  {
+    name: "Enterprise",
+    price: 99,
+    interval: "month",
+    features: [
+      "Everything in Pro",
+      "Dedicated account manager",
+      "Unlimited storage",
+      "Custom SLAs",
+      "SSO & SAML",
+      "On-premise deployment",
+      "24/7 phone support",
+    ],
+  },
+];
+
+export const PurchaseSubscription = () => {
+  const [billingInterval, setBillingInterval] = useState("month");
+  let basePrice = 4
+  const getPrice = () =>
+    billingInterval === "year" ? Math.round(basePrice * 10) : basePrice;
+
+  return (
+    <div className="space-y-8">
+      {/* Billing Toggle */}
+      <div className="flex items-center justify-center gap-3">
+        <button
+          onClick={() => setBillingInterval("month")}
+          className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${billingInterval === "month"
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
+            }`}
+        >
+          Monthly
+        </button>
+        <button
+          onClick={() => setBillingInterval("year")}
+          className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${billingInterval === "year"
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
+            }`}
+        >
+          Yearly
+          <span className="ml-1.5 rounded-full bg-accent/20 px-2 py-0.5 text-xs font-semibold text-accent">
+            Save 17%
+          </span>
+        </button>
+      </div>
+
+      {/* Plans Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {plans.map((plan) => (
+          <SubscriptionCard
+            key={plan.name}
+            name={plan.name}
+            price={getPrice(plan.price)}
+            interval={billingInterval === "year" ? "year" : "mo"}
+            features={plan.features}
+            isPopular={plan.isPopular}
+            isCurrentPlan={plan.isCurrentPlan}
+            onSelect={() => alert(`Selected ${plan.name} plan!`)}
+          />
+        ))}
+      </div>
+
+      {/* Trust */}
+      <p className="text-center text-sm text-muted-foreground">
+        All plans include a 14-day free trial. Cancel anytime, no questions asked.
+      </p>
+    </div>
+  );
+};
+
+//  default PurchaseSubscription;
+
+import { Check } from "lucide-react";
+import VendorSubscriptionPage from "./Subscription";
+
+
+export const SubscriptionCard = ({
+  name,
+  price,
+  interval,
+  features,
+  isPopular = false,
+  isCurrentPlan = false,
+  onSelect,
+}) => {
+  return (
+    <div
+      className={`relative flex flex-col rounded-lg border bg-card shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${isPopular
+          ? "border-primary shadow-md ring-2 ring-primary/20"
+          : "border-border"
+        }`}
+    >
+      {isPopular && (
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+          <span className="inline-flex items-center rounded-full bg-primary px-4 py-1 text-xs font-semibold tracking-wide uppercase text-primary-foreground">
+            Most Popular
+          </span>
+        </div>
+      )}
+
+      {/* Header */}
+      <div className="pb-2 pt-8 px-6 text-center">
+        <h3 className="text-lg font-semibold text-foreground">{name}</h3>
+        <div className="mt-4 flex items-baseline justify-center gap-1">
+          <span className="text-4xl font-bold tracking-tight text-foreground">
+            ${price}
+          </span>
+          <span className="text-sm text-muted-foreground">/{interval}</span>
+        </div>
+      </div>
+
+      {/* Features */}
+      <div className="flex-1 px-6 pt-4">
+        <ul className="space-y-3">
+          {features.map((feature, index) => (
+            <li key={index} className="flex items-start gap-3 text-sm">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+              <span className="text-muted-foreground">{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Footer */}
+      <div className="px-6 pt-4 pb-8">
+        <button
+          onClick={onSelect}
+          className={`w-full rounded-md px-4 py-2.5 text-sm font-medium transition-colors ${isPopular
+              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+              : "border border-border bg-card text-foreground hover:bg-muted"
+            }`}
+        >
+          {isCurrentPlan ? "Current Plan" : "Get Started"}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+

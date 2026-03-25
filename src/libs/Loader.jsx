@@ -1,17 +1,21 @@
+const Loader = ({
+  size = 48,            // default outer size (px)
+  innerSize = 32,       // default inner size (px)
+  className = "",       // container custom classes
+}) => {
+  return (
+    <div className={`flex items-center justify-center ${className}`}>
+      <div
+        style={{ width: size, height: size }}
+        className="border-2 border-transparent animate-spin border-t-blue-400 rounded-full flex items-center justify-center"
+      >
+        <div
+          style={{ width: innerSize, height: innerSize }}
+          className="border-2 border-transparent animate-spin border-t-red-400 rounded-full"
+        ></div>
+      </div>
+    </div>
+  );
+};
 
-const Loader = () => {
-    return (
-        <div className="flex-col gap-4 w-full flex items-center justify-center">
-            <div
-                className="w-12 h-12 border-2 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full"
-            >
-                <div
-                    className="w-8 h-8 border-2 border-transparent text-red-400 text-2xl animate-spin flex items-center justify-center border-t-red-400 rounded-full"
-                ></div>
-            </div>
-        </div>
-
-    )
-}
-
-export default Loader
+export default Loader;

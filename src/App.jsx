@@ -83,7 +83,7 @@ const SubvendorResetPassword = lazy(() => import("./page/subVendor/SubvendorRese
 const ViewSubVendorDetails = lazy(() => import('./page/vendor/role/ViewSubVendor'))
 
 const DashboardSubVendorLayout = lazy(() => import('./components/subvendor/DashboardLayout/DashboardLayout'))
-
+const ProfileSection=lazy(() =>import('./page/subVendor/SubVendorProfile'))
 /* =========================
    App Component
 ========================= */ //110011
@@ -124,6 +124,60 @@ function App() {
       <AppErrorBoundary>
         <Suspense fallback={<PageLoader />}>
           <Routes>
+
+            {/* ===== Public Routes ===== */}
+            <Route
+              path="/"
+              element={
+                localStorage.getItem("role")=="vendor" ? (
+                  // If logged in, redirect based on role
+                  (localStorage.getItem("role") === "admin" && isAuthenticated) ? (
+                    <Navigate to="/admin/dashboard" replace />
+                  ) : (
+                    <Navigate to="/vendor/dashboard" replace />
+                  )
+                ) : (
+                  <Login />
+                )
+              }
+            />
+            <Route path="/res" element={<IntroAnalysis />} />
+            <Route path="/admin-login" element={<AdminLoginPage />} />
+            <Route path="/vendor-signup" element={<Signup />} />
+            <Route path="/otp-verify" element={<OtpVerification />} />
+            <Route
+              path="/candidate/start_test"
+              element={<IntroAnalysisApp />}
+            />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/record" element={<RecordPage />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/test-success" element={<SuccessPageTest />} />
+            <Route path="/cancel" element={<Cancel />} />
+            <Route path="/payment/cancel" element={<Cancel />} />
+            <Route path="/checkout-page" element={<CheckoutPage />} />
+            <Route
+              path="/verify-payments"
+              element={<ProcessingPayment />}
+            />
+            <Route
+              path="/payment-success"
+              element={<PaymentSuccess />}
+            />
+            <Route
+              path="/forgot-password"
+              element={<VendorForgotPassword />}
+            />
+            <Route
+              path="/payment-failed"
+              element={<PaymentFailed />}
+            />
+
+            <Route path="/employee/login" element={<SubVendorLogin />} />
+            <Route path="/reset-password/subvendor" element={<SubvendorResetPassword />} />
+
+
+
             {/* ===== Admin Routes ===== */}
 
             <Route
@@ -210,58 +264,12 @@ function App() {
                 path="result-management/view"
                 element={<IntroAnalysis />}
               />
+              <Route
+                path="profile"
+                element={<ProfileSection />}
+              />
+
             </Route>
-
-            {/* ===== Public Routes ===== */}
-            <Route
-              path="/"
-              element={
-                localStorage.getItem("role") ? (
-                  // If logged in, redirect based on role
-                  (localStorage.getItem("role") === "admin" && isAuthenticated) ? (
-                    <Navigate to="/admin/dashboard" replace />
-                  ) : (
-                    <Navigate to="/vendor/dashboard" replace />
-                  )
-                ) : (
-                  <Login />
-                )
-              }
-            />
-            <Route path="/res" element={<IntroAnalysis />} />
-            <Route path="/admin-login" element={<AdminLoginPage />} />
-            <Route path="/vendor-signup" element={<Signup />} />
-            <Route path="/otp-verify" element={<OtpVerification />} />
-            <Route
-              path="/candidate/start_test"
-              element={<IntroAnalysisApp />}
-            />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/record" element={<RecordPage />} />
-            <Route path="/success" element={<Success />} />
-            <Route path="/test-success" element={<SuccessPageTest />} />
-            <Route path="/cancel" element={<Cancel />} />
-            <Route path="/payment/cancel" element={<Cancel />} />
-            <Route path="/checkout-page" element={<CheckoutPage />} />
-            <Route
-              path="/verify-payments"
-              element={<ProcessingPayment />}
-            />
-            <Route
-              path="/payment-success"
-              element={<PaymentSuccess />}
-            />
-            <Route
-              path="/forgot-password"
-              element={<VendorForgotPassword />}
-            />
-            <Route
-              path="/payment-failed"
-              element={<PaymentFailed />}
-            />
-
-            <Route path="/employee/login" element={<SubVendorLogin />} />
-            <Route path="/reset-password/subvendor" element={<SubvendorResetPassword />} />
 
 
             {/* ===== Fallback Routes ===== */}

@@ -5,6 +5,7 @@ import { BadgeCheck } from 'lucide-react';
 
 export default function SuccessPage() {
     const navigate = useNavigate();
+
     return (
         <>
             <Header />

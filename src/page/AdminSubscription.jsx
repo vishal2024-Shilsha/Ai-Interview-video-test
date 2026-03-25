@@ -76,21 +76,25 @@ export default function SubscriptionModule() {
 
     // console.log("opinionnnn",selectedOption);
     useEffect(() => {
-        if (selectedOption?.value) {
-            getCountryCurrency(selectedOption?.value?.iso2)
+        const country = selectedOption?.value;
+
+        if (country) {
+            getCountryCurrency(country.iso2);
+        } else {
+            setCurrency((prev) => (prev === "USD" ? prev : "USD"));
         }
-        // console.log("pointer", selectedOption);
-        if (selectedOption?.value === null) {
-            setCurrency("USD")
-        }
-    }, [selectedOption])
-    // console.log("got",getCurrencyData)
+    }, [selectedOption?.value?.iso2]);
 
     useEffect(() => {
-        if (getCurrencyData?.data?.currency) {
-            setCurrency(getCurrencyData?.data?.currency ?? "USD")
+        const newCurrency = getCurrencyData?.data?.currency;
+
+        if (newCurrency) {
+            setCurrency((prev) =>
+                prev === newCurrency ? prev : newCurrency
+            );
         }
-    }, [getCurrencyData])
+    }, [getCurrencyData]);
+
     const [creditPrice, setCreditPrice] = useState(1);
 
     const [formData, setFormData] = useState({
@@ -126,13 +130,13 @@ export default function SubscriptionModule() {
             ...formData,
             currency: currency,
         }
-        if(mode !== "edit"){
-            data.country=selectedOption?.searchLabel
+        if (mode !== "edit") {
+            data.country = selectedOption?.searchLabel
         }
-        if(selectedOption?.value==null){
-            data.country=""
+        if (selectedOption?.value == null) {
+            data.country = ""
         }
-      
+
         try {
             const result = mode === "edit" ? await updatePlanCountryWise(data) : await addPlanCountryWise(data)
             if (result?.data) {
@@ -191,18 +195,18 @@ export default function SubscriptionModule() {
 
     const handleSetCredit = async () => {
         try {
-            if(!creditPrice){
+            if (!creditPrice) {
                 toast.error("Please fill Addon Percentage")
                 return;
             }
             const formdata = new FormData();
-            formdata.append('discount_percent',creditPrice)
+            formdata.append('discount_percent', creditPrice)
             const result = await setAddonPrice(formdata)
-            if(result?.data){
+            if (result?.data) {
                 toast.success("add-on price set successfully..")
-                setTimeout(() =>{
+                setTimeout(() => {
                     setShowPresetModal(false);
-                },500)    
+                }, 500)
             }
             // console.log("ress",result)
         } catch (err) {
@@ -211,9 +215,9 @@ export default function SubscriptionModule() {
         }
     }
 
-    if (isLoading) return <PageLoader/>
+    if (isLoading) return <PageLoader />
 
-    if (isError) return <p className="p-4">Something went wrong</p> 
+    if (isError) return <p className="p-4">Something went wrong</p>
 
     return (
         <div className="p-5 pt-3 bg-gray-50 min-h-screen ">
@@ -404,7 +408,7 @@ export default function SubscriptionModule() {
                                                     ...formData,
                                                     name: e.target.value,
                                                     duration_days: selectedPlan?.duration_days || "",
-                                                    credits:selectedPlan?.credits || ""
+                                                    credits: selectedPlan?.credits || ""
                                                 });
                                             }
                                             }

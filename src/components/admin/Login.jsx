@@ -156,7 +156,7 @@ export default function AdminLoginPage() {
                         </button>
 
                         <p className="text-center text-sm text-gray-500 mt-4 cursor-pointer hover:underline">
-                            Forgot your password?
+                            {/* Forgot your password? */}
                         </p>
                     </div>
                 </form>

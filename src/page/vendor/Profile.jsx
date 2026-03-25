@@ -1,5 +1,5 @@
 import { SquarePen, Plus, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useAddBranchDetailsMutation, useAddCompanyProfileMutation, useDeleteBranchDetailsMutation, useGetVendorProfileQuery, useUpdateBranchDetailsMutation, useUpdateCompanyProfileMutation, useUpdateVendorProfileMutation } from "../../redux/services/vendorApi";
@@ -68,40 +68,45 @@ export default function VendorProfileMergedForm() {
     const { data: countryData, isLoading: countryLoading } = useGetCountryDataQuery();
 
 
-    useEffect(() => {
-        if (data) {
-            const { vendor: vendorDetail, company, branches } = data
-            // console.log(first)
-            const merged = {
-                ...PRESET_VENDOR,
-                name: vendorDetail?.name || "",
-                email: vendorDetail?.email || "",
-                phone: vendorDetail?.phone || "",
-                address: vendorDetail?.address || "",
-                gender: vendorDetail?.gender || "",
-                logo: vendorDetail?.profile_image || null,
-                companyName: company?.company_name || "",
-                companyRegNo: company?.registration_number || "",
-                website: company?.website || "",
-                branches: data?.branches?.length
-                    ? data.branches.map((b) => ({
-                        country: b?.country || "",
-                        address: b?.branch_location || "",
-                        pocName: b?.pocs[0]?.full_name || "",
-                        pocEmail: b?.pocs[0]?.email || "",
-                        pocMobile: b?.pocs[0]?.phone || "",
-                        pocGender: b?.pocs[0]?.gender || "",
-                        pocAddress: b?.pocs[0]?.address || "",
-                        pocId: b?.pocs[0]?.id || null,
-                        id: b?.id || null
-                    }))
-                    : [],
-                companyLogo: company?.company_logo
-            };
+    const initializedRef = useRef(false);
 
-            setVendor(merged);
-            setTempVendor(structuredClone(merged));
-        }
+    useEffect(() => {
+        if (!data || initializedRef.current) return;
+
+        initializedRef.current = true;
+
+        const { vendor: vendorDetail, company, branches } = data;
+
+        const merged = {
+            ...PRESET_VENDOR,
+            name: vendorDetail?.name || "",
+            email: vendorDetail?.email || "",
+            phone: vendorDetail?.phone || "",
+            address: vendorDetail?.address || "",
+            gender: vendorDetail?.gender || "",
+            logo: vendorDetail?.profile_image || null,
+            companyName: company?.company_name || "",
+            companyRegNo: company?.registration_number || "",
+            website: company?.website || "",
+            branches: branches?.length
+                ? branches.map((b) => ({
+                    country: b?.country || "",
+                    address: b?.branch_location || "",
+                    pocName: b?.pocs[0]?.full_name || "",
+                    pocEmail: b?.pocs[0]?.email || "",
+                    pocMobile: b?.pocs[0]?.phone || "",
+                    pocGender: b?.pocs[0]?.gender || "",
+                    pocAddress: b?.pocs[0]?.address || "",
+                    pocId: b?.pocs[0]?.id || null,
+                    id: b?.id || null
+                }))
+                : [],
+            companyLogo: company?.company_logo
+        };
+
+        setVendor(merged);
+        setTempVendor(structuredClone(merged));
+
     }, [data]);
 
     /* ================= HELPERS ================= */
@@ -262,7 +267,7 @@ export default function VendorProfileMergedForm() {
     const save = async (e) => {
         e.preventDefault();
         console.log("requiredBranchFields", requiredBranchFields)
-        console.log("0909",(requiredBranchFields?.country || requiredBranchFields?.address))
+        console.log("0909", (requiredBranchFields?.country || requiredBranchFields?.address))
         if (!requiredBranchFields?.country || !requiredBranchFields?.address
         ) {
             toast.error("Please Fill all required information")
@@ -404,7 +409,7 @@ export default function VendorProfileMergedForm() {
                     <div className="relative group">
                         {
                             <img
-                                src={tempVendor.logo??dummyImg}
+                                src={tempVendor.logo ?? dummyImg}
                                 alt="upload img"
                                 className="w-32 h-32 rounded-full object-cover border border-blue-200app"
                             />
@@ -652,7 +657,7 @@ export default function VendorProfileMergedForm() {
                                 </div>
 
                                 <Input label="Branch Address" name="address" onChange={handlePoChange} placeholder="Branch Location" value={requiredBranchFields.address} />
-                                
+
                             </div>
                             <div className="flex flex-row gap-3">
                                 <button type="submit"

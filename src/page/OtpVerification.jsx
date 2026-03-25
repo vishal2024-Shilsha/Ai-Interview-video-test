@@ -5,6 +5,8 @@ import { useVerifyOtpMutation, useResendOtpMutation, useResetAccessCodeMutation 
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import logo from "../assets/ebench_logo.png";
+import { setCredentials } from "../redux/Slices/AuthSlice";
+import { useDispatch } from "react-redux";
 
 const OtpVerification = () => {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -16,7 +18,7 @@ const OtpVerification = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const email = new URLSearchParams(location.search).get("email");
-
+    const dispatch=useDispatch();
     // OTP Input Handler
     const handleChange = (e, index) => {
         const value = e.target.value;
@@ -51,22 +53,28 @@ const OtpVerification = () => {
         try {
             if (location?.state?.data) {
                 const result = await resetCode({ email, otp: finalOtp }).unwrap();
-                // console.log("ram", result);
+                console.log("ram", result);
+                debugger;
                 if (result?.status) {
                     toast.success("OTP Verified Successfully!");
-                    setTimeout(() => navigate("/reset-password",{state:{email:result?.email,
-                    reset_token:result?.reset_token}}), 800);
+                    setTimeout(() => navigate("/reset-password", {
+                        state: {
+                            email: result?.email,
+                            reset_token: result?.reset_token
+                        }
+                    }), 800);
                 }
             } else {
                 const result = await verifyOtp({ email, otp: finalOtp }).unwrap();
                 if (result?.status) {
+                    dispatch(setCredentials({ token: result?.access_token, module: result?.module, user: result.role, detail: { name: result?.name, email: result?.email, id: result?.vendor_id } }));
                     toast.success("OTP Verified Successfully!");
-                    setTimeout(() => navigate("/"), 800);
+                    setTimeout(() => navigate("/vendor/dashboard"), 800);
                 }
             }
 
         } catch (err) {
-            toast.error("Invalid OTP, try again.");
+            toast.error(err?.data?.detail ?? "Invalid OTP, try again.");
         }
     };
 
@@ -87,7 +95,7 @@ const OtpVerification = () => {
         }
     }
 
-   
+
     return (
         <div className="min-h-screen flex flex-col overflow-hidden">
             <Header />

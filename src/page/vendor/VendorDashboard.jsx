@@ -16,8 +16,10 @@ export default function VendorDashboard() {
   const lineChartData = data?.charts?.lineChartData ?? []
   const userData = data?.charts?.barChartData ?? []
   const statsCards = [
-    { title: 'Credits Left', value: data?.credits_summary?.total_remaining_credits ?? 0 },
+    !data?.credits_summary?.trial ? { title: 'Credits Remains', value: data?.credits_summary?.total_remaining_credits ?? 0 } :
+      { title: "Free Credits", value: data?.credits_summary?.trial?.credits_remaining ?? 0 },
     { title: 'Total Users', value: data?.candidates_summary?.total_candidates ?? 0 },
+
     // { title: 'Credits Used', value: 54 },
     // { title: 'Plan Expiry', value: '12 March 2025' },
   ];
@@ -131,7 +133,7 @@ export default function VendorDashboard() {
       {/* ---------------------- RECENT USERS TABLE ---------------------- */}
       <motion.div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
         <div className="flex justify-between">
-          <h3 className="text-xl font-semibold text-[#286a94] mb-4">Recently Added Users</h3>
+          <h3 className="text-xl font-semibold text-[#286a94] mb-4">Recently Added Candidates</h3>
           <button
             onClick={() => navigate('/vendor/user-management')}
             className=" text-sm  px-4 rounded-md bg-[#286a94] hover:bg-[#357ba7] cursor-pointer text-white border-none h-7">View All</button>
@@ -182,48 +184,51 @@ export default function VendorDashboard() {
 
 
       {/* ---------------------- BAR GRAPH ---------------------- */}
-      <section className="flex justify-between mt-10">
-        <motion.div className="bg-white w-full lg:w-[49%] border border-gray-200 rounded-2xl p-6 shadow-sm mb-10">
-          <h3 className=" font-semibold text-[#286a94] mb-4">Monthly Users & Credits</h3>
-          {
-            userData?.length > 0 &&
-            <div className="w-full h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={userData} barSize={25}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="users" fill="#1a80bb" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="credits" fill="#ea801c" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          }
+      {
+        userData?.length > 0 &&
+        <section className="flex justify-between mt-10">
+          <motion.div className="bg-white w-full lg:w-[49%] border border-gray-200 rounded-2xl p-6 shadow-sm mb-10">
+            <h3 className=" font-semibold text-[#286a94] mb-4">Monthly Users & Credits</h3>
+            {
+              userData?.length > 0 &&
+              <div className="w-full h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={userData} barSize={25}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="users" fill="#1a80bb" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="credits" fill="#ea801c" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            }
 
-        </motion.div>
+          </motion.div>
 
-        {/* ---------------------- LINE GRAPH ---------------------- */}
-        <motion.div className="bg-white w-full lg:w-[49%] border border-gray-200 rounded-2xl p-6 shadow-sm mb-10">
-          <h3 className=" font-semibold text-[#286a94] mb-4">New Users Growth</h3>
-          {
-            lineChartData?.length > 0 &&
-            <div className="w-full h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={lineChartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="newUsers" stroke="#286a94" strokeWidth={3} dot={{ r: 5 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          }
-        </motion.div>
+          {/* ---------------------- LINE GRAPH ---------------------- */}
+          <motion.div className="bg-white w-full lg:w-[49%] border border-gray-200 rounded-2xl p-6 shadow-sm mb-10">
+            <h3 className=" font-semibold text-[#286a94] mb-4">New Users Growth</h3>
+            {
+              lineChartData?.length > 0 &&
+              <div className="w-full h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={lineChartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="newUsers" stroke="#286a94" strokeWidth={3} dot={{ r: 5 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            }
+          </motion.div>
 
+        </section>
+      }
 
-      </section>
 
     </div>
   );

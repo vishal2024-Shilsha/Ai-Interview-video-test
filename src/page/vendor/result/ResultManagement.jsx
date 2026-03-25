@@ -201,7 +201,7 @@ const ResultManagement = () => {
                   setFromDate(e.target.value);
                   setPage(1);
                 }}
-                className="h-10 px-3 bg-white rounded-md shadow outline-none"
+                className="h-10 px-3 bg-white text-gray-400 rounded-md shadow outline-none"
               />
             </div>
 
@@ -216,7 +216,7 @@ const ResultManagement = () => {
                   setToDate(e.target.value);
                   setPage(1);
                 }}
-                className="h-10 px-3 bg-white rounded-md shadow outline-none"
+                className="h-10 px-3 bg-white text-gray-400 rounded-md shadow outline-none"
               />
             </div>
 
@@ -230,7 +230,7 @@ const ResultManagement = () => {
                   setMaxScore(range.max);
                   setPage(1);
                 }}
-                className="h-10 bg-white px-3 rounded-md shadow outline-none"
+                className="h-10 bg-white text-gray-400 px-3 rounded-md shadow outline-none"
               >
                 <option value={JSON.stringify({ min: '', max: '' })}>
                   All Scores
@@ -296,8 +296,8 @@ const ResultManagement = () => {
                   </tr>
                 ) : users?.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
-                      No users found — try adjusting filters or importing a CSV
+                    <td colSpan={8} className="px-6 py-8 text-center text-gray-500">
+                      No Candidates found
                     </td>
                   </tr>
                 ) : (users?.length > 0 &&

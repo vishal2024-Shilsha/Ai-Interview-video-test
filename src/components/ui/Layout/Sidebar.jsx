@@ -164,19 +164,49 @@ import {
   Crown,
   FileUser,
   Podcast,
+  Loader2,
 } from "lucide-react";
 import { Gem } from "lucide-react";
 import logo from "../../../assets/logo_white2.png";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useLogoutMutation } from "../../../redux/services/vendorApi";
+import Loader from "../../../libs/Loader";
+import { useAdminLogoutMutation } from "../../../redux/services/adminApi";
+
 const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [logout, { isLoading }] = useLogoutMutation();
+  const [adminLogout,{isLoading:adminLoadimg}]=useAdminLogoutMutation()
 
   /* ---------- LOGOUT ---------- */
-  const handleLogout = () => {
-    localStorage.clear();
-    role === "admin" ? navigate("/admin-login") : navigate("/");
+  const handleLogout = async () => {
+    try {
+      const result = role == "admin" ? await adminLogout() : await logout();
+      // console.log("logout-response", result);
+      if(result?.error){
+        return toast.error(result?.error?.data?.detail??"Somthing went wrong !")
+      }
+      if (result?.data) {
+        if (role == "admin") {
+        toast.success("Admin Logout Sucessfully.")
+          setTimeout(() => {
+            navigate("/admin-login")
+          }, 1000)
+        } else {
+        toast.success("Vendor Logout Successfully.")
+          setTimeout(() => {
+            navigate("/")
+          }, 800)
+        }
+        localStorage.clear();
+      }
+    } catch (err) {
+      toast.error(err?.message ?? "Something went wrong");
+    }
+
   };
 
   /* ---------- MENU CONFIG ---------- */
@@ -201,11 +231,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
     { to: "/vendor/dashboard", label: "Dashboard", icon: LayoutDashboard },
     {
       to: "/vendor/user-management",
-      label: "User Management",
+      label: "Candidate Management",
       icon: Users,
     },
     { to: "/vendor/result-management", label: "Result Management", icon: FileUser },
-     { to: "/vendor/role-management", label: "Role Management", icon: FileUser },
+    { to: "/vendor/role-management", label: "Role Management", icon: FileUser },
     {
       label: "Subscription",
       icon: Crown,
@@ -216,8 +246,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
     },
   ];
 
-  const menuItems = role === "vendor" ? vendorMenu : adminMenu;
-
+const menuItems = useMemo(() => {
+  return role === "vendor" ? vendorMenu : adminMenu;
+}, [role]);
   /* ---------- SUBMENU STATE ---------- */
   const [openMenu, setOpenMenu] = useState(null);
 
@@ -238,7 +269,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
     );
 
     setOpenMenu(activeMenu ? activeMenu.label : null);
-  }, [ menuItems]);
+  }, [menuItems]);
 
   /* ---------- MOBILE CLOSE ---------- */
   const closeSidebarOnMobile = () => {
@@ -250,9 +281,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
   return (
     <aside
       className={`fixed md:static top-0 left-0 h-full z-40 bg-[#286a94] text-white
-      transform ${
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } md:translate-x-0 transition-transform duration-300 w-64 flex flex-col justify-between`}
+      transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 transition-transform duration-300 w-64 flex flex-col justify-between`}
     >
       <div>
         {/* ---------- LOGO ---------- */}
@@ -296,10 +326,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
                           to={sub.to}
                           onClick={closeSidebarOnMobile}
                           className={({ isActive }) =>
-                            `flex items-center px-8 py-2 ml-2 rounded-r-md transition ${
-                              isActive
-                                ? "bg-[#5C8DA6]"
-                                : "bg-[#32729b] hover:bg-[#3E6E91]"
+                            `flex items-center px-8 py-2 ml-2 rounded-r-md transition ${isActive
+                              ? "bg-[#5C8DA6]"
+                              : "bg-[#32729b] hover:bg-[#3E6E91]"
                             }`
                           }
                         >
@@ -321,8 +350,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
                   closeSidebarOnMobile();
                 }}
                 className={({ isActive }) =>
-                  `flex items-center px-4 py-2 transition ${
-                    isActive ? "bg-[#49799b]" : "hover:bg-[#28527A]"
+                  `flex items-center px-4 py-2 transition ${isActive ? "bg-[#49799b]" : "hover:bg-[#28527A]"
                   }`
                 }
               >
@@ -340,8 +368,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-[#28527A]"
         >
-          <LogOut className="h-5 w-5" />
-          <span>Logout</span>
+          {
+            isLoading ? <> 
+            Logging
+          <span>
+            <Loader size={20} innerSize={10} />
+          </span>
+            </>:<> <LogOut className="h-5 w-5" />
+          <span>Logout</span></>
+          }
+          
         </button>
       </div>
     </aside>

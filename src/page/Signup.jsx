@@ -13,6 +13,7 @@ const VendorSignup = () => {
         name: "",
         email: "",
         password: "",
+        confirm_password: "",
         country: "",
         module: "company" // default
     });
@@ -20,6 +21,7 @@ const VendorSignup = () => {
     const [signup, { isLoading }] = useSignupMutation();
     const navigate = useNavigate();
     const { data: countryList } = useGetCountryDataQuery();
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 
     const handleChange = (e) => {
@@ -46,18 +48,22 @@ const VendorSignup = () => {
     const [selectedOption, setSelectedOption] = useState(null);
 
     useEffect(() => {
-        if (selectedOption?.value) {
-            setFormData((prev) => (
-                {
+        const countryName = selectedOption?.value?.name;
+
+        if (countryName) {
+            setFormData((prev) => {
+                if (prev.country === countryName) return prev;
+                return {
                     ...prev,
-                    country: selectedOption?.value?.name ?? ""
-                }
-            ))
+                    country: countryName
+                };
+            });
         }
-    }, [selectedOption])
+    }, [selectedOption?.value?.name]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log("frmdata", formData);
         try {
             const result = await signup(formData).unwrap();
             if (result?.status) {
@@ -74,7 +80,7 @@ const VendorSignup = () => {
 
     return (
         <div className="min-h-screen flex flex-col overflow-hidden">
-            <Header />
+            {/* <Header /> */}
 
             <div className="flex-1 flex flex-col md:flex-row">
 
@@ -157,13 +163,13 @@ const VendorSignup = () => {
                     animate={{ opacity: 1, x: 0 }}
                     className="flex-1 flex flex-col px-10 justify-center bg-[#f0f0f0] min-h-full"
                 >
-                    <div className="max-w-md w-full mx-auto bg-white shadow-md rounded-2xl p-8 mt-10">
+                    <div className="max-w-md w-full mx-auto bg-white shadow-md overflow-auto  rounded-2xl p-8 mt-10">
 
                         {/* <h2 className="text-2xl font-bold text-center text-[#286a94] mb-6">
                             Vendor Signup
                         </h2> */}
 
-                        <form onSubmit={handleSubmit} className="space-y-3">
+                        <form onSubmit={handleSubmit} className="space-y-3 ">
 
                             {/* Registered As */}
                             <div>
@@ -229,7 +235,7 @@ const VendorSignup = () => {
                             {/* Name Field */}
                             <div>
                                 <label htmlFor="name" className="block text-gray-700 mb-1">
-                                   {formData.module === "campus" ? 'Campus Name' : 'Company Name'}
+                                    {formData.module === "campus" ? 'Campus Name' : 'Company Name'}
                                 </label>
                                 <input
                                     type="text"
@@ -277,9 +283,6 @@ const VendorSignup = () => {
                                     required
                                 />
 
-
-
-
                                 {/* Eye Button */}
                                 <button
                                     type="button"
@@ -289,6 +292,31 @@ const VendorSignup = () => {
                                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </button>
                             </div>
+
+                            {/* Confirm-Password Field */}
+                            {/* Confirm-Password Field */}
+                            <div className="relative">
+                                <label htmlFor="confirmPassword" className="block text-gray-700 mb-1">
+                                    Confirm Password
+                                </label>
+
+                                <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    id="confirmPassword"
+                                    name="confirm_password"
+                                    value={formData.confirm_password}
+                                    onChange={handleChange}
+                                    placeholder="Re-enter your password"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 pr-12"
+                                    required
+
+                                    onPaste={(e) => e.preventDefault()}
+                                    onCopy={(e) => e.preventDefault()}
+                                    onCut={(e) => e.preventDefault()}
+                                    onContextMenu={(e) => e.preventDefault()} // optional: disables right-click
+                                />
+                            </div>
+
 
                             {/* Submit Button */}
                             <button

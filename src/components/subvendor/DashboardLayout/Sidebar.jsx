@@ -5,10 +5,15 @@ import {
   UserCircle,
   LogOut
 } from "lucide-react";
+import { useSubVendorLogoutMutation } from "../../../redux/services/subvendorApi";
+import toast from "react-hot-toast";
+import Loader from "../../../libs/Loader";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [subVendorLogout, { isLoading }] = useSubVendorLogoutMutation();
 
   const menuItems = [
     {
@@ -21,7 +26,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon: Users,
       path: "/subvendor/user-management",
     },
-     {
+    {
       title: "Result Management",
       icon: Users,
       path: "/subvendor/result-management",
@@ -29,13 +34,28 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     {
       title: "Profile",
       icon: UserCircle,
-      path: "/dashboard/profile",
+      path: "/subvendor/profile",
     },
   ];
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/employee/login");
+  const handleLogout = async () => {
+    try {
+      const result = await subVendorLogout()
+      // debugger;
+
+      if (result?.data?.status) {
+        toast.success("Employee Logout Sucessfully.")
+        localStorage.clear()
+        setTimeout(() => {
+          navigate("/employee/login")
+        }, 1000)
+      }
+      if (result?.error) {
+        return toast.error(result?.error?.data?.detail ?? "Somthing went wrong !")
+      }
+    } catch (err) {
+      toast.error(err?.message ?? "Something went wrong");
+    }
   };
 
 
@@ -75,7 +95,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               return (
                 <div
                   key={index}
-                  onClick={() => navigate(item.path)} 
+                  onClick={() => navigate(item.path)}
                   className={`
                     flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer
                     transition-all duration-200 text-sm font-medium
@@ -97,8 +117,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               onClick={handleLogout}
               className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition text-sm font-medium"
             >
-              <LogOut size={20} />
-              Logout
+              {
+                isLoading ? <>
+                   Logging
+                  <span>
+                    <Loader size={20} innerSize={10} />
+                  </span>
+                </> : <> <LogOut className="h-5 w-5" />
+                  <span>Logout</span></>
+              }
+
             </button>
           </div>
         </div>

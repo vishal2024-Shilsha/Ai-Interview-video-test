@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Pagination } from '../user/UserManagement'
-import { Eye, KeyRound, Loader } from 'lucide-react'
+import { Eye, KeyRound } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useGetCountryDataQuery } from '../../../redux/services/externalApi'
 import { useActiveDeactiveSubVendorMutation, useAssignSubVendorSubscriptionMutation, useListofSubscriptionQuery, useListofSubVendorQuery, useRegisterSubVendorMutation } from '../../../redux/services/vendorApi'
@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import PortalModal from '../../../libs/PortalModal'
 import Select from "react-select";
+import Loader from '../../../libs/Loader'
 
 
 const RoleManagement = () => {
@@ -39,7 +40,7 @@ const RoleManagement = () => {
   const [activeInactiveSubVendor, { isLoading: aciveLoading, isError: activeError }] = useActiveDeactiveSubVendorMutation()
   // console.log("useListofSubscriptionQuery", subscriptionList)
   const globalId = subscriptionList?.subscriptions?.find((item) => item?.country === "global")
-  // console.log("globalId", globalId)
+  console.log("globalId", globalId)
 
   const filteredSubscription = subscriptionList?.subscriptions?.filter((item) => item?.country !== "global")
 
@@ -87,6 +88,7 @@ const RoleManagement = () => {
     formdata.append('gender', pocGender)
     formdata.append('sub_vendor_address', pocAddress)
     formdata.append('phone', pocMobile)
+
     try {
       const data = await registerSubVendor(formdata)
       console.log(data, "hello-data");
@@ -181,12 +183,13 @@ const RoleManagement = () => {
   const [assignPermissionFunction, { isLoading: assignisLoading, assignisError }] = useAssignSubVendorSubscriptionMutation()
 
   const subscriptionSave = async (data) => {
-    // console.log("saving", data)
+    console.log("saving", data)
     // console.log(data);
     let subscriptionId = null;
     const details = {}
     if (data?.subscriptionType == "global") {
-      subscriptionId = subscriptionList?.subscriptions?.find((item) => item.country == "global")?.subscription_id
+      details.selected_country=data?.subscriptionCountry?.map((item) => item?.value)
+      details.subscription_ids =[globalId?.subscription_id]
 
     } else {
       details.subscription_ids = data?.subscriptionCountry?.map((item) => item?.value)
@@ -208,6 +211,9 @@ const RoleManagement = () => {
         }, 1000)
       }
     } catch (err) {
+      if(err?.data){
+        toast.error(err?.data?.detail??"Internal Server Error")
+      }
       console.log(err)
     }
 
@@ -291,7 +297,7 @@ const RoleManagement = () => {
                 {isLoading ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-8 text-center">
-                      <Loader />
+                      <Loader/>
                     </td>
                   </tr>
                 ) : users?.sub_vendors?.length == 0 ? (

@@ -14,10 +14,10 @@ const SubVendorLogin = () => {
 
   const { data: organisationData, isLoading: organisationLoading, isError: organisationError } = useGetOrganisationDetailQuery()
 
-  const [employeeLogin,{isLoading:subVendorLoading}]=useEmployeeLoginMutation()
-  const [employeeResetPassword,{isLoading:resetLoading}] = useSubVendorResetPasswordMutation();
+  const [employeeLogin, { isLoading: subVendorLoading }] = useEmployeeLoginMutation()
+  const [employeeResetPassword, { isLoading: resetLoading }] = useSubVendorResetPasswordMutation();
 
-  const [email,setEmail]=useState(null)
+  const [email, setEmail] = useState(null)
   const schema = Yup.object({
     company_id: Yup.string().required("Organisation is required"),
     email: Yup.string().email("Enter valid email").required("Email is required"),
@@ -35,65 +35,64 @@ const SubVendorLogin = () => {
   });
 
   const onSubmit = async (data) => {
-   try{
-    const result= await employeeLogin(data).unwrap();
-    console.log("eres",result);
-
-    if(result?.status && result?.first_login){
-      setTimeout(() => {
-        setEmail(result?.email??null)
-        setShowModal(!showModal)
-      },500)
-    }
-    if(result?.status && (!result?.first_login)){
-      const {access_token,name,role,sub_vendor_id,vendor_id}=result
-       localStorage.setItem('token',access_token)
-        localStorage.setItem('name',name)
-        localStorage.setItem('role',role)
-        localStorage.setItem('subvendorId',sub_vendor_id)
-        localStorage.setItem('vendorId',vendor_id)
+    try {
+      const result = await employeeLogin(data).unwrap();
+      console.log("eres", result);
+      // debugger;
+      if (result?.status && result?.first_login) {
+        setTimeout(() => {
+          setEmail(result?.email ?? null)
+          setShowModal(!showModal)
+        }, 500)
+      }
+      if (result?.status && (!result?.first_login)) {
+        const { access_token, name, role, sub_vendor_id, vendor_id,email } = result
+        localStorage.setItem('token', access_token)
+        localStorage.setItem('name', name)
+        localStorage.setItem('role', role)
+        localStorage.setItem('subvendorId', sub_vendor_id)
+        localStorage.setItem('vendorId', vendor_id)
+        localStorage.setItem('email',email)
         toast.success("Subvendor Login Successfully")
         setTimeout(() => {
           navigate('/subvendor/dashboard')
-        },500)
+        }, 500)
+      }
+    } catch (err) {
+      console.log("err", err);
+      toast.error(err?.data?.detail ?? "Internal Server Error")
     }
-   }catch(err){
-    console.log("err",err);
-    toast.error(err?.data?.detail??"Internal Server Error")
-   }
-   
+
   };
 
   const navigate = useNavigate()
 
-  const handleConfirmFirstLogin = async() => {
-    const formdata=new FormData();
-    formdata.append('email',email);
+  const handleConfirmFirstLogin = async () => {
+    const formdata = new FormData();
+    formdata.append('email', email);
 
-    try{
-      const result=await employeeResetPassword(formdata);
-      if(result?.data?.status){
+    try {
+      const result = await employeeResetPassword(formdata);
+      if (result?.data?.status) {
         toast.success(result?.data?.message);
         setTimeout(() => {
           navigate(`/reset-password/subvendor?email=${result?.data?.email}`)
-        },1000)
+        }, 1000)
       }
-    }catch(err){
-      
-      toast.error(err?.data?.message??"Internal Server Error");
+    } catch (err) {
+
+      toast.error(err?.data?.message ?? "Internal Server Error");
     }
   };
 
-   if (organisationLoading) {
+  if (organisationLoading) {
     return <Loader />
   }
 
-  if(organisationError){
-    return <ErrorPage/>
+  if (organisationError) {
+    return <ErrorPage />
   }
-
   
- 
   return (
     <div className="min-h-screen flex">
 
@@ -144,13 +143,23 @@ const SubVendorLogin = () => {
               <select
                 {...register("company_id")}
                 className="w-full mt-1 border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#286a94] outline-none"
+                defaultValue=""
               >
-                <option value="" disabled>Select organisation</option>
-                {organisationData?.organizations?.length>0 &&  organisationData?.organizations?.map((org) => (
-                  <option key={org.id} value={org.id}>
-                    {org.name}
+                <option value="" disabled>
+                  Select organisation
+                </option>
+
+                {organisationData?.organizations?.length > 0 ? (
+                  organisationData.organizations.map((org) => (
+                    <option key={org.id} value={org.id}>
+                      {org.name}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>
+                    No data found
                   </option>
-                ))}
+                )}
               </select>
               {errors.company_id && (
                 <p className="text-red-500 text-sm mt-1">
@@ -287,7 +296,7 @@ const SubVendorLogin = () => {
                       className="flex-1 py-2.5 rounded-lg bg-blue-600 text-white font-semibold shadow-lg hover:bg-blue-700 transition"
 
                     >
-                     {!resetLoading ? 'Send OTP' : 'Loading..'}
+                      {!resetLoading ? 'Send OTP' : 'Loading..'}
                     </motion.button>
                   </div>
                 </div>

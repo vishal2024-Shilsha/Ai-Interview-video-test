@@ -47,7 +47,7 @@ const VendorSubscriptionPage = () => {
     useEffect(() => {
         getSubscriptionDetail(countryOption)
     }, [countryOption])
-
+    
     // console.log("ddlj", data)
 
     const [selectedPlan, setSelectedPlan] = useState(null);
@@ -88,8 +88,9 @@ const VendorSubscriptionPage = () => {
         return <PageLoader />
     }
 
-    return (
-        <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-blue-50 p-6">
+    
+    return (    
+        <div className=" bg-linear-to-br ">
             {/* Animated Background Elements */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
@@ -122,25 +123,15 @@ const VendorSubscriptionPage = () => {
       `}</style>
 
             {/* Header */}
-            <div className="max-w-7xl mx-auto mb-8 relative z-10">
-                <div className="text- mb-8 flex justify-between">
-                    <div>
-                        <h1 className="text-2xl font-bold text-[#286a94] mb-3 flex items-center justify-start gap-3">
-                            <div className="bg-linear-to-r from-[#286a94] to-blue-500 p-2 rounded-2xl ">
-                                <Rocket className="w-4 h-4 text-white" />
-                            </div>
-                            Subscription Plan
-                        </h1>
-                        <p className="text-gray-600 text-sm">
-                            Choose the perfect plan for your needs. Upgrade your at any time.
-                        </p>
-                    </div>
-                    <div className="flex items-center gap-4">
+            <div className="w-full mx-auto mb-8 relative z-10">
+                <div className=" mb-8 flex justify-between">
+                    
+                    <div className="flex flex-row w-full items-center gap-6">
                         <label
                             htmlFor="country"
                             className="text-sm font-medium text-gray-600"
                         >
-                            Select Country
+                            Choose country for subscription pricing
                         </label>
 
                         <select
@@ -161,176 +152,9 @@ const VendorSubscriptionPage = () => {
                     </div>
                 </div>
 
-
-
-                {/* Current Plan Overview */}
-                {/* <div className="bg-white rounded-2xl p-6  mb-8 shadow-xl relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-linear-to-br from-[#286a94]/10 to-blue-500/10 rounded-full -mr-32 -mt-32"></div>
-
-                    <div className="flex items-center justify-between mb-6 relative z-10">
-                        <div>
-                            <h2 className="text-2xl font-bold text-gray-500 mb-1">Current Plan: {userSubscription.plan.toUpperCase()}</h2>
-                            <p className="text-gray-600">Your subscription details and usage</p>
-                        </div>
-                        <div className="bg-linear-to-r from-[#286a94] to-blue-500 px-4 py-2 rounded-full shadow-lg">
-                            <span className="text-white font-semibold">Active</span>
-                        </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-3 gap-6 relative z-10">
-                        <div className="bg-linear-to-br from-yellow-50 to-orange-50 rounded-xl p-5 border-2 border-yellow-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
-                            <div className="flex items-center justify-between mb-3">
-                                <span className="text-gray-700 font-semibold">Credits</span>
-                                <Sparkles className="w-5 h-5 text-yellow-500" />
-                            </div>
-                            <div className="text-sm font-bold text-gray-800 mb-2">
-                                {userSubscription.credits}/{userSubscription.totalCredits}
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-                                <div
-                                    className="h-full bg-linear-to-r from-yellow-400 to-orange-500 transition-all duration-500 rounded-full"
-                                    style={{ width: `${getProgress(userSubscription.credits, userSubscription.totalCredits)}%` }}
-                                />
-                            </div>
-                        </div>
-
-                        
-                        <div className="bg-linear-to-br from-blue-50 to-cyan-50 rounded-xl p-5 border-2 border-blue-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
-                            <div className="flex items-center justify-between mb-3">
-                                <span className="text-gray-700 font-semibold">Products Listed</span>
-                                <Package className="w-5 h-5 text-blue-500" />
-                            </div>
-                            <div className=" font-bold text-gray-800 mb-2">
-                                {userSubscription.productsListed}/{userSubscription.maxProducts}
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-                                <div
-                                    className="h-full bg-linear-to-r from-blue-400 to-cyan-500 transition-all duration-500 rounded-full"
-                                    style={{ width: `${getProgress(userSubscription.productsListed, userSubscription.maxProducts)}%` }}
-                                />
-                            </div>
-                        </div>
-
-                        
-                        <div className="bg-linear-to-br from-green-50 to-emerald-50 rounded-xl p-5 border-2 border-green-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
-                            <div className="flex items-center justify-between mb-3">
-                                <span className="text-gray-700 font-semibold">Subscription</span>
-                                <Shield className="w-5 h-5 text-green-500" />
-                            </div>
-                            <div className=" font-bold text-gray-800 mb-2">
-                                {userSubscription.daysRemaining}
-                            </div>
-                            <div className="text-sm text-gray-600">No expiration</div>
-                        </div>
-                    </div>
-                </div> */}
-
-                {/* Billing Toggle */}
-                {/* <div className="flex justify-center mb-18 mt-14">
-                    <div className="bg-white rounded-full p-1.5 border-2 border-gray-200 shadow-lg">
-                        <button
-                            onClick={() => setBillingCycle('monthly')}
-                            className={`px-8 py-3 rounded-full transition-all font-semibold ${billingCycle === 'monthly'
-                                ? 'bg-linear-to-r from-[#286a94] to-blue-500 text-white shadow-md'
-                                : 'text-gray-600 hover:text-gray-800'
-                                }`}
-                        >
-                            Monthly
-                        </button>
-                        <button
-                            onClick={() => setBillingCycle('yearly')}
-                            className={`px-8 py-3 rounded-full transition-all font-semibold ${billingCycle === 'yearly'
-                                ? 'bg-linear-to-r from-[#286a94] to-blue-500 text-white shadow-md'
-                                : 'text-gray-600 hover:text-gray-800'
-                                }`}
-                        >
-                            Yearly
-                            <span className="ml-2 text-xs bg-green-500 px-2 py-1 rounded-full text-white font-bold">Save 20%</span>
-                        </button>
-                    </div>
-                </div> */}
-
                 {/* Subscription Plans */}
-                <div className="grid md:grid-cols-3 gap-8 w-[95%] mx-auto">
+                <div className="grid md:grid-cols-3 gap-8  mx-auto">
                     {data?.plans.map((plan, idx) => {
-                        // return (
-                        //     <div
-                        //         key={plan?.id}
-                        //         onMouseEnter={() => setHoveredPlan(plan.id)}
-                        //         onMouseLeave={() => setHoveredPlan(null)}
-                        //         className={`relative bg-white rounded-2xl p-3 border-2 ${plan.borderColor} transition-all duration-300 ${hoveredPlan === plan.id ? 'scale-105 shadow-2xl -translate-y-2' : 'shadow-lg'
-                        //             } ${plan.popular ? 'ring-4 ring-[#286a94]/30' : ''}`}
-                        //         style={{ animationDelay: `${idx * 100}ms` }}
-                        //     >
-                        //         {/* {plan.popular && (
-                        //             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-50">
-                        //                 <div className="bg-linear-to-r from-[#286a94] to-blue-500 text-white px-2 py-1.5 rounded-full text-xs font-medium shadow-lg">
-                        //                     ⭐ MOST POPULAR
-                        //                 </div>
-                        //             </div>
-                        //         )} */}
-
-                        //         {/* {isCurrentPlan && (
-                        //             <div className="absolute top-4 right-4">
-                        //                 <div className="bg-green-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
-                        //                     CURRENT
-                        //                 </div>
-                        //             </div>
-                        //         )} */}
-
-                        //         <div className="text-center mb-6">
-                        //             <div className={`inline-block p-4 bg-linear-to-r ${plan.color} rounded-2xl mb-4 shadow-lg ${hoveredPlan === plan.id ? 'animate-float' : ''}`}>
-                        //                 {/* <Icon className="w-8 h-8 text-white" /> */}
-                        //             </div>
-                        //             <h3 className="text-xl font-bold text-gray-800 mb-2">{plan.name}</h3>
-                        //             {/* <div className="flex items-baseline justify-center gap-1">
-                        //                 <span className={`text-xl font-bold ${plan.accentColor}`}>
-                        //                     ${billingCycle === 'monthly' ? plan.price.monthly : plan.price.yearly}
-                        //                 </span>
-                        //                 <span className="text-gray-500 font-medium">/{billingCycle === 'monthly' ? 'mo' : 'yr'}</span>
-                        //             </div> */}
-                        //         </div>
-                        //         <li className="flex items-start gap-3">
-                        //                     {/* {feature.included ? (
-                        //                         <div className="bg-green-100 rounded-full p-0.5">
-                        //                             <Check className="w-4 h-4 text-green-600 shrink-0" />
-                        //                         </div>
-                        //                     ) : (
-                        //                         <div className="bg-gray-100 rounded-full p-0.5">
-                        //                             <X className="w-4 h-4 text-gray-400 shrink-0" />
-                        //                         </div>
-                        //                     )} */}
-                        //                     <span className={`text-sm ${true ? 'text-gray-700' : 'text-gray-400'}`}>
-                        //                         {plan.credits}
-                        //                     </span>
-                        //                 </li>
-
-                        //         <ul className="space-y-3 mb-5">
-                        //             {/* {plan.map((feature, i) => (
-
-                        //             ))} */}
-                        //         </ul>
-
-                        //         <button
-                        //             onClick={() => createCheckout(plan)}
-                        //             disabled={isCurrentPlan}
-                        //             className={`w-full py-3 text-sm rounded-xl font-bold transition-all ${isCurrentPlan
-                        //                 ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                        //                 : `bg-linear-to-r ${plan.color} text-white hover:shadow-xl hover:scale-105`
-                        //                 }`}
-                        //         >
-                        //             {
-                        //                 isLoading
-                        //                     ? 'Loading'
-                        //                     : isCurrentPlan
-                        //                         ? 'Current Plan'
-                        //                         : 'Upgrade Now'
-                        //             }
-
-                        //         </button>
-                        //     </div>
-                        // );
-
                         return (
                             <div
                                 key={plan.id}

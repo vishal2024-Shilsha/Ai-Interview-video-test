@@ -4,7 +4,6 @@ import profileImg from '../../../assets/userImg.jpg';
 import { useNavigate } from "react-router-dom";
 
 const Header = ({ setSidebarOpen, role = "admin", userName = "" }) => {
-  const displayName = userName || (role === "vendor" ? "Vendor" : "Admin");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
@@ -20,6 +19,7 @@ const Header = ({ setSidebarOpen, role = "admin", userName = "" }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+  
   let info = null
 
   const user = localStorage.getItem('user')
@@ -59,7 +59,7 @@ const Header = ({ setSidebarOpen, role = "admin", userName = "" }) => {
         >
           {/* Profile Photo */}
           <img
-            src={profileImg} // replace with real image
+            src={profileImg}
             alt="Profile"
             className="h-9 w-9 rounded-full object-cover"
           />

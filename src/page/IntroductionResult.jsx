@@ -12,9 +12,9 @@ export default function IntroAnalysisApp() {
     const [searchParams] = useSearchParams();
     const candidateId = searchParams.get("candidateId");
     const resultId = searchParams.get("resultId");
-    const role=localStorage.getItem('role')
-    const { data, isLoading } = role==="sub_vendor" ? useViewResultByUserIdBySubVendorQuery({ candidateId, resultId }):  useViewResultByUserIdQuery({ candidateId, resultId })
-    
+    const role = localStorage.getItem('role')
+    const { data, isLoading } = role === "sub_vendor" ? useViewResultByUserIdBySubVendorQuery({ candidateId, resultId }) : useViewResultByUserIdQuery({ candidateId, resultId })
+
 
     const navigate = useNavigate()
     const [dummyReport, setDummyReport] = useState(null);
@@ -22,7 +22,7 @@ export default function IntroAnalysisApp() {
 
     function mapApiResultToReport(api) {
         const clamp = (val) => Math.max(0, Math.min(100, Math.round(val * 100)));
-
+        console.log("api", api)
         return {
             profileImage: 'https://randomuser.me/api/portraits/men/44.jpg', // fallback / static
             name: `${api?.first_name} ${api.last_name}`,
@@ -44,7 +44,7 @@ export default function IntroAnalysisApp() {
                 (api.metrics_json.audio.prosody.pitch_std > 0 ? 0.7 : 0.5) +
                 (api.metrics_json.audio.prosody.energy_std > 0 ? 0.3 : 0.2)
             ),
-
+            feedback: api?.metrics_json?.feedback,
             // Overall
             overallScore: clamp(api.final_score),
             transcript: api?.transcript,
@@ -80,6 +80,7 @@ export default function IntroAnalysisApp() {
                 api.filler_density === 0 && 'No filler words detected',
                 api.posture_score > 0.8 && 'Good posture maintained',
             ].filter(Boolean),
+
         };
     }
 
@@ -96,18 +97,18 @@ export default function IntroAnalysisApp() {
         let resultId = data?.result_id
         try {
             setPdfLoader(true)
-            const response = localStorage.getItem('role') ==="sub_vendor"? await fetch(`${base}/vendor/result/download?result_id=${resultId}&format=pdf`, {
+            const response = localStorage.getItem('role') === "sub_vendor" ? await fetch(`${base}/vendor/result/download?result_id=${resultId}&format=pdf`, {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('token'), // your auth header
                 },
             }) :
-            await fetch(`${base}/vendor/result/download?result_id=${resultId}&format=pdf`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token'), // your auth header
-                },
-            });
+                await fetch(`${base}/vendor/result/download?result_id=${resultId}&format=pdf`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token'), // your auth header
+                    },
+                });
 
             if (!response.ok) throw new Error('Download failed');
 
@@ -126,7 +127,7 @@ export default function IntroAnalysisApp() {
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
         } catch (error) {
-            toast.error(error?.message??"Something went wrong. Pls try again")
+            toast.error(error?.message ?? "Something went wrong. Pls try again")
             // console.error('Download error:', error);
         } finally {
             setPdfLoader(false)
@@ -183,6 +184,8 @@ function ResultPage({ report, onBack, pdfLoader, downloadClickHandler }) {
 
     const COLORS = ['#2a9d8f', '#f4a261', '#e76f51'];
     const [showId, setShowId] = useState(false);
+
+    console.log("rttrt", report);
 
     const renderLabel = ({ cx, cy, midAngle, outerRadius, name, value }) => {
         // Calculate position for label **outside the slice**
@@ -347,7 +350,7 @@ function ResultPage({ report, onBack, pdfLoader, downloadClickHandler }) {
                     </div>
 
                     <div className="bg-slate-50 rounded-lg p-4">
-                        <h4 className="font-semibold mb-2">Detected issues & highlights</h4>
+                        <h4 className="font-semibold mb-2">Feedback & highlights</h4>
                         <ul className="list-disc pl-5 text-sm">
                             {report.highlights.map((h, i) => <li key={i}>{h}</li>)}
                         </ul>
@@ -356,6 +359,26 @@ function ResultPage({ report, onBack, pdfLoader, downloadClickHandler }) {
                             <h5 className="font-semibold">Transcript Details</h5>
                             <p className="text-sm text-gray-700">{report?.transcript ?? 'N/A'}</p>
                             {/* <p className="text-sm text-gray-700">{report.fillersDetected.join(', ')}</p> */}
+                        </div>
+
+                        <div className="mt-4">
+                            <h5 className="font-semibold">Area to Improve</h5>
+                            <ul className="list-disc pl-5 text-sm">
+                                {report.feedback?.recommendations?.map((h, i) => <li key={i}>{h}</li>)}
+                            </ul>
+                        </div>
+
+                        <div className="mt-4">
+                            <h5 className="font-semibold">Strength</h5>
+                            <ul className="list-disc pl-5 text-sm">
+                                {report.feedback?.strengths?.map((h, i) => <li key={i}>{h}</li>)}
+                            </ul>
+                        </div>
+                        <div className="mt-4">
+                            <h5 className="font-semibold">Tips</h5>
+                            <ul className="list-disc pl-5 text-sm">
+                                {report.feedback?.tips?.map((h, i) => <li key={i}>{h}</li>)}
+                            </ul>
                         </div>
                     </div>
                 </div>

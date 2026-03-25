@@ -269,7 +269,7 @@ export default function ProfilePage() {
                         <h2 className="text-xl font-semibold text-[#286a94] text-center mb-4">
                             🔐 Verify OTP
                         </h2>
-
+                        <p className='text-sm text-blue-500 text-center mb-4'>OTP has been send in your test link Pls check your mail</p>
                         <input
                             type="text"
                             maxLength={6}

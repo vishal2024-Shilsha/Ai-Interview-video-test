@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 const ProcessingPayment = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("order_id"); 
+  
   useEffect(() => {
     if (!orderId) return;
 

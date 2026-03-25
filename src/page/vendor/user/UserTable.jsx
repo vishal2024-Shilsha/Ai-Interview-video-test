@@ -1,6 +1,8 @@
 import { Pencil, Trash2 } from "lucide-react";
 
 export default function UserTable({ users, onEdit, onDelete }) {
+
+
   return (
     <div className="overflow-x-auto bg-white shadow rounded-lg">
       <table className="min-w-full border border-gray-200">

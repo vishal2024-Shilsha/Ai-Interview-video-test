@@ -9,14 +9,13 @@ import { setCredentials } from "../redux/Slices/AuthSlice";
 import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 
-export default function CreateAccount() {
+export default function  CreateAccount() {
  const [vendorData, setVendorData] = useState({
   email: "",
   password: "",
-  module: "company" // default login as company
+  module: "company"
 });
   const [showPassword, setShowPassword] = useState(false);
-
 
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
@@ -37,14 +36,17 @@ export default function CreateAccount() {
 
       const result = await login(formData).unwrap();
       // console.log("rrees",result);
-      dispatch(setCredentials({ token: result?.access_token, user: result.role, detail: { name: result?.name, email: result?.email, id: result?.vendor_id } }));
+      dispatch(setCredentials({ token: result?.access_token,module:result?.module, user: result.role, detail: { name: result?.name, email: result?.email, id: result?.vendor_id } }));
       // console.log("Login successful!");
+      // debugger;
       navigate("/vendor/dashboard"); // redirect after login
     } catch (err) {
       toast.error(err?.data?.detail ?? "Internal Server Error")
       // console.error("Login failed:", err);
     }
   }
+
+
 
   return (
     <div className="min-h-screen flex flex-col">

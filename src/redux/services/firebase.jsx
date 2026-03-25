@@ -28,9 +28,9 @@ export const requestPermission = async () => {
             });
 
             const data = await result.json();
-            console.log(data);
+            // console.log(data);
             // debugger
-            console.log("FCM Token:", token);
+            // console.log("FCM Token:", token);
 
             // send this token to your backend
         }
