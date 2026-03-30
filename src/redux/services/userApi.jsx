@@ -27,6 +27,13 @@ export const userApi = api.injectEndpoints({
         // no credentials here either
       }),
     }),
+    startTest:builder.mutation({
+      query: () => ({
+        url: `/candidate/begin_test`,
+        method: "POST",
+        // no credentials here either
+      }),
+    }),
     uploadTest:builder.mutation({
       query:(data) => ({
         url:`/candidate/upload_test`,
@@ -41,7 +48,9 @@ export const {
   useGetProfileQuery,
   useLazyGetProfileQuery,
   useUpdateProfileMutation,
+  useStartTestMutation,
   useVerifyUserOtpMutation,
   useCookiesGenerateQuery,
+
   useUploadTestMutation
 } = userApi;

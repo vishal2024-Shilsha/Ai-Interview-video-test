@@ -22,7 +22,11 @@ export default function IntroAnalysisApp() {
 
     function mapApiResultToReport(api) {
         const clamp = (val) => Math.max(0, Math.min(100, Math.round(val * 100)));
-        console.log("api", api)
+        // console.log("api", api)
+        const feedback = api?.metrics_json?.feedback || {};
+
+        // 🔥 Transform for UI
+        const feedbackUI = transformFeedbackForUI(feedback);
         return {
             profileImage: 'https://randomuser.me/api/portraits/men/44.jpg', // fallback / static
             name: `${api?.first_name} ${api.last_name}`,
@@ -44,7 +48,8 @@ export default function IntroAnalysisApp() {
                 (api.metrics_json.audio.prosody.pitch_std > 0 ? 0.7 : 0.5) +
                 (api.metrics_json.audio.prosody.energy_std > 0 ? 0.3 : 0.2)
             ),
-            feedback: api?.metrics_json?.feedback,
+            // feedback: api?.metrics_json?.feedback,
+            feedbackUI,
             // Overall
             overallScore: clamp(api.final_score),
             transcript: api?.transcript,
@@ -84,6 +89,58 @@ export default function IntroAnalysisApp() {
         };
     }
 
+    function transformFeedbackForUI(feedback) {
+        return [
+            {
+                tab: "Parent",
+                key: "Parent",
+                sections: [
+                    { title: "Strengths", type: "list", data: feedback?.parent?.strengths || [] },
+                    { title: "Areas of Improvement", type: "list", data: feedback?.parent?.areas_of_improvement || [] },
+                    { title: "Guidance", type: "list", data: feedback?.parent?.parent_guidance || [] },
+                    { title: "Summary", type: "text", data: feedback?.parent?.overall_summary || "" },
+                    { title: "Encouragement", type: "text", data: feedback?.parent?.encouragement || "" },
+                    {
+                        title: "Levels",
+                        type: "badges",
+                        data: {
+                            confidence: feedback?.parent?.confidence_level,
+                            communication: feedback?.parent?.communication_level
+                        }
+                    }
+                ]
+            },
+            {
+                tab: "Vendor",
+                key: "Vendor",
+                sections: [
+                    { title: "Key Strengths", type: "list", data: feedback?.vendor?.key_strengths || [] },
+                    { title: "Critical Issues", type: "list", data: feedback?.vendor?.critical_issues || [] },
+                    { title: "Training Focus", type: "list", data: feedback?.vendor?.training_focus || [] },
+                    { title: "Recommendations", type: "list", data: feedback?.vendor?.recommendations || [] },
+                    { title: "Skill Assessment", type: "badges", data: feedback?.vendor?.skill_assessment || {} },
+                    {
+                        title: "Final Decision",
+                        type: "highlight",
+                        data: {
+                            hire: feedback?.vendor?.hire_recommendation,
+                            performance: feedback?.vendor?.performance_summary
+                        }
+                    }
+                ]
+            },
+            {
+                tab: "Candidate",
+                key: "Candidate",
+                sections: [
+                    { title: "Strengths", type: "list", data: feedback?.candidate?.strengths || [] },
+                    { title: "Areas to Improve", type: "list", data: feedback?.candidate?.areas_to_improve || [] },
+                    { title: "Recommendations", type: "list", data: feedback?.candidate?.recommendations || [] },
+                    { title: "Tips", type: "list", data: feedback?.candidate?.tips || [] }
+                ]
+            }
+        ];
+    }
 
     useEffect(() => {
         if (data) {
@@ -155,6 +212,7 @@ export default function IntroAnalysisApp() {
 }
 
 function ResultPage({ report, onBack, pdfLoader, downloadClickHandler }) {
+    console.log("reee", report);
     if (!report) {
         return;
     }
@@ -286,7 +344,7 @@ function ResultPage({ report, onBack, pdfLoader, downloadClickHandler }) {
 
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="col-span-2 bg-slate-50 rounded-lg p-4">
+                    <div className=" bg-slate-50 rounded-lg p-4">
                         <h4 className="font-semibold mb-2">Multi-modal scores</h4>
                         <div className="flex gap-6">
                             <RadarChart cx={150} cy={120} outerRadius={80} width={300} height={240} data={radarData}>
@@ -296,12 +354,12 @@ function ResultPage({ report, onBack, pdfLoader, downloadClickHandler }) {
                                 <Radar name="Scores" dataKey="A" stroke="#2a7397" fill="#2a7397" fillOpacity={0.35} />
                             </RadarChart>
 
-                            <BarChart width={360} height={240} data={barData}>
+                            {/* <BarChart width={360} height={240} data={barData}>
                                 <XAxis dataKey="name" />
                                 <YAxis />
                                 <Tooltip />
                                 <Bar dataKey="score" fill="#2a7397" />
-                            </BarChart>
+                            </BarChart> */}
                         </div>
                     </div>
 
@@ -335,8 +393,8 @@ function ResultPage({ report, onBack, pdfLoader, downloadClickHandler }) {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-slate-50 rounded-lg p-4">
+                <div className="grid grid-cols-1 md:grid-cols- gap-6">
+                    {/* <div className="bg-slate-50 rounded-lg p-4">
                         <h4 className="font-semibold mb-2">Prosody (Pitch / Energy)</h4>
                         <LineChart width={450} height={240} data={report.prosodyTimeline}>
                             <CartesianGrid strokeDasharray="3 3" />
@@ -347,39 +405,70 @@ function ResultPage({ report, onBack, pdfLoader, downloadClickHandler }) {
                             <Line type="monotone" dataKey="pitch" stroke="#8884d8" dot={false} />
                             <Line type="monotone" dataKey="energy" stroke="#82ca9d" dot={false} />
                         </LineChart>
-                    </div>
+                    </div> */}
 
                     <div className="bg-slate-50 rounded-lg p-4">
-                        <h4 className="font-semibold mb-2">Feedback & highlights</h4>
+                        {/* <h4 className="font-semibold mb-2">Feedback & highlights</h4>
                         <ul className="list-disc pl-5 text-sm">
                             {report.highlights.map((h, i) => <li key={i}>{h}</li>)}
-                        </ul>
+                        </ul> */}
 
-                        <div className="mt-4">
-                            <h5 className="font-semibold">Transcript Details</h5>
-                            <p className="text-sm text-gray-700">{report?.transcript ?? 'N/A'}</p>
-                            {/* <p className="text-sm text-gray-700">{report.fillersDetected.join(', ')}</p> */}
-                        </div>
+                        {
+                            report?.feedbackUI?.length > 0 &&
+                            report?.feedbackUI?.map((item) => {
+                                return <div key={item?.key} className="mt-4 ">
+                                    <h5 className="font-semibold border-b border-gray-200 pb-2 mb-4">{item?.key} feedback</h5>
+                                    <ul className="list-disc pl-5 text-sm flex flex-wrap gap-10">
+                                        {item?.sections?.length>0 && item?.sections?.map((section, i) =>
+                                            <div className="bg-white w-96 rounded-xl shadow-sm border p-4 mb-4">
+                                                <h5 className="font-semibold  text-gray-800 mb-2">
+                                                    {section.title}
+                                                </h5>
 
-                        <div className="mt-4">
-                            <h5 className="font-semibold">Area to Improve</h5>
-                            <ul className="list-disc pl-5 text-sm">
-                                {report.feedback?.recommendations?.map((h, i) => <li key={i}>{h}</li>)}
-                            </ul>
-                        </div>
+                                                {/* LIST */}
+                                                {section.type === "list" && (
+                                                    <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                                                        {(section.data || []).map((item, i) => (
+                                                            <li key={i}>{item}</li>
+                                                        ))}
+                                                    </ul>
+                                                )}
 
-                        <div className="mt-4">
-                            <h5 className="font-semibold">Strength</h5>
-                            <ul className="list-disc pl-5 text-sm">
-                                {report.feedback?.strengths?.map((h, i) => <li key={i}>{h}</li>)}
-                            </ul>
-                        </div>
-                        <div className="mt-4">
-                            <h5 className="font-semibold">Tips</h5>
-                            <ul className="list-disc pl-5 text-sm">
-                                {report.feedback?.tips?.map((h, i) => <li key={i}>{h}</li>)}
-                            </ul>
-                        </div>
+                                                {/* TEXT */}
+                                                {section.type === "text" && (
+                                                    <p className="text-sm text-gray-700">
+                                                        {section.data || "N/A"}
+                                                    </p>
+                                                )}
+
+                                                {/* BADGES */}
+                                                {section.type === "badges" && (
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {Object.entries(section.data || {}).map(([key, value]) => (
+                                                            <span
+                                                                key={key}
+                                                                className="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-700"
+                                                            >
+                                                                {key}: {value}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
+
+                                                {/* HIGHLIGHT */}
+                                                {section.type === "highlight" && (
+                                                    <div className="text-sm text-gray-700 space-y-1">
+                                                        <p><b>Hire:</b> {section.data?.hire}</p>
+                                                        <p><b>Performance:</b> {section.data?.performance}</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </ul>
+                                </div>
+                            })
+                        }
+                        
                     </div>
                 </div>
 

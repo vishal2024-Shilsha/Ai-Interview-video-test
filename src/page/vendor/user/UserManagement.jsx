@@ -30,7 +30,7 @@ export default function UserManagement() {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [showSendLinkModal, setShowSendLinkModal] = useState(false);
   const [isCheckboxEnabled, setIsCheckboxEnabled] = useState(false);
-  const [showactiveInactiveModal,setShowActiveInactiveModal]=useState(false);
+  const [showactiveInactiveModal, setShowActiveInactiveModal] = useState(false);
   // Your existing API hooks
   const [addVendor, { isLoading: isVendorAdding }] = role == "sub_vendor" ? useAddCandidateBySubVendorMutation() : useAddVendorMutation();
   const [importVendor, { isLoading: isVendorImporting }] = role == "sub_vendor" ? useImportCandidateBySubVendorMutation() : useImportVendorMutation();
@@ -86,7 +86,7 @@ export default function UserManagement() {
    * SEND LINK HANDLER
    * ----------------------------- */
   const [sendTestLinkToUser, { isLoading: isTestWorking }] = localStorage.getItem('role') == "sub_vendor" ? useSendTestLinkToCandidatesMutation() : useSendTestLinkToUserMutation();
-  const [activateInactivateUser,{isLoading:userLoading}]=useActiveInactiveCandidateMutation()
+  const [activateInactivateUser, { isLoading: userLoading }] = useActiveInactiveCandidateMutation()
   const handleSendLink = async () => {
     try {
       const result = await sendTestLinkToUser({ candidate_ids: selectedUsers }).unwrap();
@@ -102,15 +102,14 @@ export default function UserManagement() {
       }
 
     } catch (err) {
-      console.log("ererer",err)
-      toast.error(err?.data?.message??"Failed to send link");
+      console.log("ererer", err)
+      toast.error(err?.data?.message ?? "Failed to send link");
     }
   };
 
   function openAddModal() {
     setShowAddModal(true);
   }
-
 
   /** -----------------------------
    * ADD / IMPORT USER
@@ -132,6 +131,7 @@ export default function UserManagement() {
         cgpa,
         roll_number,
         department,
+        is_persuing
       } = data;
       formdata.append('first_name', first_name);
       formdata.append('last_name', last_name);
@@ -151,13 +151,15 @@ export default function UserManagement() {
         formdata.append("cgpa", cgpa);
         formdata.append("roll_number", roll_number);
         formdata.append("department", department);
+        formdata.append("is_pursuing",is_persuing)
       }
     }
 
     try {
       const result = !status ? moduleType == "campus" ? await addCampusVendor(formdata) : await addVendor(formdata).unwrap() : moduleType == "campus" ? await addImportVendor(formdata) : await importVendor(formdata).unwrap();
       if (result?.error) {
-        return toast.error("Pls Fill Correct Info")
+        // console.log("eww", result)
+        return toast.error(result?.error?.data?.detail ?? "Pls Fill Correct Info")
       }
       if (result?.data?.status) toast.success(result?.data?.message ?? "CAndidate Added Successfully");
 
@@ -167,6 +169,7 @@ export default function UserManagement() {
 
 
     } catch (err) {
+      console.log("first-err", err)
       toast.error(err?.data?.detail ?? "Internal Server Error")
     }
   }
@@ -189,14 +192,14 @@ export default function UserManagement() {
     }
   }
 
-  async function handleActiveInactive(){
-    console.log("partner",deleteUserDetails)
-    debugger
-    const data={
-      candidate_ids:[deleteUserDetails?.id],
-      is_active:!deleteUserDetails?.is_active
+  async function handleActiveInactive() {
+    // console.log("partner",deleteUserDetails)
+    // debugger
+    const data = {
+      candidate_ids: [deleteUserDetails?.id],
+      is_active: !deleteUserDetails?.is_active
     }
- try {
+    try {
       const result = await activateInactivateUser(data).unwrap?.();
       // console.log("res", result);
       if (result) {
@@ -375,19 +378,22 @@ export default function UserManagement() {
                       {isCheckboxEnabled && (
                         <td className="px-6 py-4">
                           <input
-                            id="not-clickable"
+                            id={`not-clickable-${u.id}`}
                             type="checkbox"
                             disabled={u?.cooldown_active}
                             checked={selectedUsers.includes(u.id)}
                             onChange={() => toggleSelectUser(u.id)}
-                            data-tooltip-variant="warning"
                           />
-                          {u.cooldown_active &&
-                            <Tooltip anchorSelect="#not-clickable" style={{ zIndex: "999999" }} place="bottom"
+
+                          {u?.cooldown_active && (
+                            <Tooltip
+                              anchorSelect={`#not-clickable-${u.id}`}
+                              style={{ zIndex: "999999" }}
+                              place="bottom"
                             >
-                              {`You have already send the link. Pls try after ${u?.cooldown_remaining_minutes} minutes`}
+                              {`You have already sent the link. Please try after ${u?.cooldown_remaining_minutes} minutes`}
                             </Tooltip>
-                          }
+                          )}
                         </td>
                       )}
 
@@ -450,7 +456,7 @@ export default function UserManagement() {
                         {
                           u?.test_sent_count > 0 ?
                             <button
-                            onClick={() => [setDeleteUserDetails(u),setShowActiveInactiveModal(true)]}
+                              onClick={() => [setDeleteUserDetails(u), setShowActiveInactiveModal(true)]}
                               className={`px-3 text-xs cursor-pointer py-2 rounded font- text-white ${u?.is_active ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
                                 } transition-colors`}
                             >
@@ -525,7 +531,7 @@ export default function UserManagement() {
         {/*  DELETE FUNCTONALITY FOR CANDIDATES */}
         <CustomModal
           isOpen={showDeleteModal}
-          onClose={() => [setShowDeleteModal(false),setDeleteUserDetails(null)]}
+          onClose={() => [setShowDeleteModal(false), setDeleteUserDetails(null)]}
           onConfirm={handleDelete}
           title="Delete Candidate"
           confirmText="Yes, Delete"
@@ -550,25 +556,23 @@ export default function UserManagement() {
         {/* ACTIVATE INACTIVATE FUNCTIONALITY FOR CANDIDATES */}
         <CustomModal
           isOpen={showactiveInactiveModal}
-          onClose={() => [setShowActiveInactiveModal(false),setDeleteUserDetails(null)]}
+          onClose={() => [setShowActiveInactiveModal(false), setDeleteUserDetails(null)]}
           onConfirm={handleActiveInactive}
-          title={ `${deleteUserDetails?.is_active ? `Deactivate Candidate` : 'Activate Candidate  '}`}
-          confirmText={ `${deleteUserDetails?.is_active ? `Yes, Deactivate` : 'Yes, Activate  '}`}
+          title={`${deleteUserDetails?.is_active ? `Deactivate Candidate` : 'Activate Candidate  '}`}
+          confirmText={`${deleteUserDetails?.is_active ? `Yes, Deactivate` : 'Yes, Activate  '}`}
           loading={userLoading}
         >
           {`Are you sure you want to ${deleteUserDetails?.is_active ? 'Deactivate' : 'Activate'}  this candidate?`}
 
-          <div 
-          className={`mt-3 p-3 border rounded ${
-    deleteUserDetails?.is_active
-      ? "bg-red-50 border-red-200"
-      : "bg-green-50 border-green-200"
-  }`}
+          <div
+            className={`mt-3 p-3 border rounded ${deleteUserDetails?.is_active
+                ? "bg-red-50 border-red-200"
+                : "bg-green-50 border-green-200"
+              }`}
           >
             <p
-            className={`font-semibold ${
-      deleteUserDetails?.is_active ? "text-red-700" : "text-green-700"
-    }`}
+              className={`font-semibold ${deleteUserDetails?.is_active ? "text-red-700" : "text-green-700"
+                }`}
             >
               {deleteUserDetails?.first_name} {deleteUserDetails?.last_name}
             </p>
@@ -577,7 +581,7 @@ export default function UserManagement() {
             </p>
           </div>
 
-          
+
         </CustomModal>
 
       </div>

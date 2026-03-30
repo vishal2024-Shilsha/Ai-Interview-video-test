@@ -89,7 +89,7 @@ const ProfileSection=lazy(() =>import('./page/subVendor/SubVendorProfile'))
 ========================= */ //110011
 function App() {
 
-  const isAuthenticated = !!localStorage.getItem('token');
+  // const isAuthenticated = !!localStorage.getItem('token');
 
   useEffect(() => {
     const unsubscribe = onMessage(messaging, (payload) => {
@@ -129,16 +129,9 @@ function App() {
             <Route
               path="/"
               element={
-                localStorage.getItem("role")=="vendor" ? (
-                  // If logged in, redirect based on role
-                  (localStorage.getItem("role") === "admin" && isAuthenticated) ? (
-                    <Navigate to="/admin/dashboard" replace />
-                  ) : (
-                    <Navigate to="/vendor/dashboard" replace />
-                  )
-                ) : (
+                
                   <Login />
-                )
+              
               }
             />
             <Route path="/res" element={<IntroAnalysis />} />

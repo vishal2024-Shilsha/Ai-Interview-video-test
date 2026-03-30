@@ -53,8 +53,8 @@ const OtpVerification = () => {
         try {
             if (location?.state?.data) {
                 const result = await resetCode({ email, otp: finalOtp }).unwrap();
-                console.log("ram", result);
-                debugger;
+                // console.log("ram", result);
+                // debugger;
                 if (result?.status) {
                     toast.success("OTP Verified Successfully!");
                     setTimeout(() => navigate("/reset-password", {

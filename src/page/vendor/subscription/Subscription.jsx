@@ -39,6 +39,7 @@ const VendorSubscriptionPage = () => {
         }
     }
 
+    ////[4,1,2],[1,3,4,2]
     const [
         getSubscriptionDetail,
         { data, isLoading, isError, error }
@@ -47,7 +48,7 @@ const VendorSubscriptionPage = () => {
     useEffect(() => {
         getSubscriptionDetail(countryOption)
     }, [countryOption])
-    
+
     // console.log("ddlj", data)
 
     const [selectedPlan, setSelectedPlan] = useState(null);
@@ -88,8 +89,8 @@ const VendorSubscriptionPage = () => {
         return <PageLoader />
     }
 
-    
-    return (    
+
+    return (
         <div className=" bg-linear-to-br ">
             {/* Animated Background Elements */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -125,7 +126,7 @@ const VendorSubscriptionPage = () => {
             {/* Header */}
             <div className="w-full mx-auto mb-8 relative z-10">
                 <div className=" mb-8 flex justify-between">
-                    
+
                     <div className="flex flex-row w-full items-center gap-6">
                         <label
                             htmlFor="country"
@@ -218,22 +219,22 @@ const VendorSubscriptionPage = () => {
                                 >
                                     {
                                         plan?.is_active ? (<>
-                                        Current Plan
+                                            Current Plan
                                         </>) : (<>
-                                        {loadhandle === plan.id ? (
-                                        "Loading..."
-                                    ) : (
-                                        <>
-                                            Subscribe Now
-                                            <ArrowRight
-                                                size={18}
-                                                className="transition-transform duration-300 group-hover:translate-x-1"
-                                            />
-                                        </>
-                                    )}
+                                            {loadhandle === plan.id ? (
+                                                "Loading..."
+                                            ) : (
+                                                <>
+                                                    Subscribe Now
+                                                    <ArrowRight
+                                                        size={18}
+                                                        className="transition-transform duration-300 group-hover:translate-x-1"
+                                                    />
+                                                </>
+                                            )}
                                         </>)
                                     }
-                                    
+
                                 </button>
 
                             </div>

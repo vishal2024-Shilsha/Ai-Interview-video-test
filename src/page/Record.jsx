@@ -1108,6 +1108,7 @@ export function useRecorder({ mediaStreamRef, onRecordingStop }) {
   const recorderRef = useRef(null);
   const recordedChunksRef = useRef([]);
   const [recording, setRecording] = useState(false);
+  const [paused, setPaused] = useState(false); // ✅ NEW
   const [videoURL, setVideoURL] = useState(null);
   const [recordedBlob, setRecordedBlob] = useState(null);
 
@@ -1128,26 +1129,21 @@ export function useRecorder({ mediaStreamRef, onRecordingStop }) {
     };
 
     recorder.onstop = () => {
-      // console.log("Chunks on stop:", recordedChunksRef.current);
-
       const blob = new Blob(recordedChunksRef.current, {
         type: "video/webm",
       });
 
-      // console.log("Blob created:", blob);
-
       setRecordedBlob(blob);
-
       const url = URL.createObjectURL(blob);
       setVideoURL(url);
 
-      // Send blob+url to callback
       if (onRecordingStop) onRecordingStop(blob, url);
     };
 
     recorderRef.current = recorder;
-    recorder.start(200); // 200ms chunks
+    recorder.start(200);
     setRecording(true);
+    setPaused(false); // ✅ reset
   };
 
   const stopRecording = () => {
@@ -1155,18 +1151,37 @@ export function useRecorder({ mediaStreamRef, onRecordingStop }) {
       recorderRef.current.stop();
     }
     setRecording(false);
+    setPaused(false);
+  };
+
+  // ✅ NEW: Pause
+  const pauseRecording = () => {
+    if (recorderRef.current && recorderRef.current.state === "recording") {
+      recorderRef.current.pause();
+      setPaused(true);
+    }
+  };
+
+  // ✅ NEW: Resume
+  const resumeRecording = () => {
+    if (recorderRef.current && recorderRef.current.state === "paused") {
+      recorderRef.current.resume();
+      setPaused(false);
+    }
   };
 
   return {
     recording,
+    paused, // ✅ expose
     startRecording,
     stopRecording,
+    pauseRecording,   // ✅ expose
+    resumeRecording,  // ✅ expose
     videoURL,
     setVideoURL,
     recordedBlob,
   };
 }
-
 
 // File: RecordInterviewPage.jsx
 import React, { useEffect, useState } from 'react';
@@ -1201,8 +1216,18 @@ export default function RecordInterviewPage() {
     // console.log("Received blob:", blob);
   };
 
-  const { recording, videoURL, startRecording, stopRecording, recordedBlob, setVideoURL } = useRecorder({ mediaStreamRef, onRecordingStop });
-
+  // const { recording, videoURL, startRecording, stopRecording, recordedBlob, setVideoURL } = useRecorder({ mediaStreamRef, onRecordingStop });
+  const {
+    recording,
+    paused,
+    startRecording,
+    stopRecording,
+    pauseRecording,
+    resumeRecording,
+    videoURL,
+    recordedBlob,
+    setVideoURL
+  } = useRecorder({ mediaStreamRef, onRecordingStop });
   useEffect(() => {
     // warm-up media to reduce permission friction
     getMediaStream().then((s) => {
@@ -1227,6 +1252,7 @@ export default function RecordInterviewPage() {
       alert('Please allow microphone & camera.');
     }
   };
+
 
   const startRecordingFlow = async () => {
     try {
@@ -1253,6 +1279,31 @@ export default function RecordInterviewPage() {
     }
   };
 
+
+  const handlePause = () => {
+    pauseRecording();
+    stopRecognition();
+
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+  };
+
+  const handleResume = () => {
+    resumeRecording();
+    startRecognition();
+
+    timerRef.current = setInterval(() => {
+      setTimer((t) => {
+        const nt = t + 1;
+        if (nt >= 120) {
+          stopRecordingFlow();
+        }
+        return nt;
+      });
+    }, 1000);
+  };
+
   const stopRecordingFlow = () => {
     stopRecording();
     stopRecognition();
@@ -1264,6 +1315,7 @@ export default function RecordInterviewPage() {
     // keep stream active if you want; here we stop it to release camera
     stopAllTracks();
   };
+
 
   const uploadVideo = async () => {
     if (!videoURL) return alert('No video to upload');
@@ -1280,14 +1332,14 @@ export default function RecordInterviewPage() {
       const result = await uploadTest(formData);
       // console.log("result from api", result);
       if (result?.data) {
-        toast.success("file uploaded successfully..")
+        toast.success(result?.data?.message??"file uploaded successfully..")
         setTimeout(() => {
           navigate('/test-success');
         }, 1500)
       }
     } catch (err) {
       // console.log("ee", e);
-      toast.error(err?.message??"Something went wrong Pls try again.")
+      toast.error(err?.message ?? "Something went wrong Pls try again.")
     }
 
   };
@@ -1349,12 +1401,27 @@ export default function RecordInterviewPage() {
                       playsInline
                       className="w-91 h-48 mx-auto mt-3 rounded-2xl object-cover bg-black"
                     />
-                    {recording && (
+                    {/* {recording && (
                       <motion.div
                         animate={{ opacity: [0.2, 1, 0.2] }}
                         transition={{ repeat: Infinity, duration: 1.2 }}
                         className="absolute top-3 left-3 bg-red-500 w-3 h-3 rounded-full shadow"
                       />
+                    )} */}
+                    {/* 🔴 Recording Indicator */}
+                    {recording && !paused && (
+                      <motion.div
+                        animate={{ opacity: [0.2, 1, 0.2] }}
+                        transition={{ repeat: Infinity, duration: 1.2 }}
+                        className="absolute top-3 left-3 bg-red-500 w-3 h-3 rounded-full shadow"
+                      />
+                    )}
+
+                    {/* ⏸️ Paused Indicator */}
+                    {recording && paused && (
+                      <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-yellow-500 text-white text-xs font-semibold shadow">
+                        Paused
+                      </div>
                     )}
                   </div>
 
@@ -1416,6 +1483,18 @@ export default function RecordInterviewPage() {
                 >
                   {recording ? '⏹ Stop Recording' : '🎬 Start Recording'}
                 </button>
+
+                {recording && (
+                  <button
+                    onClick={() => {
+                      if (paused) handleResume();
+                      else handlePause();
+                    }}
+                    className="w-full px-4 py-3 rounded-xl bg-yellow-500 text-white font-semibold shadow"
+                  >
+                    {paused ? '▶ Resume Recording' : '⏸ Pause Recording'}
+                  </button>
+                )}
 
                 {videoURL && (
                   <div className="space-y-2">

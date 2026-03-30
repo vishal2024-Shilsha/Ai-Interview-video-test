@@ -19,9 +19,6 @@ export default function VendorDashboard() {
     !data?.credits_summary?.trial ? { title: 'Credits Remains', value: data?.credits_summary?.total_remaining_credits ?? 0 } :
       { title: "Free Credits", value: data?.credits_summary?.trial?.credits_remaining ?? 0 },
     { title: 'Total Users', value: data?.candidates_summary?.total_candidates ?? 0 },
-
-    // { title: 'Credits Used', value: 54 },
-    // { title: 'Plan Expiry', value: '12 March 2025' },
   ];
 
   if (isLoading) {
@@ -31,6 +28,7 @@ export default function VendorDashboard() {
   if (isError) {
     return <ErrorPage />
   }
+
 
   return (
     <div className="min-h-screen bg-[#fafafa] p-6 pt-5 font-inter text-gray-800">

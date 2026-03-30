@@ -228,6 +228,11 @@ const statusStyles = {
 };
 
 export const MySubscriptions = () => {
+  const { data, isLoading } = useViewSubscriptionListQuery();
+  console.log("Dd",data)
+  if(isLoading){
+    return <Loader/>
+  }
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
@@ -414,6 +419,8 @@ export const PurchaseSubscription = () => {
 
 import { Check } from "lucide-react";
 import VendorSubscriptionPage from "./Subscription";
+import Loader from "../../../libs/Loader";
+import { useViewSubscriptionListQuery } from "../../../redux/services/vendorApi";
 
 
 export const SubscriptionCard = ({

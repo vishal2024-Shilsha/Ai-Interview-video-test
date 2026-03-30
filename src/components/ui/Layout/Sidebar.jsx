@@ -239,10 +239,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
     {
       label: "Subscription",
       icon: Crown,
-      submenu: [
-        { to: "/vendor/subscription/plan", label: "Purchase Subscription", icon: Podcast },
-        { to: "/vendor/subscription/view", label: "View Subscription List", icon: Podcast },
-      ],
+      to:"/vendor/subscription/view"
+      // submenu: [
+      //   { to: "/vendor/subscription/plan", label: "Purchase Subscription", icon: Podcast },
+      //   { to: , label: "View Subscription List", icon: Podcast },
+      // ],
     },
   ];
 

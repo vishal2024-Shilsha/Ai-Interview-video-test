@@ -88,8 +88,9 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
         })) || [];
 
 
+
     const handleFormSubmit = (data) => {
-        debugger;
+        // debugger;
         const payload = {
             first_name: data.firstName,
             last_name: data.lastName,
@@ -110,11 +111,19 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
                 cgpa: data.cgpa,
                 roll_number: data.rollNumber,
                 department: data.department,
+                is_persuing:data?.isPursuing
             }),
         };
 
         onSubmit(payload, false);
     };
+
+//     Given a circular integer array nums (i.e., the next element of nums[nums.length - 1] is 
+//         nums[0]), return the next greater number for every element in nums.
+
+// The next greater number of a number x is the first greater number to its traversing-order 
+// next in the array, which means you could search circularly to find its
+//  next greater number. If it doesn't exist, return -1 for this number.
 
     return (
         <motion.div

@@ -19,7 +19,7 @@ const Header = ({ setSidebarOpen, role = "admin", userName = "" }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  
+
   let info = null
 
   const user = localStorage.getItem('user')
@@ -28,6 +28,7 @@ const Header = ({ setSidebarOpen, role = "admin", userName = "" }) => {
     info = JSON.parse(user)
   }
 
+  
   return (
     <header className="bg-white shadow px-4 py-1 border-b border-[#ece8e8] flex justify-between items-center">
       {/* Left Section */}
@@ -48,6 +49,24 @@ const Header = ({ setSidebarOpen, role = "admin", userName = "" }) => {
             "Ebench Admin"
           )}
         </h2>
+
+        {/* Subscription Badge */}
+        {info?.planName && (
+          <div className="hidden animate-pulse  md:flex items-center gap-2 bg-blue-50 border border-blue-700 px-3 py-1 rounded-lg mr-3">
+            <span className="text-xs font-semibold text-blue-700">
+              {info.planName}
+            </span>
+
+            <span
+              className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${info?.status
+                ? "bg-green-100 text-green-400"
+                : "bg-red-100 text-red-600"
+                }`}
+            >
+              {info?.status}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Right Section */}

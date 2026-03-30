@@ -36,7 +36,7 @@ export default function  CreateAccount() {
 
       const result = await login(formData).unwrap();
       // console.log("rrees",result);
-      dispatch(setCredentials({ token: result?.access_token,module:result?.module, user: result.role, detail: { name: result?.name, email: result?.email, id: result?.vendor_id } }));
+      dispatch(setCredentials({ token: result?.access_token,module:result?.module, user: result.role, detail: { name: result?.name, email: result?.email, id: result?.vendor_id,planName: result?.plan_name,status : result?.is_subscribed } }));
       // console.log("Login successful!");
       // debugger;
       navigate("/vendor/dashboard"); // redirect after login
