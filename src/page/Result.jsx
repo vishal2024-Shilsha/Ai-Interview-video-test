@@ -440,7 +440,6 @@ export default function ProfilePage() {
         }
     }
 
-    // ✅ MAIN UI AFTER VERIFICATION
     return (
         <>
             <Header />
@@ -474,7 +473,7 @@ export default function ProfilePage() {
                                 <h3 className="text-[#286a94] font-semibold mb-2">Profile Details</h3>
                                 <ul className="space-y-1">
                                     <li><strong>Email:</strong> {candidateData?.candidate?.email ?? "N/A"}</li>
-                                    <li><strong>Phone:</strong> {'+' + candidateData?.candidate?.mobile ?? "N/A"}</li>
+                                    <li><strong>Phone:</strong>{'+' + (candidateData?.candidate?.mobile ?? "N/A")}</li>
                                     <li><strong>Nationality:</strong> {candidateData?.candidate?.nationality ?? "N/A"} </li>
                                     <li><strong>Country of Residence:</strong> {candidateData?.candidate?.country_of_residence ?? "N/A"} </li>
                                     <li><strong>Birth Country:</strong> {candidateData?.candidate?.birth_country ?? "N/A"} </li>

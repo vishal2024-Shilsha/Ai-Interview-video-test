@@ -5,14 +5,15 @@ import toast from "react-hot-toast";
 import logo from "../assets/ebench_logo.png";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Header from "./Header";
-import { useResetPasswordMutation } from "../redux/services/authApi";
+import { useAdminResetPasswordMutation, useResetPasswordMutation } from "../redux/services/authApi";
 // import { useResetPasswordMutation } from "../redux/services/authApi";  // If API exists
 
 const ResetPassword = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const email = new URLSearchParams(location.search).get("email");
     const [resetPassword, { isLoading }] = useResetPasswordMutation();  
-
+    const [adminResetPassword,{isLoading:adminLoading}] = useAdminResetPasswordMutation()
     const [formData, setFormData] = useState({
         newPassword: "",
         confirmPassword: "",
@@ -49,14 +50,54 @@ const ResetPassword = () => {
             const result = await resetPassword(data).unwrap();
             setTimeout(() => {
                 toast.success("Password reset successfully!");
+            navigate("/");
+
             },1000)
-            // navigate("/login");
 
             // toast.success("Password reset successfully");
         } catch (error) {
             toast.error(error?.data?.message || "Something went wrong!");
         }
     };
+
+    // [0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1], k = 3
+    
+    const adminHandleSubmit = async (e) => {
+        e.preventDefault();
+        if(!email){
+            return toast.error("Email is required !")
+        }
+
+        if (formData.newPassword.length < 6) {
+            toast.error("Password must be at least 6 characters long!");
+            return;
+        }
+
+        if (formData.newPassword !== formData.confirmPassword) {
+            toast.error("Passwords do not match!"); // password not
+            return;
+        }
+
+        const data = {
+            email: email,
+            new_password: formData?.newPassword,
+            confirm_password: formData?.confirmPassword,
+    }
+
+        try {
+            const result = await adminResetPassword(data).unwrap();
+            setTimeout(() => {
+                toast.success("Password reset successfully!");
+                navigate("/admin-login");
+            },1000)
+
+            // toast.success("Password reset successfully");
+        } catch (error) {
+            toast.error(error?.data?.detail || "Something went wrong!");
+        }
+    };
+
+
     return (
         <div className="flex-1 min-h-screen flex flex-col md:flex-row">
             <Header />
@@ -98,7 +139,7 @@ const ResetPassword = () => {
                 <div className="max-w-md w-full mx-auto bg-white shadow-md rounded-2xl p-8 mt-10">
                     <img src={logo} alt="eBench Logo" className="w-40 mx-auto mb-6" />
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={location.pathname.includes('admin') ? adminHandleSubmit : handleSubmit} className="space-y-5">
 
                         {/* New Password */}
                         <div>

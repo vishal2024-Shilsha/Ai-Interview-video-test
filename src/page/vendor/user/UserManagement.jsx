@@ -193,8 +193,7 @@ export default function UserManagement() {
   }
 
   async function handleActiveInactive() {
-    // console.log("partner",deleteUserDetails)
-    // debugger
+    // console.log("partner",deleteUserDetails) 
     const data = {
       candidate_ids: [deleteUserDetails?.id],
       is_active: !deleteUserDetails?.is_active

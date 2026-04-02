@@ -191,7 +191,6 @@ export default function IntroAnalysisApp() {
         }
     };
 
-
     if (isLoading || !dummyReport) {
         return <PageLoader />
     }

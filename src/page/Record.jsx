@@ -1253,6 +1253,9 @@ export default function RecordInterviewPage() {
     }
   };
 
+//   s1 = "ab", s2 = "eidbaooo"
+// Output: true
+// Explanation: s2 contains one permutation of s1 ("ba").
 
   const startRecordingFlow = async () => {
     try {
@@ -1278,6 +1281,10 @@ export default function RecordInterviewPage() {
       alert('Recording failed or not supported in this browser.');
     }
   };
+
+  function recognition(s1,s2){
+    
+  }
 
 
   const handlePause = () => {

@@ -27,7 +27,24 @@ export const authApi = api.injectEndpoints({
         }
       )
     }),
-
+    adminForgotPassword: builder.mutation({
+      query: (data) => (
+        {
+          url: "/admin/request-password-reset",
+          method: "POST",
+          body: data,
+        }
+      )
+    }),
+    adminResetAccessCode: builder.mutation({
+      query: (data) => (
+        {
+          url: "/admin/verify-otp",
+          method: "POST",
+          body: data,
+        }
+      )
+    }),
     resetAccessCode: builder.mutation({
       query: (data) => (
         {
@@ -48,10 +65,25 @@ export const authApi = api.injectEndpoints({
       )
     }),
 
-
+    adminResetPassword: builder.mutation({
+      query: (data) => (
+        {
+          url: "/admin/reset-password",
+          method: "POST",
+          body: data,
+        }
+      )
+    }),
     resendOtp: builder.mutation({
       query: (data) => ({
         url: "/vendor/resend-otp",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    adminResendOtp: builder.mutation({
+      query: (data) => ({
+        url: "/admin/resend-password-reset-otp",
         method: "POST",
         body: data,
       }),
@@ -70,10 +102,14 @@ export const authApi = api.injectEndpoints({
 
 export const {
   useSignupMutation,
+  useAdminResendOtpMutation,
   useVerifyOtpMutation,
   useResendOtpMutation,
   useForgotPasswordMutation,
   useResetAccessCodeMutation,
   useResetPasswordMutation,
   useLoginMutation,
+  useAdminForgotPasswordMutation,
+  useAdminResetAccessCodeMutation,
+  useAdminResetPasswordMutation
 } = authApi;

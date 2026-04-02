@@ -70,7 +70,7 @@ export const vendorApi = api.injectEndpoints({
           }
         }
       ),
-invalidatesTags: ['Vendor'],
+      invalidatesTags: ['Vendor'],
     }),
     activeInactiveCandidate: builder.mutation({
       query: (data) => (
@@ -83,7 +83,7 @@ invalidatesTags: ['Vendor'],
           }
         }
       ),
-invalidatesTags: ['Vendor'],
+      invalidatesTags: ['Vendor'],
     }),
     getVendorProfile: builder.query({
       query: () => ({
@@ -251,95 +251,122 @@ invalidatesTags: ['Vendor'],
         },
       })
     }),
-    listofSubVendor:builder.query({
-      query:({search='',active='',plan='',page='',size=''}) =>({
+    listofSubVendor: builder.query({
+      query: ({ search = '', active = '', plan = '', page = '', size = '' }) => ({
         url: `/vendor/sub-vendors?search=${search}&active=${active}&plan=${plan}&page=${page}&limit=${size}`,
-        method:"GET",
-        headers:{
+        method: "GET",
+        headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       }),
       providesTags: ['subvendor'],
     }),
-    listofSubscription:builder.query({
-      query:() =>({
+    listofSubscription: builder.query({
+      query: () => ({
         url: `/vendor/subscriptions/dropdown`,
-        method:"GET",
-        headers:{
+        method: "GET",
+        headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       })
     }),
-    registerSubVendor:builder.mutation({
-      query:(data) =>({
-        url:`/vendor/sub-vendors/create`,
-        method:"POST",
-        body:data,
-        headers:{
+    registerSubVendor: builder.mutation({
+      query: (data) => ({
+        url: `/vendor/sub-vendors/create`,
+        method: "POST",
+        body: data,
+        headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       }),
-      invalidatesTags:["subvendor"]
+      invalidatesTags: ["subvendor"]
     }),
-    activeDeactiveSubVendor:builder.mutation({
-      query:({id,formdata}) =>({
-        url:`/vendor/sub-vendors/${id}/status`,
-        method:"PATCH",
-        body:formdata,
-        headers:{
+    activeDeactiveSubVendor: builder.mutation({
+      query: ({ id, formdata }) => ({
+        url: `/vendor/sub-vendors/${id}/status`,
+        method: "PATCH",
+        body: formdata,
+        headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       }),
-      invalidatesTags:["subvendor"]
+      invalidatesTags: ["subvendor"]
     }),
-    assignSubVendorSubscription:builder.mutation({
-      query:({id,details}) =>({
-        url:`/vendor/sub-vendors/${id}/assign-plans`,
-        method:"POST",
-        body:details,
-        headers:{
+    assignSubVendorSubscription: builder.mutation({
+      query: ({ id, details }) => ({
+        url: `/vendor/sub-vendors/${id}/assign-plans`,
+        method: "POST",
+        body: details,
+        headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       }),
-      invalidatesTags:["subvendor"]
+      invalidatesTags: ["subvendor"]
     }),
-    viewSubVendorDetails:builder.query({
-      query:(id) => ({
-        url:`/vendor/sub-vendors/${id}`,
-        method:"GET",
-        headers:{
+    viewSubVendorDetails: builder.query({
+      query: (id) => ({
+        url: `/vendor/sub-vendors/${id}`,
+        method: "GET",
+        headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       })
     }),
-    deleteCandidateByCandidateId:builder.mutation({
-      query:(candidateId) => ({
-        url:`/vendor/candidate/${candidateId}`,
-        method:"DELETE",
-        headers:{
+    deleteCandidateByCandidateId: builder.mutation({
+      query: (candidateId) => ({
+        url: `/vendor/candidate/${candidateId}`,
+        method: "DELETE",
+        headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       }),
-      invalidatesTags:["Vendor"]
+      invalidatesTags: ["Vendor"]
     }),
-    logout:builder.mutation({
-      query:() =>({
-        url:`/vendor/logout`,
-        method:"POST",
-        headers:{
-          Authorization:`Bearer ${localStorage.getItem('token')}`
+    logout: builder.mutation({
+      query: () => ({
+        url: `/vendor/logout`,
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       })
-    })
+    }),
+    getDegreeCampusDetails: builder.query({
+      query: (id) => ({
+        url: `/campus/degrees`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+    }),
+    getDepartmentCampusDetails: builder.query({
+      query: () => ({
+        url: `/campus/departments`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+    }),
+    getSpecializationCampusDetails: builder.query({
+      query: () => ({
+        url: `/campus/specializations`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+    }),
   }),
 });
 
-export const {useListofSubscriptionQuery,useViewSubVendorDetailsQuery, useAssignSubVendorSubscriptionMutation, useGetAllUserByVendorQuery, useAddVendorMutation,useListofSubVendorQuery,
-  useSendTestLinkToUserMutation, useImportVendorMutation,useRegisterSubVendorMutation,useActiveDeactiveSubVendorMutation,
-  useGetVendorProfileQuery, useUpdateVendorProfileMutation, useAddCompanyProfileMutation,useDeleteCandidateByCandidateIdMutation,
+export const { useListofSubscriptionQuery, useGetDepartmentCampusDetailsQuery, useGetSpecializationCampusDetailsQuery, useGetDegreeCampusDetailsQuery, useViewSubVendorDetailsQuery, useAssignSubVendorSubscriptionMutation, useGetAllUserByVendorQuery, useAddVendorMutation, useListofSubVendorQuery,
+  useSendTestLinkToUserMutation, useImportVendorMutation, useRegisterSubVendorMutation, useActiveDeactiveSubVendorMutation,
+  useGetVendorProfileQuery, useUpdateVendorProfileMutation, useAddCompanyProfileMutation, useDeleteCandidateByCandidateIdMutation,
   useUpdateCompanyProfileMutation, useAddBranchDetailsMutation, useDeleteBranchDetailsMutation,
   useUpdateBranchDetailsMutation, useGetSubscriptionDetailQuery, useLazyGetSubscriptionDetailQuery,
   useSelectVendorSubscriptionMutation, useViewSubscriptionListQuery, useVendorDashboardApiQuery,
   useResultManagementDataQuery, useViewResultByUserIdQuery, useDownloadCandidateResultMutation,
-  useLogoutMutation,useAddCampusVendorMutation,useImportCampusVendorMutation,useActiveInactiveCandidateMutation
+  useLogoutMutation, useAddCampusVendorMutation, useImportCampusVendorMutation, useActiveInactiveCandidateMutation
 } = vendorApi;

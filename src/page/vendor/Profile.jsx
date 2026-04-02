@@ -366,11 +366,12 @@ export default function VendorProfileMergedForm() {
     }
 
     return (
-        <div className="bg-gray-100 min-h-screen py-6 space-y-8">
-
+        <div className="bg-gray-100 min-h-screen py-6 space-y-5">
+            <div className="flex justify-end w-[96%] ">
+                <button className="px-3 py-2 w-48 rounded-md shadow shadow-[#dcdedf] cursor-pointer hover:bg-[#4283ac] bg-[#286a94] text-white" >Change Password</button>
+            </div>
             {/* ================= PERSONAL DETAILS ================= */}
             <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-6 space-y-6">
-
                 <div className="flex justify-between items-center">
                     <h2 className="text-lg font-semibold text-blue-900">
                         Personal Details

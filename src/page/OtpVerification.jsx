@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import Header from "./Header";
 import { motion } from "framer-motion";
-import { useVerifyOtpMutation, useResendOtpMutation, useResetAccessCodeMutation } from "../redux/services/authApi";
+import { useVerifyOtpMutation, useResendOtpMutation, useResetAccessCodeMutation, useAdminResetAccessCodeMutation, useAdminResendOtpMutation } from "../redux/services/authApi";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import logo from "../assets/ebench_logo.png";
@@ -9,16 +9,17 @@ import { setCredentials } from "../redux/Slices/AuthSlice";
 import { useDispatch } from "react-redux";
 
 const OtpVerification = () => {
+    const location = useLocation()
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const otpRefs = useRef([]);
     const [verifyOtp, { isLoading: isVerifying }] = useVerifyOtpMutation();
     const [resetCode, { isLoading: isResetting }] = useResetAccessCodeMutation();
-    const [resendOtp] = useResendOtpMutation();
-    // console.log("000000", resendOtp);
+    const [resendOtp,{isLoading:otpResendLoading}] = useResendOtpMutation();
+    const [adminVerifyOtp,{isLoading:adminverifyLoading}]=useAdminResetAccessCodeMutation()
+    const [adminResendCode,{isLoading:adminLoading}] = useAdminResendOtpMutation();
     const navigate = useNavigate();
-    const location = useLocation();
     const email = new URLSearchParams(location.search).get("email");
-    const dispatch=useDispatch();
+    const dispatch = useDispatch();
     // OTP Input Handler
     const handleChange = (e, index) => {
         const value = e.target.value;
@@ -78,6 +79,31 @@ const OtpVerification = () => {
         }
     };
 
+    // Admin Submit Handler
+    const adminSubmitHandler = async (e) => {
+        e.preventDefault();
+
+        const finalOtp = otp.join("");
+        if (finalOtp.length !== 6) {
+            toast.error("Please enter all 6 digits.");
+            return;
+        }
+
+        try {
+            const result = await adminVerifyOtp({ email, otp: finalOtp }).unwrap();
+            console.log("ram", result);
+            debugger;
+            if (result?.status) {
+                toast.success("OTP Verified Successfully!");
+                setTimeout(() => navigate(`/admin/reset-password?email=${result?.email}`), 800);
+            }
+        } catch (err) {
+            toast.error(err?.data?.detail ?? "Invalid OTP, try again.");
+        }
+    };
+
+
+
     async function resendOtpHandler() {
         if (!email) {
             return toast.error("email is required...")
@@ -91,7 +117,22 @@ const OtpVerification = () => {
                 toast.success("OTP send successfully. Check your mail.")
             }
         } catch (err) {
-            toast.error("Internal Server Error")
+            toast.error(err?.data?.detail??"Internal Server Error")
+        }
+    }
+
+    async function adminResendOtpHandler() {
+        if (!email) {
+            return toast.error("email is required...")
+        }
+        const form = {email}
+        try {
+            const result = await adminResendCode(form).unwrap();
+            if (result?.status) {
+                toast.success("OTP send successfully. Check your mail.")
+            }
+        } catch (err) {
+            toast.error(err?.data?.detail??"Internal Server Error")
         }
     }
 
@@ -184,7 +225,7 @@ const OtpVerification = () => {
                             <span className="font-medium text-[#286a94]">{email}</span>
                         </p>
 
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                        <form onSubmit={ location.pathname.includes('admin') ? adminSubmitHandler : handleSubmit} className="space-y-6">
                             <div className="flex gap-4 justify-center">
                                 {otp.map((digit, index) => (
                                     <input
@@ -213,9 +254,9 @@ const OtpVerification = () => {
                             <button
                                 type="button"
                                 className="text-[#286a94] font-medium hover:underline"
-                                onClick={resendOtpHandler}
+                                onClick={location.pathname.includes('admin') ? adminResendOtpHandler : resendOtpHandler}
                             >
-                                Resend OTP
+                               {(otpResendLoading || adminLoading ) ? 'sending' : 'Resend OTP'} 
                             </button>
                         </p>
                     </div>

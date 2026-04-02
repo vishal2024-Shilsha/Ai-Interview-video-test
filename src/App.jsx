@@ -9,6 +9,7 @@ import DashboardHome from "./page/subVendor/DashboardHome";
 import { onMessage } from "firebase/messaging";
 import { messaging } from "./Firebase/Firebase";
 import toast from "react-hot-toast";
+import AdminForgetPassword from "./components/admin/AdminForgetPassword";
 
 /* =========================
     Lazy Loaded Layout
@@ -129,20 +130,25 @@ function App() {
             <Route
               path="/"
               element={
-                
                   <Login />
-              
               }
             />
             <Route path="/res" element={<IntroAnalysis />} />
+            <Route path="/admin/forget-password" element={<AdminForgetPassword />} />
+
             <Route path="/admin-login" element={<AdminLoginPage />} />
             <Route path="/vendor-signup" element={<Signup />} />
             <Route path="/otp-verify" element={<OtpVerification />} />
+            <Route path="/admin/otp-verify" element={<OtpVerification />} />
+
             <Route
               path="/candidate/start_test"
               element={<IntroAnalysisApp />}
             />
+            <Route path="/admin-reset-password" element={<ResetPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/admin/reset-password" element={<ResetPassword />} />
+
             <Route path="/record" element={<RecordPage />} />
             <Route path="/success" element={<Success />} />
             <Route path="/test-success" element={<SuccessPageTest />} />

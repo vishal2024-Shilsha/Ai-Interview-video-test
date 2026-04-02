@@ -7,6 +7,7 @@ import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { motion } from 'framer-motion'
 import { useGetCountryDataQuery } from "../../../redux/services/externalApi";
 import { X } from "lucide-react";
+import { useGetDegreeCampusDetailsQuery, useGetDepartmentCampusDetailsQuery, useGetSpecializationCampusDetailsQuery } from "../../../redux/services/vendorApi";
 
 // ✅ Validation Schema 
 const validationSchema = yup.object().shape({
@@ -49,13 +50,13 @@ const validationSchema = yup.object().shape({
         then: (schema) => schema.required("Enrollment year required"),
     }),
 
-   
+
     cgpa: yup.string().when([], {
         is: () => moduleType === "campus",
         then: (schema) => schema.required("CGPA required"),
     }),
 
-    
+
 
     department: yup.string().when([], {
         is: () => moduleType === "campus",
@@ -87,6 +88,20 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
             value: item?.name,
         })) || [];
 
+    const {
+        data: degrees = [],
+        isLoading: degLoading,
+    } = useGetDegreeCampusDetailsQuery();
+
+    const {
+        data: departments = [],
+        isLoading: deptLoading,
+    } = useGetDepartmentCampusDetailsQuery();
+
+    const {
+        data: specializations = [],
+        isLoading: specLoading,
+    } = useGetSpecializationCampusDetailsQuery();
 
 
     const handleFormSubmit = (data) => {
@@ -111,19 +126,14 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
                 cgpa: data.cgpa,
                 roll_number: data.rollNumber,
                 department: data.department,
-                is_persuing:data?.isPursuing
+                is_persuing: data?.isPursuing
             }),
         };
 
         onSubmit(payload, false);
     };
 
-//     Given a circular integer array nums (i.e., the next element of nums[nums.length - 1] is 
-//         nums[0]), return the next greater number for every element in nums.
-
-// The next greater number of a number x is the first greater number to its traversing-order 
-// next in the array, which means you could search circularly to find its
-//  next greater number. If it doesn't exist, return -1 for this number.
+    console.log("specializations",specializations)
 
     return (
         <motion.div
@@ -321,7 +331,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
 
                                     University</label>
                                 <input {...register("universityName")}
-                                    className={`w-full border rounded-lg p-2 outline-none ${errors.universityName ? "border-red-500" : "border-gray-300"
+                                    className={`w-full border rounded-lg p-2 bg-white outline-none ${errors.universityName ? "border-red-500" : "border-gray-300"
                                         }`}
                                     placeholder="University Name"
                                 />
@@ -340,7 +350,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
                             </div>
 
                             {/* Degree */}
-                            <div>
+                            {/* <div>
                                 <label className="font-medium text-sm text-gray-700 mb-1">Degree</label>
                                 <input {...register("degree")}
                                     className={`w-full border rounded-lg p-2 outline-none ${errors.degree ? "border-red-500" : "border-gray-300"
@@ -348,10 +358,33 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
                                     placeholder="Degree Name"
                                 />
                                 {errors.degree && <p className="text-sm text-red-500 mt-1">{errors.degree.message}</p>}
+                            </div> */}
+
+                            <div>
+                                <label className="font-medium text-sm text-gray-700 mb-1">Degree</label>
+                                <select
+                                    {...register("degree")}
+                                    className={`w-full border rounded-lg p-2 outline-none ${errors.degree ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                >
+                                    <option value="">
+                                        {degLoading ? "Loading..." : "Select Degree"}
+                                    </option>
+
+                                    {degrees?.data?.length > 0 && degrees?.data?.map((deg) => (
+                                        <option key={deg.id} value={deg.name}>
+                                            {deg.name}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                {errors.degree && (
+                                    <p className="text-sm text-red-500 mt-1">{errors.degree.message}</p>
+                                )}
                             </div>
 
                             {/* Department */}
-                            <div>
+                            {/* <div>
                                 <label className="font-medium text-sm text-gray-700 mb-1">Department</label>
                                 <input {...register("department")}
 
@@ -360,10 +393,32 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
                                     placeholder="Department Name"
                                 />
                                 {errors.department && <p className="text-sm text-red-500 mt-1">{errors.department.message}</p>}
+                            </div> */}
+                            <div>
+                                <label className="font-medium text-sm text-gray-700 mb-1">Department</label>
+                                <select
+                                    {...register("department")}
+                                    className={`w-full border text-gray-500 rounded-lg p-2 outline-none ${errors.department ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                >
+                                    <option value="">
+                                        {deptLoading ? "Loading..." : "Select Department"}
+                                    </option>
+
+                                    {departments?.data?.length > 0 && departments?.data?.map((dept) => (
+                                        <option key={dept.name} value={dept.id}>
+                                            {dept.name}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                {errors.department && (
+                                    <p className="text-sm text-red-500 mt-1">{errors.department.message}</p>
+                                )}
                             </div>
 
                             {/* Specialization */}
-                            <div>
+                            {/* <div>
                                 <label className="font-medium text-sm text-gray-700 mb-1">Specialization</label>
                                 <input {...register("specialization")}
                                     className={`w-full border rounded-lg p-2 outline-none ${errors.specialization ? "border-red-500" : "border-gray-300"
@@ -371,6 +426,32 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
                                     placeholder="Specialization"
                                 />
                                 {errors.specialization && <p className="text-sm text-red-500 mt-1">{errors.specialization.message}</p>}
+                            </div> */}
+                            <div>
+                                <label className="font-medium text-sm text-gray-700 mb-1">
+                                    Specialization
+                                </label>
+                                <select
+                                    {...register("specialization")}
+                                    className={`w-full border text-gray-500 rounded-lg p-2 outline-none ${errors.specialization ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                >
+                                    <option value="">
+                                        {specLoading ? "Loading..." : "Select Specialization"}
+                                    </option>
+
+                                    {specializations?.data?.length>0 && specializations?.data?.map((spec) => (
+                                        <option key={spec.name} value={spec.id}>
+                                            {spec.name}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                {errors.specialization && (
+                                    <p className="text-sm text-red-500 mt-1">
+                                        {errors.specialization.message}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Enrollment Year */}

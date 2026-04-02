@@ -145,12 +145,25 @@ export const adminApi = api.injectEndpoints({
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       })
-    })
+    }),
+    adminChangePassword: builder.mutation({
+      query: (data) => (
+        {
+          url: "/admin/change-password",
+          method: "POST",
+          body: data,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      )
+    }),
+
   }),
 });
 
-export const { useGetAllVendorQuery, useActiveInactiveUserMutation, useAdminLoginMutation,
-  useAdminDashboardQuery,useAdminLogoutMutation,
+export const { useAdminChangePasswordMutation, useGetAllVendorQuery, useActiveInactiveUserMutation, useAdminLoginMutation,
+  useAdminDashboardQuery, useAdminLogoutMutation,
   useGetFilteredSubscriptionQuery,
   useGetSubscriptionsQuery,
   useAddSubscriptionMutation,

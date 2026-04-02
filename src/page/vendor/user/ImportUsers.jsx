@@ -17,6 +17,7 @@ export default function ImportUsers({ onClose, onSubmit, isVendorImporting }) {
       setFile(selectedFile);
     }
   };
+  
   const handleImport = () => {
     if (!file) return;
     onSubmit(file, true)
