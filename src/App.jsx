@@ -53,6 +53,8 @@ const ResultManagement = lazy(() =>
 /* =========================
    Lazy Loaded Public Pages
 ========================= */
+const LandingPage = lazy(() => import("./page/LandingPage"));
+
 const Login = lazy(() => import("./page/Login"));
 const Signup = lazy(() => import("./page/Signup"));
 const OtpVerification = lazy(() => import("./page/OtpVerification"));
@@ -119,7 +121,6 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-
   return (
     <BrowserRouter>
       <AppErrorBoundary>
@@ -128,9 +129,15 @@ function App() {
 
             {/* ===== Public Routes ===== */}
             <Route
-              path="/"
+              path="/login"
               element={
                   <Login />
+              }
+            />
+             <Route
+              path="/"
+              element={
+                  <LandingPage />
               }
             />
             <Route path="/res" element={<IntroAnalysis />} />
@@ -283,3 +290,17 @@ function App() {
 
 export default App;
 
+//=======================
+
+// import { useState } from "react";
+
+// export default function App() {
+//   const nav = () => { window.scrollTo(0, 0); };
+//   return (
+//     <div className="font-[DM_Sans,system-ui,sans-serif]">
+//       {page === "landing" && <LandingPage nav={nav} />}
+//       {page === "login" && <LoginPage nav={nav} />}
+//       {page === "signup" && <SignupPage nav={nav} />}
+//     </div>
+//   );
+// }

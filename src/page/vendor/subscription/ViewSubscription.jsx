@@ -191,7 +191,7 @@ const subscriptions = [
     price: 29,
     interval: "month",
     nextBilling: "Apr 25, 2026",
-    startDate: "Mar 25, 2025",
+    startDate: "Mar 25, 2026",
     usage: 72,
     usageLabel: "72 of 100 API calls used",
     features: ["Unlimited Projects", "Priority Support", "Advanced Analytics", "Custom Integrations"],

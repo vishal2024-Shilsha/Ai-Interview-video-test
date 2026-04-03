@@ -28,6 +28,7 @@ const Header = ({ setSidebarOpen, role = "admin", userName = "" }) => {
     info = JSON.parse(user)
   }
 
+
   
   return (
     <header className="bg-white shadow px-4 py-1 border-b border-[#ece8e8] flex justify-between items-center">
@@ -97,6 +98,21 @@ const Header = ({ setSidebarOpen, role = "admin", userName = "" }) => {
           <ChevronDown className="h-4 w-4 text-gray-500" />
 
         </div>
+        {open && role=="admin" && (
+          <div>
+            <div className="absolute right-1 z-50 mt-2 w-44 bg-white border border-gray-100 shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ul className="py-1 text-sm text-gray-700">
+              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => [navigate('/vendor/profile'), setOpen(false)]}
+              >
+                Profile
+              </li>
+              </ul>
+          </div>
+          </div>
+        )}
         {open && role == "vendor" && (
           <div className="absolute right-1 z-50 mt-2 w-44 bg-white border border-gray-100 shadow-lg"
             onClick={(e) => e.stopPropagation()}
