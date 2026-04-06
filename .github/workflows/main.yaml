@@ -20,7 +20,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
           CI: false
         run: |
-          npm ci
+          npm ci || (rm -rf node_modules package-lock.json && npm install --include=optional)
           npm run build
 
       # Clean old files on the server
@@ -40,7 +40,7 @@ jobs:
             # Set correct permissions
             sudo chmod -R 755 /var/www/frontend
 
-      #Copy new build to server
+      # Copy new build to server
       - name: Copy build to server
         uses: appleboy/scp-action@v0.1.4
         with:
