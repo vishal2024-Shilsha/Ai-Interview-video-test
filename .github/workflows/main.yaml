@@ -27,7 +27,7 @@ jobs:
           CI: false
         run: |
           rm -rf node_modules package-lock.json
-          npm install --include=optional
+          npm install --force
           npm run build
 
       # Clean old files on the server
