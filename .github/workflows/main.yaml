@@ -1,0 +1,56 @@
+name: Deploy Frontend to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Fix Node version
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Reliable install + build
+      - name: Build Frontend
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+          CI: false
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install --include=optional
+          npm run build
+
+      # Clean old files on the server
+      - name: Clean old files on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            set -e
+            mkdir -p /var/www/frontend
+            sudo rm -rf /var/www/frontend/*
+            sudo chown -R ubuntu:ubuntu /var/www/frontend
+            sudo chmod -R 755 /var/www/frontend
+
+      # Copy new build to server
+      - name: Copy build to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "dist/**"
+          target: "/var/www/frontend/"
+          strip_components: 1
