@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Pill } from "../../libs/Divider";
+import { useState, useEffect } from "react";
 
 function HeroDashboard() {
   return (
@@ -44,65 +45,51 @@ function HeroDashboard() {
 }
 
 // ─── HERO ──────────────────────────────────────────────────────────────
-import { motion } from "framer-motion";
 
 function Hero({ nav }) {
-    const navigate=useNavigate();
+  const navigate = useNavigate();
+  const phrases = ["Skill Assessment", "Talent Matching", "Team Building", "Hiring Decisions"];
 
-   
-const container = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.05,
-      repeat: Infinity,
-      repeatType: "reverse", // 👈 key line
-      repeatDelay: 1, // pause before reversing
-    },
-  },
-};
+  const [displayed, setDisplayed] = useState("");
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
 
-const child = {
-  hidden: { opacity: 0, x: -10 },
-  visible: { opacity: 1, x: 0 },
-};
+  useEffect(() => {
+    const current = phrases[phraseIndex];
+    let timeout;
 
-const renderText = (text) =>
-  text.split("").map((char, i) => (
-    <motion.span key={i} variants={child}>
-      {char === " " ? "\u00A0" : char}
-    </motion.span>
-  ));
+    if (!deleting) {
+      if (displayed.length < current.length) {
+        timeout = setTimeout(() => setDisplayed(current.slice(0, displayed.length + 1)), 80);
+      } else {
+        timeout = setTimeout(() => setDeleting(true), 1600);
+      }
+    } else {
+      if (displayed.length > 0) {
+        timeout = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 45);
+      } else {
+        setDeleting(false);
+        setPhraseIndex((i) => (i + 1) % phrases.length);
+      }
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayed, deleting, phraseIndex]);
 
   return (
     <section className="relative px-8 py-10 overflow-hidden bg-linear-to-br from-[#F0F7FF] via-[#EBF4FD] to-[#F7FBFF]">
       <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-gradient-radial from-blue-500/10 to-transparent pointer-events-none" />
       <div className="absolute -bottom-16 -left-20 w-80 h-80 rounded-full bg-gradient-radial from-sky-400/8 to-transparent pointer-events-none" />
-      <div className="max-w-6xl mx-auto flex flex-wrap gap-16 items-center">
+      <div className="max-w-6xl mx-auto flex flex-wrap gap-16 items-">
         <div className="flex-1 min-w-[300px] max-w-[580px]">
           <Pill>AI-Powered Campus Hiring Platform</Pill>
-          {/* <h1 className="text-4xl md:text-6xl font-extrabold leading-tight text-[#0F2744] mb-6 tracking-tight">
+          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight text-[#0F2744] mb-6 tracking-tight">
             Hire Smarter with<br />
             <span className="bg-linear-to-r from-blue-500 to-sky-400 bg-clip-text text-transparent">
               AI-Powered
             </span>{" "}
-            Skill Assessment
-          </h1> */}
-           <motion.h1
-      variants={container}
-      initial="hidden"
-      animate="visible"
-      className="text-4xl md:text-6xl font-extrabold leading-tight text-[#0F2744] mb-6 tracking-tight"
-    >
-      {renderText("Hire Smarter with")}
-      <br />
-
-      <span className="bg-linear-to-r from-blue-500 to-sky-400 bg-clip-text text-transparent">
-        {renderText("AI-Powered")}
-      </span>{" "}
-
-      {renderText("Skill Assessment")}
-    </motion.h1>
+            {displayed}
+          </h1>
           <p className="text-lg text-[#3A5068] leading-relaxed mb-10 max-w-[480px]">
             Beyond degrees — evaluate real talent with intelligent insights. Coding tests, MCQs, and role-based assessments analyzed by AI in real time.
           </p>
@@ -114,7 +101,7 @@ const renderText = (text) =>
               Start Free Trial →
             </button>
             <button onClick={() => navigate('/login')} className=" cursor-pointer text-base font-semibold text-blue-500 px-8 py-4 rounded-xl bg-white border-[1.5px] border-blue-200 hover:bg-[#F0F7FF] hover:border-blue-500 transition-all">
-              Login 
+              Login
             </button>
           </div>
           <div className="mt-12 flex flex-wrap gap-9">
