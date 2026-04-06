@@ -9,6 +9,7 @@ const feedbackData = {
 function AIFeedback() {
   const [active, setActive] = useState("College");
   const d = feedbackData[active];
+
   return (
     <section className="py-24 px-8 bg-white">
       <div className="max-w-6xl mx-auto">

@@ -349,6 +349,27 @@ export const vendorApi = api.injectEndpoints({
         }
       })
     }),
+    getAddonCredits: builder.query({
+      query: () => ({
+        url: `/vendor/addon-options`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+    }),
+    addonCreditsCheckout: builder.mutation({
+      query: (data) => ({
+        url: `/vendor/create_addon_checkout`,
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }),
+      invalidatesTags: ["subvendor"]
+    }),
+
     getSpecializationCampusDetails: builder.query({
       query: () => ({
         url: `/campus/specializations`,
@@ -361,7 +382,7 @@ export const vendorApi = api.injectEndpoints({
   }),
 });
 
-export const { useListofSubscriptionQuery, useGetDepartmentCampusDetailsQuery, useGetSpecializationCampusDetailsQuery, useGetDegreeCampusDetailsQuery, useViewSubVendorDetailsQuery, useAssignSubVendorSubscriptionMutation, useGetAllUserByVendorQuery, useAddVendorMutation, useListofSubVendorQuery,
+export const { useAddonCreditsCheckoutMutation, useGetAddonCreditsQuery, useListofSubscriptionQuery, useGetDepartmentCampusDetailsQuery, useGetSpecializationCampusDetailsQuery, useGetDegreeCampusDetailsQuery, useViewSubVendorDetailsQuery, useAssignSubVendorSubscriptionMutation, useGetAllUserByVendorQuery, useAddVendorMutation, useListofSubVendorQuery,
   useSendTestLinkToUserMutation, useImportVendorMutation, useRegisterSubVendorMutation, useActiveDeactiveSubVendorMutation,
   useGetVendorProfileQuery, useUpdateVendorProfileMutation, useAddCompanyProfileMutation, useDeleteCandidateByCandidateIdMutation,
   useUpdateCompanyProfileMutation, useAddBranchDetailsMutation, useDeleteBranchDetailsMutation,

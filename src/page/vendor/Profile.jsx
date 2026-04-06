@@ -68,12 +68,9 @@ export default function VendorProfileMergedForm() {
     const { data: countryData, isLoading: countryLoading } = useGetCountryDataQuery();
 
 
-    const initializedRef = useRef(false);
-
     useEffect(() => {
-        if (!data || initializedRef.current) return;
+        if (!data) return;
 
-        initializedRef.current = true;
 
         const { vendor: vendorDetail, company, branches } = data;
 
