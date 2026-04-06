@@ -19,6 +19,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      # create .env file with secrets
+      - name: Create .env file
+        run: |
+          echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}" >> .env
+          echo "VITE_API_KEY=${{ secrets.VITE_API_KEY }}" >> .env
+          echo "VITE_AUTH_DOMAIN=${{ secrets.VITE_AUTH_DOMAIN }}" >> .env
+          echo "VITE_PROJECT_ID=${{ secrets.VITE_PROJECT_ID }}" >> .env
+          echo "VITE_STORAGE_BUCKET=${{ secrets.VITE_STORAGE_BUCKET }}" >> .env
+          echo "VITE_MESSAGING_SENDER_ID=${{ secrets.VITE_MESSAGING_SENDER_ID }}" >> .env
+          echo "VITE_API_ID=${{ secrets.VITE_API_ID }}" >> .env
+          echo "VITE_MEASUREMENT_ID=${{ secrets.VITE_MEASUREMENT_ID }}" >> .env
+          echo "VITE_KEY_PAIR=${{ secrets.VITE_KEY_PAIR }}" >> .env
 
       # Reliable install + build
       - name: Build Frontend
@@ -27,7 +39,7 @@ jobs:
           CI: false
         run: |
           rm -rf node_modules package-lock.json
-          npm install --include=optional
+          npm install --force
           npm run build
 
       # Clean old files on the server

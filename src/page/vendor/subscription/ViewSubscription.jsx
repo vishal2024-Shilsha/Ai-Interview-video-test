@@ -148,6 +148,8 @@ const tabs = [
 const Index = () => {
   const [activeTab, setActiveTab] = useState("subscriptions");
 
+  
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:px-8">
@@ -159,8 +161,8 @@ const Index = () => {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-all ${activeTab === tab.id
-                    ? "bg-white text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                  ? "bg-white text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
                   }`}
               >
                 <tab.icon className="h-4 w-4" />
@@ -183,65 +185,69 @@ export default Index;
 
 import { CalendarDays, RefreshCw, Zap } from "lucide-react";
 
-const subscriptions = [
-  {
-    id: 1,
-    name: "Pro Plan",
-    status: "active",
-    price: 29,
-    interval: "month",
-    nextBilling: "Apr 25, 2026",
-    startDate: "Mar 25, 2026",
-    usage: 72,
-    usageLabel: "72 of 100 API calls used",
-    features: ["Unlimited Projects", "Priority Support", "Advanced Analytics", "Custom Integrations"],
-  },
-  {
-    id: 2,
-    name: "Storage Add-on",
-    status: "active",
-    price: 9,
-    interval: "month",
-    nextBilling: "Apr 25, 2026",
-    startDate: "Jan 10, 2026",
-    usage: 45,
-    usageLabel: "45 GB of 100 GB used",
-    features: ["100 GB Cloud Storage", "Auto Backups", "Version History"],
-  },
-  {
-    id: 3,
-    name: "Starter Plan",
-    status: "cancelled",
-    price: 9,
-    interval: "month",
-    nextBilling: "—",
-    startDate: "Jun 01, 2024",
-    usage: 0,
-    usageLabel: "No usage",
-    features: ["5 Projects", "Email Support"],
-  },
-];
-
 const statusStyles = {
   active: "bg-green-400 text-white border-gray-300",
-  cancelled: "bg-red-500 text-white border-gray-100",
+  upgraded: "bg-yellow-500 text-white border-gray-100",
 };
+
+// constants/theme.js
+const theme = {
+  cardBg: "#ffffff",
+  cardBorder: "#f3f4f6",       // gray-100
+  cardShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+
+  titleColor: "#1f2937",       // gray-800
+  mutedColor: "#6b7280",       // gray-500
+  foreground: "#0f172a",
+
+  divider: "#e5e7eb",          // gray-200
+
+  // Status badge colors — change here anytime
+  statusActive: {
+    bg: "#f0fdf4",
+    border: "#bbf7d0",
+    text: "#16a34a",
+  },
+  statusUpgraded: {
+    bg: "#eff6ff",
+    border: "#bfdbfe",
+    text: "#2563eb",
+  },
+}
 
 export const MySubscriptions = () => {
   const { data, isLoading } = useViewSubscriptionListQuery();
-  console.log("Dd",data)
-  if(isLoading){
-    return <Loader/>
+  console.log("Dd", data)
+  if (isLoading) {
+    return <Loader />
   }
+
+
+
+  const subscriptions = data?.data?.plans?.map((sub) => ({
+    id: sub.plan_id,
+    name: sub.name,
+    status: sub.status,
+    price: (sub.price.amount / 100).toFixed(2),
+    interval: sub.price.billing_cycle,
+    usage: sub.usage.percentage,
+    usageLabel: `Credits used (${sub?.usage?.used}/${sub?.usage?.total} ${sub?.usage?.unit})`,
+    startDate: new Date(sub.timeline.started_at).toLocaleDateString(),
+    nextBilling: new Date(sub.timeline.next_billing_date).toLocaleDateString(),
+  }))
+
+
+  const headerDetail = [
+    { icon: Zap, label: "Active Plans", value: data?.data?.summary?.active_plans ?? 0, color: "green" },
+    { icon: CreditCard, label: "Monthly Spend", value: `${data?.data?.summary?.monthly_spend ?? 0} ${data?.data?.summary?.currency}`, color: "red" },
+    { icon: RefreshCw, label: "Next Renewal", value: new Date(data?.data?.summary?.next_renewal).toLocaleDateString('en-GB').replace(/\//g, '-'), color: "blue" },
+  ]
+
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {[
-          { icon: Zap, label: "Active Plans", value: "2", color: "green" },
-          { icon: CreditCard, label: "Monthly Spend", value: "$38", color: "red" },
-          { icon: RefreshCw, label: "Next Renewal", value: "Apr 25", color: "blue" },
-        ].map((stat) => (
+        {headerDetail?.map((stat) => (
           <div key={stat.label} className="rounded-lg border border-gray-100 bg-white p-5 shadow-sm">
             <div className="flex items-center gap-4">
               <div className={`flex h-10 w-10 items-center justify-center rounded-lg bg-${stat.color}-600`}>
@@ -249,7 +255,7 @@ export const MySubscriptions = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-600">{stat.label}</p>
-                <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
+                <p className="text-xl font-bold text-gray-500">{stat.value}</p>
               </div>
             </div>
           </div>
@@ -258,53 +264,87 @@ export const MySubscriptions = () => {
 
       {/* Subscription List */}
       <div className="space-y-4">
-        {subscriptions.map((sub) => (
-          <div key={sub.id} className="rounded-lg border border-gray-100 bg-white shadow-sm overflow-hidden">
-            {/* Header */}
-            <div className="p-6 pb-0">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <h3 className="text-lg font-semibold text-gray-800">{sub.name}</h3>
-                  <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${statusStyles[sub.status]}`}>
-                    {sub.status === "active" ? "Active" : "Cancelled"}
-                  </span>
-                </div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-bold text-foreground">${sub.price}</span>
-                  <span className="text-sm text-muted-foreground">/{sub.interval}</span>
-                </div>
-              </div>
-            </div>
+        {subscriptions?.length > 0 && subscriptions.map((sub) => {
 
-            {/* Content */}
-            <div className="p-6 pt-4 space-y-4">
-              {sub.status === "active" && (
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">{sub.usageLabel}</span>
-                    <span className="font-medium text-foreground">{sub.usage}%</span>
+          const statusStyle = sub.status === "active" ? theme.statusActive : theme.statusUpgraded
+
+          return (
+            <div
+              key={sub.id}
+              style={{
+                backgroundColor: theme.cardBg,
+                borderColor: theme.cardBorder,
+                boxShadow: theme.cardShadow,
+              }}
+              className="rounded-lg border overflow-hidden"
+            >
+              {/* Header */}
+              <div className="p-6 pb-0">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <h3
+                      style={{ color: theme.titleColor }}
+                      className="text-lg font-semibold"
+                    >
+                      {sub.name}
+                    </h3>
+                    <span
+                      style={{
+                        backgroundColor: statusStyle.bg,
+                        borderColor: statusStyle.border,
+                        color: statusStyle.text,
+                      }}
+                      className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold"
+                    >
+                      {sub.status === "active" ? "Active" : "Upgraded"}
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-1">
+                    <span
+                      // style={{ color: theme.foreground }}
+                      className="text-xl text-gray-700 font-bold"
+                    >
+                      ${sub.price}
+                    </span>
+                    <span
+                      style={{ color: theme.mutedColor }}
+                      className="text-sm"
+                    >
+                      /{sub.interval}
+                    </span>
                   </div>
                 </div>
-              )}
+              </div>
 
-              <hr className="border-gray-200" />
+              {/* Content */}
+              <div className="p-6 pt-4 space-y-4">
+                {sub.status && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span style={{ color: theme.mutedColor }}>{sub.usageLabel}</span>
+                      <span style={{ color: theme.foreground }} className="font-medium">{sub.usage}%</span>
+                    </div>
+                  </div>
+                )}
 
-              <div className="flex flex-col sm:flex-row justify-between gap-4">
-                <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1.5">
-                    <CalendarDays className="h-3.5 w-3.5" />
-                    Started: {sub.startDate}
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <RefreshCw className="h-3.5 w-3.5" />
-                    Next billing: {sub.nextBilling}
-                  </span>
+                <hr style={{ borderColor: theme.divider }} />
+
+                <div className="flex flex-col sm:flex-row justify-between gap-4">
+                  <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                    <span style={{ color: theme.mutedColor }} className="flex items-center gap-1.5">
+                      <CalendarDays className="h-3.5 w-3.5" />
+                      Started: {sub.startDate}
+                    </span>
+                    <span style={{ color: theme.mutedColor }} className="flex items-center gap-1.5">
+                      <RefreshCw className="h-3.5 w-3.5" />
+                      Next billing: {sub.nextBilling}
+                    </span>
+                  </div>
                 </div>
-
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   );
@@ -371,8 +411,8 @@ export const PurchaseSubscription = () => {
         <button
           onClick={() => setBillingInterval("month")}
           className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${billingInterval === "month"
-              ? "bg-primary text-primary-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
+            ? "bg-primary text-primary-foreground shadow-sm"
+            : "text-muted-foreground hover:text-foreground"
             }`}
         >
           Monthly
@@ -380,8 +420,8 @@ export const PurchaseSubscription = () => {
         <button
           onClick={() => setBillingInterval("year")}
           className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${billingInterval === "year"
-              ? "bg-primary text-primary-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
+            ? "bg-primary text-primary-foreground shadow-sm"
+            : "text-muted-foreground hover:text-foreground"
             }`}
         >
           Yearly
@@ -435,8 +475,8 @@ export const SubscriptionCard = ({
   return (
     <div
       className={`relative flex flex-col rounded-lg border bg-card shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${isPopular
-          ? "border-primary shadow-md ring-2 ring-primary/20"
-          : "border-border"
+        ? "border-primary shadow-md ring-2 ring-primary/20"
+        : "border-border"
         }`}
     >
       {isPopular && (
@@ -475,8 +515,8 @@ export const SubscriptionCard = ({
         <button
           onClick={onSelect}
           className={`w-full rounded-md px-4 py-2.5 text-sm font-medium transition-colors ${isPopular
-              ? "bg-primary text-primary-foreground hover:bg-primary/90"
-              : "border border-border bg-card text-foreground hover:bg-muted"
+            ? "bg-primary text-primary-foreground hover:bg-primary/90"
+            : "border border-border bg-card text-foreground hover:bg-muted"
             }`}
         >
           {isCurrentPlan ? "Current Plan" : "Get Started"}
