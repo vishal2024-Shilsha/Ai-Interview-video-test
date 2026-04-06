@@ -3,7 +3,7 @@ name: Deploy Frontend to Server
 on:
   push:
     branches:
-      - ci-cd
+      - main
 
 jobs:
   build-and-deploy:
@@ -14,13 +14,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # ✅ Fix Node version
+      # Fix Node version
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # ✅ Reliable install + build
+      # Reliable install + build
       - name: Build Frontend
         env:
           NODE_OPTIONS: --max-old-space-size=4096
