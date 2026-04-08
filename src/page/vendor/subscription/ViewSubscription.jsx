@@ -228,7 +228,8 @@ export const MySubscriptions = () => {
     id: sub.plan_id,
     name: sub.name,
     status: sub.status,
-    price: (sub.price.amount / 100).toFixed(2),
+    currency:sub?.price?.currency,
+    price: sub.price.amount,
     interval: sub.price.billing_cycle,
     usage: sub.usage.percentage,
     usageLabel: `Credits used (${sub?.usage?.used}/${sub?.usage?.total} ${sub?.usage?.unit})`,
@@ -304,7 +305,7 @@ export const MySubscriptions = () => {
                       // style={{ color: theme.foreground }}
                       className="text-xl text-gray-700 font-bold"
                     >
-                      ${sub.price}
+                    {sub?.currency}  {sub.price}
                     </span>
                     <span
                       style={{ color: theme.mutedColor }}
