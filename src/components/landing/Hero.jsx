@@ -76,6 +76,7 @@ function Hero({ nav }) {
     return () => clearTimeout(timeout);
   }, [displayed, deleting, phraseIndex]);
 
+
   return (
     <section className="relative px-8 py-10 overflow-hidden bg-linear-to-br from-[#F0F7FF] via-[#EBF4FD] to-[#F7FBFF]">
       <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-gradient-radial from-blue-500/10 to-transparent pointer-events-none" />
@@ -87,8 +88,8 @@ function Hero({ nav }) {
             Hire Smarter with<br />
             <span className="bg-linear-to-r from-blue-500 to-sky-400 bg-clip-text text-transparent">
               AI-Powered
-            </span>{" "}
-            {displayed}
+            </span>
+            <p className="">{displayed}</p>
           </h1>
           <p className="text-lg text-[#3A5068] leading-relaxed mb-10 max-w-[480px]">
             Beyond degrees — evaluate real talent with intelligent insights. Coding tests, MCQs, and role-based assessments analyzed by AI in real time.
@@ -113,7 +114,7 @@ function Hero({ nav }) {
             ))}
           </div>
         </div>
-        <div className="flex-1 min-w-[320px] max-w-[520px]">
+        <div className="flex-1 min-w-[320px] mt-8 max-w-[520px]">
           <HeroDashboard />
         </div>
       </div>

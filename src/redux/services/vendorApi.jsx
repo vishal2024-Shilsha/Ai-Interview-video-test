@@ -150,6 +150,16 @@ export const vendorApi = api.injectEndpoints({
       }),
       invalidatesTags: ['VendorProfile'],
     }),
+    changePassword: builder.mutation({
+      query: (data) => ({
+        url: `/vendor/change-password`,
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }),
+    }),
     deleteBranchDetails: builder.mutation({
       query: (id) => ({
         url: `/vendor/company/branch/${id}`,
@@ -382,7 +392,7 @@ export const vendorApi = api.injectEndpoints({
   }),
 });
 
-export const { useAddonCreditsCheckoutMutation, useGetAddonCreditsQuery, useListofSubscriptionQuery, useGetDepartmentCampusDetailsQuery, useGetSpecializationCampusDetailsQuery, useGetDegreeCampusDetailsQuery, useViewSubVendorDetailsQuery, useAssignSubVendorSubscriptionMutation, useGetAllUserByVendorQuery, useAddVendorMutation, useListofSubVendorQuery,
+export const { useAddonCreditsCheckoutMutation, useChangePasswordMutation, useGetAddonCreditsQuery, useListofSubscriptionQuery, useGetDepartmentCampusDetailsQuery, useGetSpecializationCampusDetailsQuery, useGetDegreeCampusDetailsQuery, useViewSubVendorDetailsQuery, useAssignSubVendorSubscriptionMutation, useGetAllUserByVendorQuery, useAddVendorMutation, useListofSubVendorQuery,
   useSendTestLinkToUserMutation, useImportVendorMutation, useRegisterSubVendorMutation, useActiveDeactiveSubVendorMutation,
   useGetVendorProfileQuery, useUpdateVendorProfileMutation, useAddCompanyProfileMutation, useDeleteCandidateByCandidateIdMutation,
   useUpdateCompanyProfileMutation, useAddBranchDetailsMutation, useDeleteBranchDetailsMutation,
