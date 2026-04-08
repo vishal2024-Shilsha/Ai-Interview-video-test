@@ -165,6 +165,13 @@ window.scrollTo(0, 0)
       }
 
     } catch (err) {
+      if(err?.data?.email && !err?.data?.is_verified){
+         navigate(`/otp-verify?email=${err?.data?.email}`);
+         setTimeout(() => {
+          toast.success("Pls verify your account")
+         },500)
+         return;
+      }
       toast.error(err?.data?.detail ?? "Internal Server Error");
     }
   }

@@ -24,9 +24,12 @@ export const SubvendorApi = api.injectEndpoints({
     }),
     subVendorChangePassword: builder.mutation({
       query: (data) => ({
-        url: `/subvendor/reset-password`,
+        url: `/subvendor/change-password`,
         method: "POST",
-        body: data
+        body: data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
       })
     }),
     addCandidateBySubVendor: builder.mutation({
