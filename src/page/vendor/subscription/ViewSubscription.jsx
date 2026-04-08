@@ -228,6 +228,7 @@ export const MySubscriptions = () => {
     id: sub.plan_id,
     name: sub.name,
     status: sub.status,
+    country:sub?.country,
     currency:sub?.price?.currency,
     price: sub.price.amount,
     interval: sub.price.billing_cycle,
@@ -299,6 +300,17 @@ export const MySubscriptions = () => {
                     >
                       {sub.status === "active" ? "Active" : "Upgraded"}
                     </span>
+                    <span
+                      style={{
+                        // backgroundColor: 'green',
+                        borderColor: statusStyle.border,
+                        color: 'green',
+                      }}
+                      className="inline-flex items-center  rounded-full border px-4 py-1 text-xs "
+                    >
+                      {sub.country}
+                    </span>
+
                   </div>
                   <div className="flex items-baseline gap-1">
                     <span
