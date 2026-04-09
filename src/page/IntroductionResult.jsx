@@ -419,7 +419,7 @@ function ResultPage({ report, onBack, pdfLoader, downloadClickHandler }) {
                                     <h5 className="font-semibold border-b border-gray-200 pb-2 mb-4">{item?.key} feedback</h5>
                                     <ul className="list-disc pl-5 text-sm flex flex-wrap gap-10">
                                         {item?.sections?.length>0 && item?.sections?.map((section, i) =>
-                                            <div className="bg-white w-96 rounded-xl shadow-sm border p-4 mb-4">
+                                            <div className="bg-white w-96 rounded-xl shadow-sm border border-gray-200 p-4 mb-4">
                                                 <h5 className="font-semibold  text-gray-800 mb-2">
                                                     {section.title}
                                                 </h5>
