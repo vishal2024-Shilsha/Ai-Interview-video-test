@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
-  useSubVendorChangePasswordMutation,
+   useSubVendorResetPasswordApproveMutation,
    useSubVendorResetPasswordMutation
 } from "../../redux/services/subvendorApi";
 
@@ -12,7 +12,7 @@ const StudentResetPassword = () => {
   const email = searchParams.get("email");
 
   const [changePassword, { isLoading }] =
-    useSubVendorChangePasswordMutation();
+    useSubVendorResetPasswordApproveMutation();
   const [resendOtp, { isLoading: resendLoading }] =
     useSubVendorResetPasswordMutation();
 

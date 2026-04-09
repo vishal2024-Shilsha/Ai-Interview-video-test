@@ -77,6 +77,24 @@ function Hero({ nav }) {
   }, [displayed, deleting, phraseIndex]);
  
 
+  function solution(s){
+    const mp=new Map();
+    let start=0,end=0,ans=0;
+    while(end<s.length){
+      mp.set(s[end],(mp.has(s[end]) ? mp.get(s[end]) :0 )+1)
+      if(mp.size==3){
+        ans=Math.max(ans,end-s.length);
+        mp.set(s[start],mp.get(s[start])-1)
+        if(mp.get(s[start])==0){
+          mp.delete(s[start])
+        }
+        start++
+      }
+      end++
+    }
+    console.log("ans",ans)
+  }
+  solution("abcabc")
 
   return (
     <section className="relative px-8 py-10 overflow-hidden bg-linear-to-br from-[#F0F7FF] via-[#EBF4FD] to-[#F7FBFF]">

@@ -32,6 +32,16 @@ export const SubvendorApi = api.injectEndpoints({
         }
       })
     }),
+    subVendorResetPasswordApprove: builder.mutation({
+      query: (data) => ({
+        url: `/subvendor/reset-password`,
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
+      })
+    }),
     addCandidateBySubVendor: builder.mutation({
       query: (vendor) => ({
         url: '/subvendor/add_candidate',
@@ -151,5 +161,5 @@ export const SubvendorApi = api.injectEndpoints({
 })
 
 export const { useSubvendorDashboardApiQuery, useResultManagementDetailBySubVendorQuery,useViewResultByUserIdBySubVendorQuery, useEmployeeLoginMutation,useSendTestLinkToCandidatesMutation, useImportCandidateBySubVendorMutation, useAddCandidateBySubVendorMutation, useGetAllCandidatesBySubVendorQuery,
-  useSubVendorChangePasswordMutation, useSubVendorResetPasswordMutation,useSubVendorLogoutMutation,
-  useGetOrganisationDetailQuery,useSubvendorProfileQuery } = SubvendorApi
+  useSubVendorChangePasswordMutation, useSubVendorResetPasswordMutation,useSubVendorLogoutMutation,useSubVendorResetPasswordApproveMutation,
+  useGetOrganisationDetailQuery,useSubvendorProfileQuery, } = SubvendorApi
