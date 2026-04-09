@@ -878,6 +878,8 @@ function ChangePasswordModal({ onClose }) {
 
     const animCls = phase === "idle" ? "" : phase;
 
+
+    
     return (
         <>
             <style>{`

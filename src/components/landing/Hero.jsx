@@ -75,6 +75,7 @@ function Hero({ nav }) {
 
     return () => clearTimeout(timeout);
   }, [displayed, deleting, phraseIndex]);
+ 
 
 
   return (
