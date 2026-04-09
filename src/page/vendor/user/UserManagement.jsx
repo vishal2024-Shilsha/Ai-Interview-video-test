@@ -46,7 +46,7 @@ export default function UserManagement() {
 
   // console.log("isError",error);
   if (error?.status === 401) {
-    window.location.href = '/';
+    window.location.href = '/login';
     localStorage.clear()
     return;
   }
