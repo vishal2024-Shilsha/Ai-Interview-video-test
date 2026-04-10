@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BulletItem, SectionHeader } from "../../libs/Divider";
 
 const feedbackData = {
-  College: { name: "IIT Bombay — CS Batch 2024", role: "Batch Analytics", score: 78, tag: "Above Average", tagColor: "#7C3AED", tagBg: "#F3EEFF", strengths: ["Algorithms", "Web Development", "ML Fundamentals"], weaknesses: ["System Design", "Cloud Architecture"], insight: "Batch performance is 12% above national average. 34 students are in the top 10 percentile nationally. Recommend strengthening cloud and distributed systems curriculum.", rec: "82% placement readiness score", recColor: "#7C3AED", recBg: "#F3EEFF" },
+  College: { name: "Parent Bombay — CS Batch 2024", role: "Batch Analytics", score: 78, tag: "Above Average", tagColor: "#7C3AED", tagBg: "#F3EEFF", strengths: ["Algorithms", "Web Development", "ML Fundamentals"], weaknesses: ["System Design", "Cloud Architecture"], insight: "Batch performance is 12% above national average. 34 students are in the top 10 percentile nationally. Recommend strengthening cloud and distributed systems curriculum.", rec: "82% placement readiness score", recColor: "#7C3AED", recBg: "#F3EEFF" },
   Recruiter: { name: "Rahul Gupta", role: "Full Stack Engineer", score: 91, tag: "Top 5% Nationally", tagColor: "#D97706", tagBg: "#FEF3C7", strengths: ["React & Node.js", "API Design", "Database Optimization"], weaknesses: ["DevOps / CI-CD"], insight: "Rahul is an exceptional full-stack candidate with production-level coding ability. His system design scores place him in the top 5% of all assessments this quarter.", rec: "Strongly Recommended for Senior Dev Roles", recColor: "#16A34A", recBg: "#EAF7ED" },
 };
 

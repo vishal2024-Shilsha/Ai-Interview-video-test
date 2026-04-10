@@ -13,7 +13,7 @@ export function Logo({ nav }) {
         <img src={logo} alt="" />
       </div>
       <span className="text-lg font-bold text-[#2d4f79] tracking-tight">
-        <span className="text-[#0740a1]">Campus</span>
+        <span className="text-[#0740a1]">Campu</span>
       </span>
     </div>
   );

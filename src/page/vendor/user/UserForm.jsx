@@ -3,13 +3,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import PhoneInput from "react-phone-input-2";
 import Select from "react-select";
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { motion } from 'framer-motion'
 import { useGetCountryDataQuery } from "../../../redux/services/externalApi";
 import { X } from "lucide-react";
 import { useGetDegreeCampusDetailsQuery, useGetDepartmentCampusDetailsQuery, useGetSpecializationCampusDetailsQuery } from "../../../redux/services/vendorApi";
 
-// ✅ Validation Schema 
+// ✅ Validation Schema  
 const validationSchema = yup.object().shape({
     firstName: yup.string().required("First Name is required").max(30),
     lastName: yup.string().required("Last Name is required").max(30),
@@ -125,7 +124,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
                 graduation_year: data.graduationYear,
                 cgpa: data.cgpa,
                 roll_number: data.rollNumber,
-                department: data.department,
+                department: data.department,        
                 is_persuing: data?.isPursuing
             }),
         };
@@ -133,7 +132,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
         onSubmit(payload, false);
     };
 
-    console.log("specializations",specializations)
+    // console.log("specializations",specializations)
 
     return (
         <motion.div
@@ -141,7 +140,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
             <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="bg-white rounded-2xl h-96 overflow-auto shadow-xl w-full max-w-2xl p-6">
+                className="bg-white rounded-2xl h-96 md:h-128 overflow-auto shadow-xl w-full max-w-5xl p-6">
                 <div className=" mb-5 border-b border-gray-300 pb-3 flex justify-between items-center">
                     <h2 className="text-2xl font-semibold text-gray-500 ">
                         Add New User
@@ -155,7 +154,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
 
                 <form
                     onSubmit={handleSubmit((data) => handleFormSubmit(data, false))}
-                    className="grid grid-cols-2 gap-5">
+                    className="grid grid-cols-2 md:grid-cols-3  gap-5">
                     {/* First Name */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
