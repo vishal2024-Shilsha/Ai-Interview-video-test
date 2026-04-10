@@ -2,9 +2,9 @@ import { SectionHeader } from "../../libs/Divider";
 
 function Testimonials() {
   const t = [
-    { q: "EbenchCampus transformed our placement process. We now filter top 50 candidates in minutes instead of days, and our offer acceptance rate jumped 40%.", n: "Anjali Kapoor", r: "Placement Head, IIT Delhi", i: "AK", c: "#2B7FFF" },
-    { q: "The AI feedback was eye-opening. I knew I was weak in system design, but the roadmap it gave me helped me crack three SDE interviews in one month.", n: "Rohan Verma", r: "B.Tech CSE Student, NIT Trichy", i: "RV", c: "#7C3AED" },
-    { q: "We've reduced our campus hiring cost by 55%. The AI-generated candidate summaries mean our HR team can shortlist 200 profiles in under an hour.", n: "Vikram Sethi", r: "VP Engineering, Razorpay", i: "VS", c: "#0FA8E0" },
+    { q: "EbenchCampus transformed our placement process. We now filter top 50 candidates in minutes instead of days, and our offer acceptance rate jumped 40%.", n: "Anjali Kapoor", r: "Placement Head", i: "AK", c: "#2B7FFF" },
+    { q: "The AI feedback was eye-opening. I knew I was weak in system design, but the roadmap it gave me helped me crack three SDE interviews in one month.", n: "Rohan Verma", r: "B.Tech CSE Student", i: "RV", c: "#7C3AED" },
+    { q: "We've reduced our campus hiring cost by 55%. The AI-generated candidate summaries mean our HR team can shortlist 200 profiles in under an hour.", n: "Vikram Sethi", r: "VP Engineering", i: "VS", c: "#0FA8E0" },
     { q: "As a parent, I finally understand my daughter's academic strengths. The monthly AI reports are clear, actionable, and so much better than a marksheet.", n: "Sunita Menon", r: "Parent, Bengaluru", i: "SM", c: "#D97706" },
   ];
   return (

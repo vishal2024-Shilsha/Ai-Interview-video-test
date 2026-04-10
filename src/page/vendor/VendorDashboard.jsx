@@ -41,9 +41,9 @@ export default function VendorDashboard() {
               <h2 className="text-3xl font-semibold text-[#286a94] mb-1">{data?.vendor?.name || 'N/A'}</h2>
               <p className="text-gray-500 text-sm mb-4">Vendor {data?.vendor?.id}</p>
             </div>
-            <div>
+            {/* <div>
               <button className=" p-2 text-sm bg-green-600 animate-pulse px-4 py-2 font-bold text-white rounded-xl">Upgrade your plan</button>
-            </div>
+            </div> */}
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 text-sm">
             <div><span className="font-medium text-gray-600">Email:</span> {data?.vendor?.email ?? "N/A"}</div>

@@ -54,7 +54,7 @@ export default function UserManagement() {
   const users = data?.candidates ?? [];
   const total = data?.total ?? 0;
 
-  console.log("dil",data)
+  // console.log("dil",data)
 
   // RESET PAGE WHEN FILTERS CHANGE
   useEffect(() => {
@@ -231,7 +231,6 @@ export default function UserManagement() {
         {/* Filters + Buttons */}
         <div className="flex flex-wrap items-center justify-between mb-6">
           {
-            data?.is_flag &&
             <div className="flex flex-wrap items-center gap-3">
 
               {/* Search */}

@@ -242,7 +242,7 @@ function ResultPage({ report, onBack, pdfLoader, downloadClickHandler }) {
     const COLORS = ['#2a9d8f', '#f4a261', '#e76f51'];
     const [showId, setShowId] = useState(false);
 
-    console.log("rttrt", report);
+    // console.log("rttrt", report);
 
     const renderLabel = ({ cx, cy, midAngle, outerRadius, name, value }) => {
         // Calculate position for label **outside the slice**
@@ -268,6 +268,33 @@ function ResultPage({ report, onBack, pdfLoader, downloadClickHandler }) {
         );
     };
 
+    //"AABABBA", k = 1
+// Output: 4
+
+    function solution(s,k){
+        let ans=0;
+
+        for(let i=0;i<s.length;i++){
+            const arr=new Array(26).fill(0);
+            let maxi=0;
+            for(let j=i;j<s.length;j++){
+                let  index=s[j].charCodeAt(0)-'A'.charCodeAt(0)
+                arr[index]+=1
+                maxi=Math.max(maxi,arr[index])
+                let valid=j-i+1 - maxi
+                if(valid<=k){
+                    ans=Math.max(ans,j-i+1)
+                }
+                if(valid>k){
+                    break;
+                }
+            }
+        }
+        console.log(ans);
+    }
+    solution("AABABBACFKR",2)
+    //"AABABBA", k = 1
+    
     return (
         <>
             {/* <div className='pb-4 font-semibold text-xl text-[#2559b3] '>Candidate Result Details :-</div> */}
@@ -315,6 +342,7 @@ function ResultPage({ report, onBack, pdfLoader, downloadClickHandler }) {
                                 {/* Checkbox */}
                                 <label className="flex items-center gap-2 text-sm text-gray-600">
                                     <input
+                                    className='cursor-pointer'
                                         type="checkbox"
                                         checked={showId}
                                         onChange={() => setShowId(!showId)}
@@ -418,56 +446,77 @@ function ResultPage({ report, onBack, pdfLoader, downloadClickHandler }) {
                                 return <div key={item?.key} className="mt-4 ">
                                     <h5 className="font-semibold border-b border-gray-200 pb-2 mb-4">{item?.key} feedback</h5>
                                     <ul className="list-disc pl-5 text-sm flex flex-wrap gap-10">
-                                        {item?.sections?.length>0 && item?.sections?.map((section, i) =>
-                                            <div className="bg-white w-96 rounded-xl shadow-sm border border-gray-200 p-4 mb-4">
-                                                <h5 className="font-semibold  text-gray-800 mb-2">
-                                                    {section.title}
-                                                </h5>
+                                        {item?.sections?.length ? (
+                                            item.sections.map((section, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="bg-white w-96 rounded-xl shadow-sm border border-gray-200 p-4 mb-4"
+                                                >
+                                                    <h5 className="font-semibold text-gray-800 mb-2">
+                                                        {section?.title || "Untitled"}
+                                                    </h5>
 
-                                                {/* LIST */}
-                                                {section.type === "list" && (
-                                                    <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
-                                                        {(section.data || []).map((item, i) => (
-                                                            <li key={i}>{item}</li>
-                                                        ))}
-                                                    </ul>
-                                                )}
+                                                    {/* LIST */}
+                                                    {section?.type === "list" && (
+                                                        <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                                                            {Array.isArray(section?.data) && section.data.length > 0 ? (
+                                                                section.data.map((listItem, idx) => (
+                                                                    <li key={idx}>{listItem || "N/A"}</li>
+                                                                ))
+                                                            ) : (
+                                                                <li>No data available</li>
+                                                            )}
+                                                        </ul>
+                                                    )}
 
-                                                {/* TEXT */}
-                                                {section.type === "text" && (
-                                                    <p className="text-sm text-gray-700">
-                                                        {section.data || "N/A"}
-                                                    </p>
-                                                )}
+                                                    {/* TEXT */}
+                                                    {section?.type === "text" && (
+                                                        <p className="text-sm text-gray-700">
+                                                            {section?.data || "No data available"}
+                                                        </p>
+                                                    )}
 
-                                                {/* BADGES */}
-                                                {section.type === "badges" && (
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {Object.entries(section.data || {}).map(([key, value]) => (
-                                                            <span
-                                                                key={key}
-                                                                className="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-700"
-                                                            >
-                                                                {key}: {value}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                )}
+                                                    {/* BADGES */}
+                                                    {section?.type === "badges" && (
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {section?.data && Object.keys(section.data).length > 0 ? (
+                                                                Object.entries(section.data).map(([key, value]) => (
+                                                                    <span
+                                                                        key={key}
+                                                                        className="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-700"
+                                                                    >
+                                                                        {key}: {value || "N/A"}
+                                                                    </span>
+                                                                ))
+                                                            ) : (
+                                                                <span className="text-xs text-gray-500">
+                                                                    No data available
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    )}
 
-                                                {/* HIGHLIGHT */}
-                                                {section.type === "highlight" && (
-                                                    <div className="text-sm text-gray-700 space-y-1">
-                                                        <p><b>Hire:</b> {section.data?.hire}</p>
-                                                        <p><b>Performance:</b> {section.data?.performance}</p>
-                                                    </div>
-                                                )}
-                                            </div>
+                                                    {/* HIGHLIGHT */}
+                                                    {section?.type === "highlight" && (
+                                                        <div className="text-sm text-gray-700 space-y-1">
+                                                            <p>
+                                                                <b>Hire:</b> {section?.data?.hire || "N/A"}
+                                                            </p>
+                                                            <p>
+                                                                <b>Performance:</b> {section?.data?.performance || "N/A"}
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p className="text-gray-500 text-sm">No sections available</p>
                                         )}
                                     </ul>
                                 </div>
                             })
                         }
-                        
+
                     </div>
                 </div>
 

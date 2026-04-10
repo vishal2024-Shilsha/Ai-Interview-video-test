@@ -132,15 +132,9 @@ const VendorSubscriptionPage = () => {
 
             {/* Header */}
             <div className="w-full mx-auto mb-8 relative z-10">
-                <div className=" mb-8 flex justify-between">
+                <div className=" mb-8 flex justify-end gap-4">
 
-                    <div className="flex flex-row w-full items-center gap-6">
-                        <label
-                            htmlFor="country"
-                            className="text-sm font-medium text-gray-600"
-                        >
-                            Choose country for subscription pricing
-                        </label>
+                    <div className="flex flex-col gap-1">
 
                         <select
                             name="country"
@@ -161,7 +155,7 @@ const VendorSubscriptionPage = () => {
 
                     <button
                         onClick={() => setIsAddonOpen(true)}
-                        className="h p-3 px-5 w-36   rounded-md bg-[#4d77b9] text-white cursor-pointer text-sm hover:bg-[#6390d8] transition"
+                        className="h-12x px-5 w-36   rounded-md bg-[#4d77b9] text-white cursor-pointer text-sm hover:bg-[#6390d8] transition"
                     >
                         Add-Credits
                     </button>
