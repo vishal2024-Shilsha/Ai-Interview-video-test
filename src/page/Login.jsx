@@ -106,7 +106,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import logo from "../assets/ebench_white.png";
+import logo from "../assets/ebenchwhite.png";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import { useLoginMutation } from "../redux/services/authApi";
