@@ -581,6 +581,7 @@
 
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 // ─── Theme Config ─────────────────────────────────────────────────────────────
 
@@ -636,55 +637,56 @@ const THEMES = {
 
   },
 
-  company: {
+  student: {
 
-    key: "company",
+    key: "student",
 
-    label: "For Companies",
+    label: "For Students",
 
-    emoji: "🏢",
+    emoji: "👋",
 
-    primary: "#0ea5e9",
+    primary: "#10b981",
 
-    primaryDark: "#0284c7",
+    primaryDark: "#059669",
 
-    primaryLight: "#f0f9ff",
+    primaryLight: "#d1fae5",
 
-    primaryBorder: "#bae6fd",
+    primaryBorder: "#6ee7b7",
 
-    shadowColor: "rgba(14,165,233,0.18)",
+    shadowColor: "rgba(16,185,129,0.18)",
 
-    gradFrom: "#0ea5e9",
+    gradFrom: "#10b981",
 
-    gradTo: "#38bdf8",
+    gradTo: "#34d399",
 
-    bgGrad: "radial-gradient(ellipse at 75% 25%, #f0f9ff 0%, #e0f2fe 30%, transparent 70%)",
+    bgGrad: "radial-gradient(ellipse at 75% 25%, #d1fae5 0%, #a7f3d0 35%, transparent 70%)",
 
-    headline: ["Hire Top Talent,", "Effortlessly."],
+    headline: ["Build Your Career,", "Smarter."],
 
-    sub: "Import candidates, create technical & non-technical tests, auto-rank candidates, and make faster offers — all powered by AI.",
+    sub: "Discover your strengths, improve your skills, and land your dream job - all with AI-powered guidance and assessments.",
 
     ctas: [
 
-      { label: "Create Your Account", style: "primary" },
+      { label: "Get Started", style: "primary" },
 
       { label: "Login", style: "outline" },
 
-      // { label: "See Pricing", style: "ghost" },
+      // { label: "View Demo", style: "ghost" },
 
     ],
 
     stats: [
 
-      { icon: "🏢", val: "200+", label: "Companies Hiring" },
+      { icon: "📈", val: "10K+", label: "Students Empowered" },
 
-      { icon: "⚡", val: "< 2min", label: "Avg. Eval Time" },
+      { icon: "📊", val: "95%", label: "Career Success" },
 
-      { icon: "🧪", val: "500+", label: "Tests Created" },
+      { icon: "📚", val: "500+", label: "Skills Assessed" },
 
     ],
 
   },
+
 
 };
 
@@ -944,65 +946,65 @@ const CAMPUS_SLIDES = [
 
 ];
 
-const COMPANY_SLIDES = [
+const STUDENT_SLIDES = [
 
   {
 
-    tag: "Talent Pipeline",
+    tag: "Skill Discovery",
 
-    title: "Find Verified\nCampus Talent",
+    title: "Know Your\nStrengths",
 
     points: [
 
-      { icon: "🔍", text: "Search candidates by skill, score & college" },
+      { icon: "🔍", text: "AI-powered skill assessment tests" },
 
-      { icon: "✅", text: "Pre-screened profiles from 150+ campuses" },
+      { icon: "📚", text: "Personalized learning recommendations" },
 
-      { icon: "📩", text: "Invite shortlisted candidates directly" },
+      { icon: "�", text: "Track your progress over time" },
 
     ],
 
-    accent: "#0ea5e9", bg: "#f0f9ff", Illus: CompanyTalentIllus,
+    accent: "#10b981", bg: "#d1fae5", Illus: CampusStudentIllus,
 
   },
 
   {
 
-    tag: "Assessments",
+    tag: "Career Path",
 
-    title: "Test Before\nYou Hire",
+    title: "Find Your\nDream Job",
 
     points: [
 
-      { icon: "⚙️", text: "Build custom tech & aptitude test suites" },
+      { icon: "📊", text: "Curated internships & job opportunities" },
 
-      { icon: "📊", text: "Real-time ranked results dashboard" },
+      { icon: "🤝", text: "AI-matched career suggestions" },
 
-      { icon: "🧩", text: "MCQ, coding, case-study question types" },
+      { icon: "📈", text: "Real-time application tracking" },
 
     ],
 
-    accent: "#0284c7", bg: "#e0f2fe", Illus: CompanyTestIllus,
+    accent: "#059669", bg: "#a7f3d0", Illus: AssessmentIllus,
 
   },
 
   {
 
-    tag: "Hiring Dashboard",
+    tag: "Growth Analytics",
 
-    title: "Manage Every\nHire in One Place",
+    title: "Track Your\nJourney",
 
     points: [
 
-      { icon: "💳", text: "Credit-based model — pay only per test" },
+      { icon: "�", text: "Detailed performance analytics" },
 
-      { icon: "📋", text: "Track all job posts, applicants & offers" },
+      { icon: "�", text: "Compare with industry benchmarks" },
 
-      { icon: "🤝", text: "Collaborate with your hiring team easily" },
+      { icon: "🏆", text: "Achievement badges & certificates" },
 
     ],
 
-    accent: "#0f766e", bg: "#f0fdfa", Illus: CompanyDashIllus,
+    accent: "#047857", bg: "#6ee7b7", Illus: CampusAdminIllus,
 
   },
 
@@ -1170,7 +1172,7 @@ function ModeToggle({ mode, onChange }) {
   return (
     <div className="inline-flex bg-slate-100 mt-5 md:mt-0 rounded-full p-1 gap-1 mb-8">
 
-      {["campus", "company"].map((m) => {
+      {["campus", "student"].map((m) => {
 
         const t = THEMES[m];
 
@@ -1214,7 +1216,9 @@ export default function HeroSection() {
 
   const theme = THEMES[mode];
 
-  const slides = mode === "campus" ? CAMPUS_SLIDES : COMPANY_SLIDES;
+  const navigate = useNavigate();
+
+  const slides = mode === "campus" ? CAMPUS_SLIDES : STUDENT_SLIDES;
 
   const floatBadges = {
 
@@ -1226,11 +1230,11 @@ export default function HeroSection() {
 
     },
 
-    company: {
+    student: {
 
-      tr: { icon: "📋", title: "Job Posted!", sub: "Frontend Role · 12 applied", bg: "#f0f9ff" },
+      tr: { icon: "🎯", title: "Skill Mastered!", sub: "JavaScript · Level 8 achieved", bg: "#d1fae5" },
 
-      bl: { icon: "⚡", title: "Instant Evaluation", sub: "Candidates ranked live", bg: "#fef9c3" },
+      bl: { icon: "📈", title: "Progress Updated", sub: "85% career readiness score", bg: "#a7f3d0" },
 
     },
 
@@ -1334,7 +1338,7 @@ export default function HeroSection() {
                 <button
 
                   key={i}
-
+                  
                   className="px-5 py-2.5 rounded-xl text-[13px] font-semibold cursor-pointer font-[inherit] transition-all duration-200 hover:-translate-y-0.5"
 
                   style={{
@@ -1355,6 +1359,13 @@ export default function HeroSection() {
 
                     boxShadow: cta.style === "primary" ? `0 8px 20px ${theme.shadowColor}` : "none",
 
+                  }}
+                  onClick={() => {
+                    if (cta.label === "Register Your Campus" || cta.label === "Get Started") {
+                      navigate("/vendor-signup");
+                    } else if (cta.label === "Login") {
+                      navigate("/login");
+                    }
                   }}
                 >
 

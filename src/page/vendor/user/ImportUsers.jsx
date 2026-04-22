@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 export default function ImportUsers({ onClose, onSubmit, isVendorImporting }) {
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -23,6 +24,31 @@ export default function ImportUsers({ onClose, onSubmit, isVendorImporting }) {
     onSubmit(file, true)
   };
 
+  const handleDownloadReference = async () => {
+    setIsDownloading(true);
+    try {
+      // API call to download reference CSV
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/campus/sample-csv`);
+      if (!response.ok) {
+        throw new Error('Failed to download reference file');
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'candidate_reference_template.csv';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      setError('Failed to download reference file. Please try again.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <motion.div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <motion.div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md"
@@ -30,9 +56,20 @@ export default function ImportUsers({ onClose, onSubmit, isVendorImporting }) {
         animate={{ scale: 1, opacity: 1 }}
       >
         <h2 className="text-2xl font-bold mb-4 text-gray-800">Import Candidate (CSV)</h2>
-        <p className="text-sm text-gray-500 mb-4">
+        <p className="text-sm text-gray-500 mb-2">
           Please select a CSV file containing candidate data. Only CSV files are allowed.
         </p>
+        
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-sm text-gray-600">Need a template?</span>
+          <button
+            onClick={handleDownloadReference}
+            disabled={isDownloading}
+            className="text-sm cursor-pointer text-blue-600 hover:text-blue-700 underline disabled:text-gray-400 disabled:no-underline transition"
+          >
+            {isDownloading ? 'Downloading...' : 'Download reference CSV'}
+          </button>
+        </div>
 
         <label
           className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition"

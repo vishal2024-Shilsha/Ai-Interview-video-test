@@ -243,18 +243,18 @@ import { useAuth } from "../../libs/AuthProvider";
 
 export default function DashboardPage() {
   // const { candidates,  } = useApp();
-  const candidates = []
   const navigate = useNavigate();
 
    const { getProfileCompleteness, canAccessManagement } = useAuth();
     let profileCompletion = getProfileCompleteness()
+    // debugger;
   if(profileCompletion<100){
     return navigate('/vendor/profile')
   }
 
   const { data, isLoading, isError } = useVendorDashboardApiQuery();
 
-  const { vendor, branches, credits_summary, candidates_summary, recent_candidates, dashboard_stats } = data || {};
+  const { vendor, branches, credits_summary, candidates_summary, recent_candidates,recent_activity, dashboard_stats } = data || {};
 
   console.log("ddlj", data)
   const totalCandidates = dashboard_stats?.total_candidates??0;
@@ -264,15 +264,22 @@ export default function DashboardPage() {
   const avgScore = dashboard_stats?.average_score??0;
   const passRate = dashboard_stats?.pass_rate??0;
 
-  const activityIcons = { test: "📤", candidate: "👤", result: "📊", credit: "💳" };
+  const activityIcons = { 
+  test: "", 
+  candidate: "", 
+  result: "", 
+  credit: "",
+  credits_purchased: "" 
+};
 
-  const RECENT_ACTIVITY = [
-    { id: 1, text: "Test link sent to Arjun Sharma", time: "2 hours ago", type: "test" },
-    { id: 2, text: "Priya Mehta added as new candidate", time: "4 hours ago", type: "candidate" },
-    { id: 3, text: "Vikram Singh completed test (Score: 93)", time: "Yesterday", type: "result" },
-    { id: 4, text: "Sneha Patel completed test (Score: 72)", time: "Yesterday", type: "result" },
-    { id: 5, text: "50 credits purchased (Professional plan)", time: "2 days ago", type: "credit" },
-  ];
+  // const RECENT_ACTIVITY = [
+  //   { id: 1, text: "Test link sent to Arjun Sharma", time: "2 hours ago", type: "test" },
+  //   { id: 2, text: "Priya Mehta added as new candidate", time: "4 hours ago", type: "candidate" },
+  //   { id: 3, text: "Vikram Singh completed test (Score: 93)", time: "Yesterday", type: "result" },
+  //   { id: 5, text: "50 credits purchased (Professional plan)", time: "2 days ago", type: "credit" },
+  // ];
+
+  const RECENT_ACTIVITY=recent_activity??[]
 
   return (
     <div className="p-4 lg:p-3 space-y-6">
@@ -340,11 +347,11 @@ export default function DashboardPage() {
             <span className="text-xs text-gray-400">Last 7 days</span>
           </div>
           <div className="divide-y divide-gray-50">
-            {RECENT_ACTIVITY.map(a => (
-              <div key={a.id} className="flex items-start gap-3 p-4">
-                <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-sm flex-shrink-0">{activityIcons[a.type]}</div>
+            {RECENT_ACTIVITY.map((a, index) => (
+              <div key={index} className="flex items-start gap-3 p-4">
+                <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-sm flex-shrink-0">{a.icon}</div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-700">{a.text}</p>
+                  <p className="text-sm text-gray-700">{a.message}</p>
                   <p className="text-xs text-gray-400 mt-0.5">{a.time}</p>
                 </div>
               </div>

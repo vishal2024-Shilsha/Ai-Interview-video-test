@@ -158,14 +158,14 @@ import { useLocation } from "react-router-dom";
 // import { useEffect } from "react";
 
 export function Sidebar({ isOpen, onClose }) {
-  const { getProfileCompleteness, canAccessManagement } = useAuth();
+  const { getProfileCompleteness, canAccessManagement, getRemainsCredit } = useAuth();
   let profileCompletion = getProfileCompleteness()
-    const [logout, { isLoading }] = useLogoutMutation();
-  
-  console.log("canAccess",canAccessManagement);
-  console.log("pp",profileCompletion)
+  let credits = getRemainsCredit()
+  const [logout, { isLoading }] = useLogoutMutation();
+
+  console.log("canAccess", canAccessManagement);
+  console.log("pp", profileCompletion)
   // debuggers
-  let credits = 500;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -174,8 +174,8 @@ export function Sidebar({ isOpen, onClose }) {
     try {
       const result = await logout();
       // console.log("logout-response", result);
-      if(result?.error){
-        return toast.error(result?.error?.data?.detail??"Something went wrong !")
+      if (result?.error) {
+        return toast.error(result?.error?.data?.detail ?? "Something went wrong !")
       }
       if (result?.data) {
         toast.success("Vendor Logout Successfully.")
@@ -191,16 +191,16 @@ export function Sidebar({ isOpen, onClose }) {
 
   const navItems = [
     { to: "/vendor/dashboard", label: "Dashboard", icon: "", end: true },
-    { to: "/vendor/candidates", label: "Candidates", icon: "", end: true },
-    { to: "/vendor/results", label: "Test & Results", icon: "", end: true },
-    { to: "/vendor/subscription/view", label: "Subscription", icon: "", end: true },
-    { to: "/vendor/employee", label: "Employees", icon: "", end: true },
-    { to: "/vendor/profile", label: "Campus Profile", icon: "", end: true },
+    { to: "/vendor/candidates", label: "Candidates", icon: "", end: false },
+    { to: "/vendor/results", label: "Test & Results", icon: "", end: false },
+    { to: "/vendor/subscription/view", label: "Subscription", icon: "", end: false },
+    { to: "/vendor/employee", label: "Employees", icon: "", end: false },
+    { to: "/vendor/profile", label: "Campus Profile", icon: "", end: false },
   ];
 
-  // ✅ AUTO REDIRECT LOGIC
+  // AUTO REDIRECT LOGIC
   useEffect(() => {
-    console.log("pr",profileCompletion)
+    console.log("pr", profileCompletion)
     if (
       profileCompletion < 100 &&
       location.pathname !== "/vendor/profile"
@@ -220,11 +220,10 @@ export function Sidebar({ isOpen, onClose }) {
       )}
 
       <aside
-        className={`fixed overflow-scroll inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-100 flex flex-col transition-transform duration-300 ${
-          isOpen
+        className={`fixed overflow-scroll inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-100 flex flex-col transition-transform duration-300 ${isOpen
             ? "translate-x-0"
             : "-translate-x-full lg:translate-x-0"
-        }`}
+          }`}
       >
         {/* Logo */}
         <div className="p-6 py-5 border-b sticky top-0 bg-white z-20 border-gray-100">
@@ -294,15 +293,13 @@ export function Sidebar({ isOpen, onClose }) {
                 }}
                 className={({ isActive }) =>
                   `w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left 
-                  ${
-                    isActive && !isLocked
-                      ? "bg-indigo-600 text-white shadow-md shadow-indigo-200"
-                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                  ${isActive && !isLocked
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-200"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                   }
-                  ${
-                    isLocked
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
+                  ${isLocked
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
                   }`
                 }
               >
@@ -364,7 +361,7 @@ function Header({ onMenuToggle }) {
   // const { profile, authUser } = useApp();
 
   let profile = JSON.parse(localStorage.getItem('user'))
-  console.log("popopopo",profile)
+  console.log("popopopo", profile)
   let authUser = {}
 
   const navigate = useNavigate();
@@ -405,18 +402,18 @@ function Header({ onMenuToggle }) {
           className="flex items-center gap-2 hover:bg-gray-50 px-2 py-1.5 rounded-xl transition-colors"
         >
           <div className="w-8 h-8 rounded-full bg-linear-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
-            {(profile.campusName || authUser?.campusName || "CA").slice(0, 2).toUpperCase()}
+            {(profile?.campusName || authUser?.campusName || "CA").slice(0, 2).toUpperCase()}
           </div>
           <div className="hidden sm:block text-left">
             <div className="text-xs font-semibold text-gray-800">{profile?.name || authUser?.campusName || "Campus Admin"}</div>
             <div className="text-xs text-gray-400">
-              {profile?.last_login 
-                ? `Last login: ${new Date(profile.last_login).toLocaleString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}`
+              {profile?.last_login
+                ? `Last login: ${new Date(profile?.last_login).toLocaleString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}`
                 : "Head of Placement"
               }
             </div>

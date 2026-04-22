@@ -6,6 +6,7 @@ const AuthContext = createContext();
 
 // AuthProvider Component
 export const AuthProvider = ({ children }) => {
+
   const [profileCompleteness, setProfileCompleteness] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -29,6 +30,7 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       
       let userData = user;
+      console.log("userData--check",userData);
       
       // Fallback to localStorage if Redux user is not available
       if (!userData) {
@@ -38,8 +40,8 @@ export const AuthProvider = ({ children }) => {
       // Get completeness from backend response
       if (userData?.profile_complete_percentage !== undefined) {
         setProfileCompleteness(userData.profile_complete_percentage);
-      } else if (userData?.profile_complete_percentage !== undefined) {
-        setProfileCompleteness(userData.profile_complete_percentage);
+      } else{
+        setProfileCompleteness(0);
       } 
       
       setIsLoading(false);
@@ -74,7 +76,11 @@ export const AuthProvider = ({ children }) => {
 
   // Get profile completeness percentage
   const getProfileCompleteness = () => {
-    return profileCompleteness;
+    return getUserFromStorage()?.profile_complete_percentage || 0;
+  };
+
+  const getRemainsCredit = () => {
+    return getUserFromStorage()?.remaining_credits || 0;
   };
 
   // Update profile completeness manually (for when user updates profile)
@@ -127,6 +133,7 @@ export const AuthProvider = ({ children }) => {
     getProfileCompleteness,
     updateProfileCompleteness,
     getMissingFields,
+    getRemainsCredit,
     role,
     isLoggedIn
   };
@@ -151,7 +158,7 @@ export const useAuth = () => {
 export const withProfileCompleteCheck = (Component) => {
   return function ProtectedComponent(props) {
     const { canAccessManagement, redirectToProfileIfIncomplete, isLoading } = useAuth();
-    debugger;
+    // debugger;
     useEffect(() => {
       if (!isLoading && !canAccessManagement()) {
         redirectToProfileIfIncomplete();

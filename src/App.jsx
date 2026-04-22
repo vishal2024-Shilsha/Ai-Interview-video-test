@@ -52,6 +52,9 @@ const Profile = lazy(() => import("./page/vendor/Profile"));
 const ResultManagement = lazy(() =>
   import("./page/vendor/result/ResultManagement")
 );
+const CandidateDetailsPage = lazy(() =>
+  import("./page/vendor/user/CandidateDetailsPage")
+);
 
 /* =========================
    Lazy Loaded Public Pages
@@ -247,8 +250,12 @@ function App() {
                 element={<ResultManagement />}
               />
               <Route
-                path="result-management/view"
+                path="results/view"
                 element={<IntroAnalysis />}
+              />
+              <Route
+                path="candidates/:candidateId"
+                element={<CandidateDetailsPage />}
               />
               <Route path="role-management/view" element={<ViewSubVendorDetails />} />
             </Route>

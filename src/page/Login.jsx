@@ -121,7 +121,7 @@ export default function CreateAccount() {
   const [vendorData, setVendorData] = useState({
     email: "",
     password: "",
-    module: "company",
+    module: "campus",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
@@ -159,7 +159,8 @@ window.scrollTo(0, 0)
               planName: result?.plan_name,
               status: result?.is_subscribed,
               profile_complete_percentage:result?.profile_complete_percentage || 0,
-              last_login:result?.last_login
+              last_login:result?.last_login,
+              remaining_credits:result?.remaining_credits || 0
             },
           })
         );
@@ -255,15 +256,10 @@ window.scrollTo(0, 0)
                   marginBottom: 32,
                 }}
               >
-                Log in to manage vendor operations, collaborate efficiently, and access AI-powered tools.
+                Log in to manage campus operations, collaborate efficiently, and access AI-powered tools.
               </p>
 
-              {[
-                ["🌐", "Global vendor network"],
-                ["⚡", "Smart workflow automation"],
-                ["📊", "Insightful analytics"],
-                ["🤖", "AI-driven vendor management"],
-              ].map(([icon, label]) => (
+              {[["🌐", "Global campus network"],["⚡", "Smart workflow automation"],["📊", "Insightful analytics"],["🤖", "AI-driven campus management"]].map(([icon, label]) => (
                 <div
                   key={label}
                   style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}
@@ -289,7 +285,7 @@ window.scrollTo(0, 0)
               ))}
             </div>
 
-            <div style={{ fontSize: 12, color: "#6B84A0" }}>© 2026 eBench</div>
+            <div style={{ fontSize: 12, color: "#6B84A0" }}> 2026 eBench</div>
           </div>
 
           {/* ── RIGHT PANEL ── */}
@@ -316,7 +312,7 @@ window.scrollTo(0, 0)
               Log In
             </h1>
             <p style={{ fontSize: 14, color: "#6B84A0", marginBottom: 28 }}>
-              Don't have a vendor account?{" "}
+              Don't have a campus account?{" "}
               <Link
                 to="/vendor-signup"
                 style={{ color: "#2B7FFF", fontWeight: 700, textDecoration: "none" }}
@@ -330,102 +326,6 @@ window.scrollTo(0, 0)
               style={{ display: "flex", flexDirection: "column", gap: 0 }}
               noValidate
             >
-              {/* ── Login As (module selector) ── */}
-              <div style={{ marginBottom: 20 }}>
-                <label
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "#3A5068",
-                    display: "block",
-                    marginBottom: 10,
-                  }}
-                >
-                  Login as
-                </label>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                  {["company", "campus"].map((mod) => (
-                    <label
-                      key={mod}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: "11px 14px",
-                        borderRadius: 12,
-                        border: `1.5px solid ${vendorData.module === mod ? "#2B7FFF" : "#D9E9F8"}`,
-                        background: vendorData.module === mod ? "#EAF3FF" : "white",
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                      }}
-                    >
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                        {/* Custom radio */}
-                        <div
-                          style={{
-                            width: 16,
-                            height: 16,
-                            borderRadius: "50%",
-                            border: `2px solid ${vendorData.module === mod ? "#2B7FFF" : "#C3D8EF"}`,
-                            background: vendorData.module === mod ? "#2B7FFF" : "white",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexShrink: 0,
-                            transition: "all 0.2s",
-                          }}
-                          onClick={() =>
-                            setVendorData((prev) => ({ ...prev, module: mod }))
-                          }
-                        >
-                          {vendorData.module === mod && (
-                            <div
-                              style={{
-                                width: 6,
-                                height: 6,
-                                borderRadius: "50%",
-                                background: "white",
-                              }}
-                            />
-                          )}
-                        </div>
-                        <input
-                          type="radio"
-                          name="module"
-                          value={mod}
-                          checked={vendorData.module === mod}
-                          onChange={handleChange}
-                          style={{ display: "none" }}
-                        />
-                        <span
-                          style={{
-                            fontSize: 14,
-                            fontWeight: 600,
-                            color: vendorData.module === mod ? "#0F2744" : "#6B84A0",
-                            textTransform: "capitalize",
-                          }}
-                        >
-                          {mod}
-                        </span>
-                      </div>
-                      {vendorData.module === mod && (
-                        <span
-                          style={{
-                            fontSize: 11,
-                            fontWeight: 700,
-                            color: "#2B7FFF",
-                            background: "#DBEAFE",
-                            padding: "2px 8px",
-                            borderRadius: 999,
-                          }}
-                        >
-                          Selected
-                        </span>
-                      )}
-                    </label>
-                  ))}
-                </div>
-              </div>
 
               {/* ── Email ── */}
               <div style={{ marginBottom: 18 }}>

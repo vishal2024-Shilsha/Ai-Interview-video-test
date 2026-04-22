@@ -518,7 +518,7 @@ function SignupPage({ nav }) {
 
         defaultValues: {
 
-            module: "company",
+            module: "campus",
 
             name: "",
 
@@ -705,49 +705,6 @@ function SignupPage({ nav }) {
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
 
-                        {/* Registered As */}
-                        <FormField label="Registered As">
-                            <div className="grid grid-cols-2 gap-3">
-
-                                {["company", "campus"].map((mod) => (
-                                    <label
-
-                                        key={mod}
-
-                                        className={`flex items-center justify-between px-4 py-3 border rounded-xl cursor-pointer transition
-
-                      ${watchedModule === mod
-
-                                                ? "border-[#286a94] bg-blue-50"
-
-                                                : "border-gray-300"
-
-                                            }`}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <input
-
-                                                type="radio"
-
-                                                value={mod}
-
-                                                {...register("module")}
-
-                                                className="accent-[#286a94]"
-
-                                            />
-                                            <span className="font-medium text-gray-700 capitalize">{mod}</span>
-                                        </div>
-
-                                        {watchedModule === mod && (
-                                            <span className="text-xs text-[#286a94] font-semibold">Selected</span>
-
-                                        )}
-                                    </label>
-
-                                ))}
-                            </div>
-                        </FormField>
 
                         {/* Country Select */}
                         <FormField label="Select Country">
@@ -813,12 +770,12 @@ function SignupPage({ nav }) {
                         </FormField>
 
                         {/* Name */}
-                        <FormField label={watchedModule === "campus" ? "Campus Name" : "Company Name"}>
+                        <FormField label="Campus Name">
                             <input
 
                                 type="text"
 
-                                placeholder={`Enter your ${watchedModule === "campus" ? "campus" : "company"} name`}
+                                placeholder="Enter your campus name"
 
                                 className={`${inputClass} ${errors.name ? "border-red-400 focus:ring-red-100" : ""}`}
 
