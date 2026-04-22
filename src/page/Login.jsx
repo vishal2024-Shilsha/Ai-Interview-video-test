@@ -115,6 +115,8 @@ import { setCredentials } from "../redux/Slices/AuthSlice";
 import toast from "react-hot-toast";
 
 
+
+
 export default function CreateAccount() {
   const [vendorData, setVendorData] = useState({
     email: "",
