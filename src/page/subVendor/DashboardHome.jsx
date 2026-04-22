@@ -21,7 +21,7 @@ const DashboardContent = () => {
   ];
 
   if(isLoading){
-    return <>Loasd</>
+    return <>Loading</>
   }
 
   return (
@@ -52,7 +52,7 @@ const DashboardContent = () => {
                     <tr>
                       <th className="py-3 px-4">Plan Name</th>
                       <th className="py-3 px-4">Country</th>
-                      <th className="py-3 px-4">Remains Credit</th>
+                      <th className="py-3 px-4">Remaining Credit</th>
                       <th className="py-3 px-4">Start Date</th>
                       <th className="py-3 px-4">End Date</th>
                     </tr>

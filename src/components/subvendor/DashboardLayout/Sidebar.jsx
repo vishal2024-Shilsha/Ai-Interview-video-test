@@ -119,7 +119,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             >
               {
                 isLoading ? <>
-                   Logging
+                  Logging
                   <span>
                     <Loader size={20} innerSize={10} />
                   </span>

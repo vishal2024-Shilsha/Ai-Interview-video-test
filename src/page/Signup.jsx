@@ -619,9 +619,9 @@ function SignupPage({ nav }) {
             <div className="flex max-w-5xl w-full rounded-3xl overflow-hidden shadow-[0_32px_80px_rgba(43,127,255,0.15)]">
 
                 {/* ── Left Panel ── */}
-                <div className="flex-1 min-w-[320px] bg-linear-to-b from-[#0F2744] to-[#1A3F6E] p-12 flex flex-col">
-                    <Logo nav={nav} />
-                    <div className="h-8" />
+                <div className="flex-1 min-w-[320px] bg-linear-to-b from-[#0F2744] to-[#1A3F6E] p-12 py-6 flex flex-col">
+                    <Logo nav={nav} item={true} width={250} />
+                    <div className="h-" />
 
                     <div className="bg-blue-500/18 border border-blue-500/30 rounded-2xl p-5 mb-7">
                         <div className="text-[10px] font-bold text-blue-400 mb-2 uppercase tracking-wider">

@@ -3,17 +3,44 @@ import { api } from './api';
 export const vendorApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllUserByVendor: builder.query({
-      query: ({ page, pageSize, search, filterNationality, filterResidence }) => ({
-        url: `/vendor/candidates?search=${search}&nationality=${filterNationality}&country_of_residence=${filterResidence}&page=${page}&limit=${pageSize}`,
+      query: ({
+        page,
+        pageSize,
+        search,
+        filterNationality,
+        filterResidence,
+        status,
+        university,
+        degree,
+        min_cgpa,
+        max_cgpa,
+        fromDate,
+        toDate,
+        sortBy,
+        sortOrder,
+      }) => ({
+        url: `/campus/candidates`,
+        params: {
+          search,
+          nationality: filterNationality,
+          country: filterResidence,
+          status_filter: status,
+          university_name: university,
+          degree,
+          min_cgpa,
+          max_cgpa,
+          from_date: fromDate,
+          to_date: toDate,
+          sort_by: sortBy,
+          sort_order: sortOrder,
+          page,
+          limit: pageSize,
+        },
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }),
-      providesTags: ['Vendor'],
-      keepUnusedDataFor: 300,
-      refetchOnMountOrArgChange: false,
-      refetchOnFocus: false,
-      refetchOnReconnect: false,
+      providesTags: ["Vendor"],
     }),
     addVendor: builder.mutation({
       query: (vendor) => ({
@@ -87,7 +114,7 @@ export const vendorApi = api.injectEndpoints({
     }),
     getVendorProfile: builder.query({
       query: () => ({
-        url: `/vendor/profile`,
+        url: `/campus/profile`,
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -97,7 +124,7 @@ export const vendorApi = api.injectEndpoints({
     }),
     updateVendorProfile: builder.mutation({
       query: (data) => ({
-        url: `/vendor/profile`,
+        url: `/campus/profile`,
         method: "PUT",
         body: data,
         headers: {
@@ -218,6 +245,7 @@ export const vendorApi = api.injectEndpoints({
           country = '',
           fromDate = '',
           toDate = '',
+          statusFilter = '',
         }
       ) => ({
         url: `/vendor/results`,
@@ -231,6 +259,7 @@ export const vendorApi = api.injectEndpoints({
           country_of_residence: country,
           from_date: fromDate,
           to_date: toDate,
+          status_filter: statusFilter,
         },
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
