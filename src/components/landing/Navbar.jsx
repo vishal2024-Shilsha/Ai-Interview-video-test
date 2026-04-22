@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import logo from '../../assets/eBenchCampu.png';
-import whiteLogo from '../../assets/eBench_white.png';
+import whiteLogo from '../../assets/ebenchwhite.png';
 
 export function Logo({ nav ,item=false,heigth=70,width=180}) {
   return (
