@@ -887,7 +887,7 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
         status: item?.is_active ? "active" : "inactive",
         testSent: item.test_sent_count > 0,
         testCompleted: item?.test_status,
-        score: item?.final_score * 100,
+        score: item?.final_score ? item?.final_score * 100 : "-",
         cooldown_active: item?.cooldown_active,
         cooldown_remaining_minutes: item?.cooldown_remaining_minutes,
         testCount: item?.test_sent_count
