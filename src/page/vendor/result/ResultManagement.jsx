@@ -531,7 +531,7 @@ export default function ResultsPage() {
     },
     {
       key: "actions", label: "Actions", render: (_, row) => (
-        <button onClick={() => navigate(`/vendor/result-management/view?resultId=${row?.result_id}&candidateId=${row?.candidate_id}`)}  className="text-xs flex justify-center items-center w-full cursor-pointer text-indigo-600 hover:underline font-medium">
+        <button onClick={() => navigate(`/vendor/results/view?resultId=${row?.result_id}&candidateId=${row?.candidate_id}`)}  className="text-xs flex justify-center items-center w-full cursor-pointer text-indigo-600 hover:underline font-medium">
           <Eye size={18} />
         </button>
       )

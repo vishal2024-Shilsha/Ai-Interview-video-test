@@ -418,6 +418,16 @@ export const vendorApi = api.injectEndpoints({
         }
       })
     }),
+    getCandidateById: builder.query({
+      query: (candidateId) => ({
+        url: `/campus/candidate/${candidateId}`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }),
+      providesTags: ["Vendor"],
+    }),
   }),
 });
 
@@ -428,5 +438,5 @@ export const { useAddonCreditsCheckoutMutation, useChangePasswordMutation, useGe
   useUpdateBranchDetailsMutation, useGetSubscriptionDetailQuery, useLazyGetSubscriptionDetailQuery,
   useSelectVendorSubscriptionMutation, useViewSubscriptionListQuery, useVendorDashboardApiQuery,
   useResultManagementDataQuery, useViewResultByUserIdQuery, useDownloadCandidateResultMutation,
-  useLogoutMutation, useAddCampusVendorMutation, useImportCampusVendorMutation, useActiveInactiveCandidateMutation
+  useLogoutMutation, useAddCampusVendorMutation, useImportCampusVendorMutation, useActiveInactiveCandidateMutation, useGetCandidateByIdQuery
 } = vendorApi;

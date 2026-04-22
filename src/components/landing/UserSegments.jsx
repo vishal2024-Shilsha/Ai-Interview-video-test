@@ -16,15 +16,15 @@ function UserSegments({ nav }) {
       ],
     },
     {
-      icon: "💼",
-      title: "Recruiters",
-      sub: "Companies & Startups",
-      color: "from-sky-500 to-cyan-500",
+      icon: "�",
+      title: "Students",
+      sub: "Career Seekers & Learners",
+      color: "from-blue-500 to-indigo-600",
       perks: [
-        "Filter by AI score",
-        "Verified assessments",
-        "AI hiring suggestions",
-        "60% faster hiring",
+        "Personalized skill assessments",
+        "AI-powered learning paths",
+        "Real-time performance tracking",
+        "Career guidance & recommendations",
       ],
     },
   ];
@@ -43,12 +43,12 @@ function UserSegments({ nav }) {
         <div className="space-y-8">
           <div>
             <h2 className="text-xl  text-gray-900 leading-tight mb-6">
-               <span className="text-blue">Every Collages Campus & Company</span>
+               <span className="text-blue">Empowering Students & Colleges</span>
             </h2>
 
             <p className="text-gray-600 text-lg">
-              Whether you're a college managing placements or a recruiter hiring top talent —
-              our AI platform helps you make smarter, faster decisions.
+              Whether you're a student building your career or a college managing placements —
+              our AI platform helps you achieve your goals faster and smarter.
             </p>
           </div>
 
@@ -104,10 +104,10 @@ function UserSegments({ nav }) {
               </div>
 
               <button
-                onClick={() => navigate("vendor-signup")}
+                onClick={() => s.title === "Students" ? navigate("/signup") : navigate("vendor-signup")}
                 className={`w-full cursor-pointer py-2 rounded-lg text-white font-medium bg-linear-to-r ${s.color}`}
               >
-                Continue →
+                {s.title === "Students" ? "Get Started ->" : "Continue ->"}
               </button>
             </div>
           ))}

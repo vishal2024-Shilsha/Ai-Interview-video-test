@@ -160,7 +160,7 @@ const Index = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-all ${activeTab === tab.id
+                className={`flex items-center cursor-pointer justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-all ${activeTab === tab.id
                   ? "bg-white text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
                   }`}

@@ -2,17 +2,17 @@ import { SectionHeader } from "../../libs/Divider";
 
 function Testimonials() {
   const t = [
-    { q: "EbenchCampus transformed our placement process. We now filter top 50 candidates in minutes instead of days, and our offer acceptance rate jumped 40%.", n: "Anjali Kapoor", r: "Placement Head", i: "AK", c: "#2B7FFF" },
     { q: "The AI feedback was eye-opening. I knew I was weak in system design, but the roadmap it gave me helped me crack three SDE interviews in one month.", n: "Rohan Verma", r: "B.Tech CSE Student", i: "RV", c: "#7C3AED" },
-    { q: "We've reduced our campus hiring cost by 55%. The AI-generated candidate summaries mean our HR team can shortlist 200 profiles in under an hour.", n: "Vikram Sethi", r: "VP Engineering", i: "VS", c: "#0FA8E0" },
     { q: "As a parent, I finally understand my daughter's academic strengths. The monthly AI reports are clear, actionable, and so much better than a marksheet.", n: "Sunita Menon", r: "Parent, Bengaluru", i: "SM", c: "#D97706" },
+    { q: "The skill assessments helped me identify my strengths in data analytics. I landed my dream internship with a top fintech company!", n: "Priya Sharma", r: "MBA Student", i: "PS", c: "#2B7FFF" },
+    { q: "EbenchCampus helped me prepare for placement season. The mock tests and AI insights boosted my confidence and performance.", n: "Amit Kumar", r: "B.Tech Mechanical", i: "AK", c: "#0FA8E0" },
   ];
   return (
     <section id="review" className="py-24 px-8 bg-linear-to-b from-[#F7FBFF] to-[#EFF6FF]">
       <div className="max-w-6xl mx-auto">
         <SectionHeader
-          title="Trusted by Thousands"
-          sub="Students, colleges, recruiters, and parents — all seeing real results."
+          title="Loved by Students & Parents"
+          sub="Students building careers and parents tracking progress - all seeing real results."
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {t.map((x, i) => (

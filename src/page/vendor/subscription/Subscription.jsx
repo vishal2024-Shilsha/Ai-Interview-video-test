@@ -99,13 +99,6 @@ const VendorSubscriptionPage = () => {
 
     return (
         <div className=" bg-linear-to-br ">
-            {/* Animated Background Elements */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
-                <div className="absolute top-40 right-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-                <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
-            </div>
-
             <style>{` 
         @keyframes blob {
           0%, 100% { transform: translate(0, 0) scale(1); }
@@ -155,7 +148,7 @@ const VendorSubscriptionPage = () => {
 
                     <button
                         onClick={() => setIsAddonOpen(true)}
-                        className="h-12x px-5 w-36   rounded-md bg-[#4d77b9] text-white cursor-pointer text-sm hover:bg-[#6390d8] transition"
+                        className="h-12x px-5 w-36   rounded-md bg-indigo-600 text-white shadow-md cursor-pointer text-sm hover:bg-[#6390d8] transition"
                     >
                         Add-Credits
                     </button>
@@ -175,12 +168,12 @@ const VendorSubscriptionPage = () => {
                             >
                                 {/* Header */}
                                 <div className="flex items-center justify-between">
-                                    <h3 className="text-xl font-semibold capitalize text-[#286a94]">
+                                    <h3 className="text-xl font-semibold capitalize text-indigo-600 ">
                                         {plan.name}
                                     </h3>
                                     <Zap
                                         size={22}
-                                        className="text-[#286a94] opacity-60 group-hover:opacity-100"
+                                        className=" text-indigo-600 opacity-60 group-hover:opacity-100"
                                     />
                                 </div>
 
@@ -192,7 +185,7 @@ const VendorSubscriptionPage = () => {
 
                                 {/* Price */}
                                 <div className="my-4 flex items-end gap-1">
-                                    <span className="text-2xl font-bold text-[#286a94]">
+                                    <span className="text-2xl font-bold text-indigo-600 ">
                                         {plan.currency} {plan.price}
                                     </span>
                                 </div>
@@ -217,13 +210,13 @@ const VendorSubscriptionPage = () => {
                                 <button
                                     onClick={() => handleSubscribe(plan)}
                                     disabled={loadhandle === plan.id}
-                                    className={`mt-6 w-full flex items-center justify-center gap-2
-    bg-[#286a94] text-white py-2.5 rounded-lg font-medium
+                                    className={`mt-6 cursor-pointer w-full flex items-center justify-center gap-2
+      text-white py-2.5 rounded-lg font-medium
     transition-all duration-300
     
     active:scale-95
     ${loadhandle === plan.id ? "opacity-70 cursor-not-allowed" : ""}
-    ${plan?.is_active ? 'opacity-70 bg-gray-400 hover:bg-gray-400 cursor-not-allowed' : 'hover:bg-indigo-700 hover:shadow-md'}
+    ${plan?.is_active ? 'opacity-70 bg-gray-400 hover:bg-gray-400 cursor-not-allowed' : 'hover:bg-indigo-700 bg-indigo-600 hover:shadow-md'}
   `}
                                 >
                                     {
@@ -305,13 +298,13 @@ export const Modal = ({ plan, isLoadingCheckout, isOpen, onClose, onConfirm }) =
                         {/* Close Button */}
                         <button
                             onClick={onClose}
-                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+                            className="absolute top-7 cursor-pointer right-4 text-gray-500 hover:text-gray-800"
                         >
                             <X size={20} />
                         </button>
 
                         {/* Modal Header */}
-                        <h2 className="text-2xl font-bold text-[#286a94] mb-2">
+                        <h2 className=" text-indigo-600 font-bold text-xl mb-2">
                             Confirm Subscription
                         </h2>
                         <hr className='text-[#d6dbdd] mb-4' />
@@ -342,13 +335,13 @@ export const Modal = ({ plan, isLoadingCheckout, isOpen, onClose, onConfirm }) =
                         <div className="flex justify-end gap-3">
                             <button
                                 onClick={onClose}
-                                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+                                className="px-4 py-2 rounded-lg cursor-pointer border border-gray-300 text-indigo-400 hover:bg-gray-100 transition"
                             >
                                 Cancel
                             </button>
                             <motion.button
                                 onClick={() => onConfirm(plan)}
-                                className="px-4 py-2 rounded-lg bg-[#286a94] text-white hover:bg-[#477d9e] transition flex items-center gap-2"
+                                className="px-4 py-2 cursor-pointer rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition flex items-center gap-2"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
@@ -532,13 +525,13 @@ function AddonCreditsModal({ isOpen, onClose, onPurchase }) {
             <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl p-6">
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                    className="absolute top-8 cursor-pointer right-4 text-gray-400 hover:text-gray-600"
                 >
                     <X size={20} />
                 </button>
 
                 {/* Title */}
-                <h2 className="text-xl font-bold text-[#286a94] mb-1">Add Credits</h2>
+                <h2 className="text-xl font-bold text-indigo-600 mb-1">Add Credits</h2>
                 <p className="text-sm text-gray-500 mb-6">
                     Purchase additional credits for your active plan
                 </p>
@@ -625,8 +618,8 @@ function AddonCreditsModal({ isOpen, onClose, onPurchase }) {
                             <button
                                 onClick={() => handlePurchase(item)}
                                 disabled={purchasingId === item.subscription_id}
-                                className={`w-full flex items-center justify-center gap-2 bg-[#286a94] text-white py-2.5 rounded-lg font-medium transition-all active:scale-95
-                ${purchasingId === item.subscription_id ? "opacity-70 cursor-not-allowed" : "hover:bg-[#1f5478]"}
+                                className={`w-full flex items-center cursor-pointer justify-center gap-2 bg-indigo-600 text-white py-2.5 rounded-lg font-medium transition-all active:scale-95
+                ${purchasingId === item.subscription_id ? "opacity-70 cursor-not-allowed" : "hover:bg-indigo-500"}
               `}
                             >
                                 {purchasingId === item.subscription_id ? (

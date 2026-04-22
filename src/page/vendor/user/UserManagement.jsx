@@ -795,8 +795,10 @@ const MOCK_CANDIDATES = [
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function CandidatesPage() {
+  const navigate = useNavigate();
   const [candidates, setCandidates] = useState(MOCK_CANDIDATES);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -1250,8 +1252,9 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
         )} */}
 
               <button
-                onClick={() => openEdit(row)}
+                onClick={() => navigate(`/vendor/candidates/${row.id}`)}
                 className="text-xs bg-gray-50 cursor-pointer text-gray-700 hover:bg-gray-100 px-2.5 py-1 rounded-lg font-medium"
+                title="View Details"
               >
                 <Eye size={16} />
               </button>
