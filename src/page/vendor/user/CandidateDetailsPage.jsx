@@ -12,6 +12,7 @@ export default function CandidateDetailsPage() {
   });
 
   const candidate = candidateData?.candidate;
+  console.log("candidate", candidate)
 
   useEffect(() => {
     if (error?.status === 401) {
@@ -85,14 +86,16 @@ export default function CandidateDetailsPage() {
                 <ArrowLeft className="h-5 w-5 text-indigo-600 group-hover:text-indigo-700 transition-colors" />
               </button>
               <div>
-                <h1 className="text-2xl font-bold text-indigo-900">Candidate Details</h1>
-                <p className="text-sm text-indigo-600 mt-1">Complete profile overview and performance analysis</p>
+                <h1 className="text-xl font-bold text-indigo-900">Candidate Details</h1>
+                <p className="text-xs text-indigo-600 mt-1">Complete profile overview and performance analysis</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg shadow-sm border border-indigo-200">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium text-indigo-700">Active</span>
+              <div className={`flex items-center gap-2 px-3 py-2 bg-white rounded-lg shadow-sm border ${candidate?.is_active ? 'border-green-200' : 'border-red-200'}`}>
+                <div className={`w-2 h-2 ${candidate?.is_active ? 'bg-green-500 animate-pulse' : 'bg-red-500'} rounded-full`}></div>
+                <span className={`text-sm font-medium ${candidate?.is_active ? 'text-green-700' : 'text-red-700'}`}>
+                  {candidate?.is_active ? 'Active' : 'Inactive'}
+                </span>
               </div>
             
             </div>
@@ -128,8 +131,8 @@ export default function CandidateDetailsPage() {
               <User className="h-7 w-7 text-indigo-600" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-indigo-900">Personal Information</h2>
-              <p className="text-sm text-indigo-600 mt-1">Basic contact and demographic details</p>
+              <h2 className="text-xl font-bold text-indigo-900">Personal Information</h2>
+              <p className="text-xs text-indigo-600 mt-1">Basic contact and demographic details</p>
             </div>
           </div>
           
@@ -179,8 +182,8 @@ export default function CandidateDetailsPage() {
               <GraduationCap className="h-7 w-7 text-indigo-600" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-indigo-900">Academic Information</h2>
-              <p className="text-sm text-indigo-600 mt-1">Educational background and academic details</p>
+              <h2 className="text-xl font-bold text-indigo-900">Academic Information</h2>
+              <p className="text-xs text-indigo-600 mt-1">Educational background and academic details</p>
             </div>
           </div>
           
@@ -248,8 +251,8 @@ export default function CandidateDetailsPage() {
               <TrendingUp className="h-7 w-7 text-indigo-600" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-indigo-900">Test Statistics</h2>
-              <p className="text-sm text-indigo-600 mt-1">Overall test performance and completion metrics</p>
+              <h2 className="text-xl font-bold text-indigo-900">Test Statistics</h2>
+              <p className="text-xs text-indigo-600 mt-1">Overall test performance and completion metrics</p>
             </div>
           </div>
           
@@ -295,8 +298,8 @@ export default function CandidateDetailsPage() {
               <Clock className="h-7 w-7 text-indigo-600" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-indigo-900">Test History</h2>
-              <p className="text-sm text-indigo-600 mt-1">Detailed test attempts and performance records</p>
+              <h2 className="text-xl font-bold text-indigo-900">Test History</h2>
+              <p className="text-xs text-indigo-600 mt-1">Detailed test attempts and performance records</p>
             </div>
           </div>
           
@@ -417,8 +420,8 @@ export default function CandidateDetailsPage() {
               <Award className="h-7 w-7 text-indigo-600" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-indigo-900">Status Information</h2>
-              <p className="text-sm text-indigo-600 mt-1">Account status and verification details</p>
+              <h2 className="text-xl font-bold text-indigo-900">Status Information</h2>
+              <p className="text-xs text-indigo-600 mt-1">Account status and verification details</p>
             </div>
           </div>
           
