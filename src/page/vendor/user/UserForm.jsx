@@ -13,7 +13,7 @@ const validationSchema = yup.object().shape({
     firstName: yup.string().required("First Name is required").max(30),
     lastName: yup.string().required("Last Name is required").max(30),
 
-    birthCountry: yup.object().nullable().required("Birth Country is required"),
+    // birthCountry: yup.object().nullable().required("Birth Country is required"),
     nationality: yup.object().nullable().required("Nationality is required"),
     countryOfResidence: yup.object().nullable().required("Country of Residence is required"),
 
@@ -24,15 +24,15 @@ const validationSchema = yup.object().shape({
         .required("Mobile number is required"),
 
     // 🎓 CAMPUS FIELDS
-    universityName: yup.string().when([], {
-        is: () => moduleType === "campus",
-        then: (schema) => schema.required("University is required"),
-    }),
+    // universityName: yup.string().when([], {
+    //     is: () => moduleType === "campus",
+    //     then: (schema) => schema.required("University is required"),
+    // }),
 
-    collegeName: yup.string().when([], {
-        is: () => moduleType === "campus",
-        then: (schema) => schema.required("College is required"),
-    }),
+    // collegeName: yup.string().when([], {
+    //     is: () => moduleType === "campus",
+    //     then: (schema) => schema.required("College is required"),
+    // }),
 
     degree: yup.string().when([], {
         is: () => moduleType === "campus",
@@ -78,6 +78,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
         mode: "onBlur",
     });
 
+    console.log("idvrnfitSddming",isVendorAdding)
     const countryCode = watch("countryCode") || "in";
     const { data: countryData, isLoading: countryLoading } = useGetCountryDataQuery();
     // const 
@@ -104,6 +105,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
 
 
     const handleFormSubmit = (data) => {
+        console.log("koko",data)
         // debugger;
         const payload = {
             first_name: data.firstName,
@@ -124,7 +126,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
                 graduation_year: data.graduationYear,
                 cgpa: data.cgpa,
                 roll_number: data.rollNumber,
-                department: data.department,        
+                department: data.department,
                 is_persuing: data?.isPursuing
             }),
         };
@@ -187,32 +189,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
                         )}
                     </div>
 
-                    {/* Birth Country */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Birth Country
-                        </label>
-                        <Controller
-                            name="birthCountry"
-                            control={control}
-                            render={({ field }) => (
-                                <Select
-                                    {...field}
-                                    options={countryOptions}
-                                    placeholder="Select Birth Country"
-                                    classNamePrefix="react-select"
-                                    styles={{
-                                        control: (base, state) => ({
-                                            ...base,
-                                        }),
-                                    }}
-                                />
-                            )}
-                        />
-                        {errors.birthCountry && (
-                            <p className="text-sm text-red-500 mt-1">{errors.birthCountry.message}</p>
-                        )}
-                    </div>
+
 
                     {/* Nationality */}
                     <div>
@@ -324,30 +301,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
 
                     {moduleType === "campus" && (
                         <>
-                            {/* University */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-
-                                    University</label>
-                                <input {...register("universityName")}
-                                    className={`w-full border rounded-lg p-2 bg-white outline-none ${errors.universityName ? "border-red-500" : "border-gray-300"
-                                        }`}
-                                    placeholder="University Name"
-                                />
-                                {errors.universityName && <p className="text-sm text-red-500 mt-1">{errors.universityName.message}</p>}
-                            </div>
-
-                            {/* College */}
-                            <div>
-                                <label className="font-medium text-sm text-gray-700 mb-1">College</label>
-                                <input {...register("collegeName")}
-                                    className={`w-full border rounded-lg p-2 outline-none ${errors.collegeName ? "border-red-500" : "border-gray-300"
-                                        }`}
-                                    placeholder="Collage Name"
-                                />
-                                {errors.collegeName && <p className="text-sm text-red-500 mt-1">{errors.collegeName.message}</p>}
-                            </div>
-
+                           
                             {/* Degree */}
                             {/* <div>
                                 <label className="font-medium text-sm text-gray-700 mb-1">Degree</label>
@@ -439,7 +393,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
                                         {specLoading ? "Loading..." : "Select Specialization"}
                                     </option>
 
-                                    {specializations?.data?.length>0 && specializations?.data?.map((spec) => (
+                                    {specializations?.data?.length > 0 && specializations?.data?.map((spec) => (
                                         <option key={spec.name} value={spec.id}>
                                             {spec.name}
                                         </option>
@@ -560,7 +514,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
                     )}
 
                     {/* Buttons */}
-                    <div className="col-span-2 flex justify-end gap-4 pt-4">
+                    <div className="col-span-3 flex justify-end gap-4 pt-4">
                         <button
                             type="submit"
                             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"

@@ -1,20 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import logo from '../../assets/ebench_logo.png';
-export function Logo({ nav }) {
+import logo from '../../assets/eBenchCampu.png';
+import whiteLogo from '../../assets/eBench_white.png';
+
+export function Logo({ nav ,item=false,heigth=70,width=180}) {
   return (
     <div
       className="flex items-center gap-2.5 cursor-pointer"
       onClick={() => nav("landing")}
     >
-      <div className="w-20 h-12 rounded-[10px] bg-linear-to-br  flex items-center justify-baseline">
-        {/* <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg> */}
-        <img src={logo} alt="" />
+      <div className=" rounded-[10px] bg-linear-to-br  flex items-center justify-baseline">
+        <img 
+         src={item ? whiteLogo :logo}
+          width={item ? width : 110}
+          height={item ? heigth : 120}
+          alt="logi"
+        />
       </div>
-      <span className="text-lg font-bold text-[#2d4f79] tracking-tight">
-        <span className="text-[#0740a1]">Campu</span>
-      </span>
     </div>
   );
 }

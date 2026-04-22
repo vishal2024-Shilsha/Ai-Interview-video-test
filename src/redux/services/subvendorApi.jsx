@@ -102,6 +102,7 @@ export const SubvendorApi = api.injectEndpoints({
           country = '',
           fromDate = '',
           toDate = '',
+          statusFilter = '',
         }
       ) => ({
         url: `/subvendor/results`,
@@ -115,6 +116,7 @@ export const SubvendorApi = api.injectEndpoints({
           country_of_residence: country,
           from_date: fromDate,
           to_date: toDate,
+          status_filter: statusFilter,
         },
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`

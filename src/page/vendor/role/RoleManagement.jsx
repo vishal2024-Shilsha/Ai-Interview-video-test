@@ -4,7 +4,6 @@ import { Eye, KeyRound } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useGetCountryDataQuery } from '../../../redux/services/externalApi'
 import { useActiveDeactiveSubVendorMutation, useAssignSubVendorSubscriptionMutation, useListofSubscriptionQuery, useListofSubVendorQuery, useRegisterSubVendorMutation } from '../../../redux/services/vendorApi'
-import { Input } from '../Profile'
 import { useForm, Controller } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -17,10 +16,10 @@ import {
 import PortalModal from '../../../libs/PortalModal'
 import Select from "react-select";
 import Loader from '../../../libs/Loader'
+import { Input } from '../../../libs/Ui'
 
 
 const RoleManagement = () => {
-  const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [editing, setEditing] = useState(false)
@@ -49,7 +48,7 @@ const RoleManagement = () => {
     return <>Something went wrong</>
   }
 
-  const total = users?.sub_vendors?.length
+  const total = users?.total
 
   const {
     register,
@@ -230,37 +229,36 @@ const RoleManagement = () => {
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
-        <div className="mb-3">
-          <h1 className="text-xl font-semibold text-[#286a94]">
-            Role Management
-          </h1>
-          <p className="text-sm text-gray-500">
-            Search and manage employee roles
+        
+         <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900">Employee</h2>
+          <p className="text-sm text-gray-500 mt-0.5">
+            {total??0} total employee added
           </p>
         </div>
-
-        {/* Filters */}
-        <div className=" flex justify-between items-center pb-5">
-
-          {/* Search */}
-          <div className="">
-            <input
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value)
-              }}
-              placeholder="Search by name or email"
-              className="h-10 w-80 px-3 rounded-md bg-white shadow outline-none"
-            />
-          </div>
-
+       <div className="flex gap-2">   
           <button
-            className="h-10 px-5  rounded-md bg-[#4d77b9] text-white cursor-pointer text-sm hover:bg-[#6390d8] transition"
             onClick={() => setEditing(true)}
+            className="bg-indigo-600 cursor-pointer hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-semibold"
           >
-            Add Employee
+            + Add Employee
           </button>
+
         </div>
+      </div>
+
+       
+        <div className="bg-white my-5 rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-wrap gap-3">
+  {/* Search */}
+  <div className="flex-1 min-w-48">
+    <input placeholder="&#x1f50d; Search by name or email..." value={query.search}
+      onChange={(e) => setQuery({...query, search: e.target.value})}
+      className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50" />
+  </div>
+
+ 
+</div>
 
         {/* TABLE */}
         <div className="bg-white rounded-lg shadow">
@@ -335,7 +333,7 @@ const RoleManagement = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        {u?.phone}
+                        {'+'+ u?.phone}
                       </td>
 
                       <td className="px-6 py-4">
@@ -885,10 +883,136 @@ const RoleManagement = () => {
           </PortalModal>
         )
       }
-
-
     </div >
   )
 }
 
 export default RoleManagement
+
+
+//================================
+
+// import { useState } from "react";
+// import { Input, Modal, Select, Table } from "../../../libs/Ui";
+
+
+// export default function EmployeesPage() {
+//   const [ employees, setEmployees ] =useState([])
+//   const [showModal, setShowModal] = useState(false);
+//   const [editEmployee, setEditEmployee] = useState(null);
+//   const [form, setForm] = useState({ name: "", email: "", phone: "", role: "Coordinator", department: "Training & Placement" });
+//   const [errors, setErrors] = useState({});
+//   const [search, setSearch] = useState("");
+
+//   const validate = () => {
+//     const e = {};
+//     if (!form.name.trim()) e.name = "Name is required";
+//     if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Valid email required";
+//     if (!form.phone.trim()) e.phone = "Phone is required";
+//     setErrors(e);
+//     return Object.keys(e).length === 0;
+//   };
+
+//   const handleSubmit = () => {
+//     if (!validate()) return;
+//     if (editEmployee) {
+//       setEmployees(prev => prev.map(e => e.id === editEmployee.id ? { ...e, ...form } : e));
+//       addToast("Employee updated!");
+//     } else {
+//       setEmployees(prev => [...prev, { id: Date.now(), ...form, status: "active", joinDate: new Date().toISOString().split("T")[0] }]);
+//       addToast("Employee added!");
+//     }
+//     setShowModal(false);
+//     setEditEmployee(null);
+//     setForm({ name: "", email: "", phone: "", role: "Coordinator", department: "Training & Placement" });
+//   };
+
+//   const openEdit = (emp) => {
+//     setEditEmployee(emp);
+//     setForm({ name: emp.name, email: emp.email, phone: emp.phone, role: emp.role, department: emp.department });
+//     setErrors({});
+//     setShowModal(true);
+//   };
+
+//   const toggleStatus = (id) => {
+//     setEmployees(prev => prev.map(e => e.id === id ? { ...e, status: e.status === "active" ? "inactive" : "active" } : e));
+//     addToast("Employee status updated.");
+//   };
+
+//   const filtered = employees.filter(e =>
+//     e.name.toLowerCase().includes(search.toLowerCase()) || e.email.toLowerCase().includes(search.toLowerCase())
+//   );
+
+//   const columns = [
+//     {
+//       key: "name", label: "Employee", render: (v, row) => (
+//         <div className="flex items-center gap-3">
+//           <div className="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center text-sm font-bold text-indigo-600">
+//             {v.split(" ").map(w => w[0]).slice(0, 2).join("")}
+//           </div>
+//           <div><div className="font-medium text-gray-900">{v}</div><div className="text-xs text-gray-400">{row.email}</div></div>
+//         </div>
+//       )
+//     },
+//     { key: "role", label: "Role", render: v => <Badge variant="indigo">{v}</Badge> },
+//     { key: "department", label: "Department" },
+//     { key: "joinDate", label: "Joined", render: v => new Date(v).toLocaleDateString("en-IN") },
+//     { key: "status", label: "Status", render: v => <Badge variant={v === "active" ? "green" : "red"}>{v}</Badge> },
+//     {
+//       key: "actions", label: "Actions", render: (_, row) => (
+//         <div className="flex gap-2">
+//           <button onClick={() => openEdit(row)} className="text-xs bg-gray-50 text-gray-700 hover:bg-gray-100 px-2.5 py-1 rounded-lg font-medium">Edit</button>
+//           <button onClick={() => toggleStatus(row.id)} className={`text-xs px-2.5 py-1 rounded-lg font-medium ${row.status === "active" ? "bg-red-50 text-red-700 hover:bg-red-100" : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"}`}>
+//             {row.status === "active" ? "Deactivate" : "Activate"}
+//           </button>
+//         </div>
+//       )
+//     },
+//   ];
+  
+
+
+//   return (
+//     <div className="p-2 space-y-6">
+//       <div className="flex items-center justify-between">
+//         <div>
+//           <h2 className="text-xl font-bold text-gray-900">Employees</h2>
+//           <p className="text-sm text-gray-500 mt-0.5">{employees.length} employees in your team</p>
+//         </div>
+//         <button
+//           onClick={() => { setEditEmployee(null); setForm({ name: "", email: "", phone: "", role: "Coordinator", department: "Training & Placement" }); setErrors({}); setShowModal(true); }}
+//           className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-md shadow-indigo-200"
+//         >
+//           + Add Employee
+//         </button>
+//       </div>
+
+//       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+//         <input placeholder="🔍  Search employees..." value={search} onChange={e => setSearch(e.target.value)}
+//           className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50" />
+//       </div>
+
+//       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
+//         <Table columns={columns} data={filtered} emptyMessage="No employees found" />
+//       </div>
+
+//       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editEmployee ? "Edit Employee" : "Add Employee"}>
+//         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+//           <Input label="Full Name" required placeholder="Dr. Suresh Verma" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} error={errors.name} className="sm:col-span-2" />
+//           <Input label="Email" required type="email" placeholder="suresh@college.edu" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} error={errors.email} />
+//           <Input label="Phone" required placeholder="9700000001" value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} error={errors.phone} />
+//           <Select label="Role" value={form.role} onChange={e => setForm(p => ({ ...p, role: e.target.value }))}
+//             options={["Placement Officer","Coordinator","Admin","HR Manager","Faculty","Support Staff"].map(r => ({ value: r, label: r }))} />
+//           <Select label="Department" value={form.department} onChange={e => setForm(p => ({ ...p, department: e.target.value }))}
+//             options={["Training & Placement","Administration","HR","Faculty","IT Support"].map(d => ({ value: d, label: d }))} />
+//         </div>
+//         <div className="flex gap-3 mt-6">
+//           <button onClick={() => setShowModal(false)} className="flex-1 border border-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50">Cancel</button>
+//           <button onClick={handleSubmit} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-indigo-200">
+//             {editEmployee ? "Update" : "Add Employee"}
+//           </button>
+//         </div>
+//       </Modal>
+//     </div>
+//   );
+// }

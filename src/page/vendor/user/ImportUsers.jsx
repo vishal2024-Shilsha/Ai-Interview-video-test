@@ -29,9 +29,9 @@ export default function ImportUsers({ onClose, onSubmit, isVendorImporting }) {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
       >
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Import Users (CSV)</h2>
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Import Candidate (CSV)</h2>
         <p className="text-sm text-gray-500 mb-4">
-          Please select a CSV file containing user data. Only CSV files are allowed.
+          Please select a CSV file containing candidate data. Only CSV files are allowed.
         </p>
 
         <label
@@ -51,7 +51,7 @@ export default function ImportUsers({ onClose, onSubmit, isVendorImporting }) {
         <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={onClose}
-            className="px-4 py-2 border rounded hover:bg-gray-100 transition"
+            className="px-4 py-2 cursor-pointer border rounded hover:bg-gray-100 transition"
           >
             Cancel
           </button>

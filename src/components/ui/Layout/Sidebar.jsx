@@ -165,6 +165,8 @@ import {
   FileUser,
   Podcast,
   Loader2,
+  AlertCircle,
+  Lock,
 } from "lucide-react";
 import { Gem } from "lucide-react";
 import logo from "../../../assets/logo_white2.png";
@@ -174,12 +176,22 @@ import toast from "react-hot-toast";
 import { useLogoutMutation } from "../../../redux/services/vendorApi";
 import Loader from "../../../libs/Loader";
 import { useAdminLogoutMutation } from "../../../redux/services/adminApi";
+import { useProfileCompleteness } from "../../../libs/useProfileCompleteness";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [logout, { isLoading }] = useLogoutMutation();
   const [adminLogout,{isLoading:adminLoadimg}]=useAdminLogoutMutation()
+  
+  // Profile completeness hook for security
+  const { 
+    canAccessManagement, 
+    checkAndRedirect, 
+    profileCompleteness, 
+    isLoading: profileLoading,
+    getProfileStatus 
+  } = useProfileCompleteness();
 
   /* ---------- LOGOUT ---------- */
   const handleLogout = async () => {
@@ -233,13 +245,25 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, role = "admin" }) => {
       to: "/vendor/user-management",
       label: "Candidate Management",
       icon: Users,
+      restricted: true, // Mark as restricted for incomplete profiles
     },
-    { to: "/vendor/result-management", label: "Result Management", icon: FileUser },
-    { to: "/vendor/role-management", label: "Role Management", icon: FileUser },
+    { 
+      to: "/vendor/result-management", 
+      label: "Result Management", 
+      icon: FileUser,
+      restricted: true, // Mark as restricted for incomplete profiles
+    },
+    { 
+      to: "/vendor/role-management", 
+      label: "Role Management", 
+      icon: FileUser,
+      restricted: true, // Mark as restricted for incomplete profiles
+    },
     {
       label: "Subscription",
       icon: Crown,
-      to:"/vendor/subscription/view"
+      to:"/vendor/subscription/view",
+      restricted: true, // Mark as restricted for incomplete profiles
       // submenu: [
       //   { to: "/vendor/subscription/plan", label: "Purchase Subscription", icon: Podcast },
       //   { to: , label: "View Subscription List", icon: Podcast },
@@ -272,6 +296,26 @@ const menuItems = useMemo(() => {
     setOpenMenu(activeMenu ? activeMenu.label : null);
   }, [menuItems]);
 
+  /* ---------- MENU CLICK HANDLER ---------- */
+  const handleMenuClick = (item, event) => {
+    event.preventDefault();
+    
+    // Check if the item is restricted and profile is incomplete
+    if (role === "vendor" && item.restricted && !canAccessManagement()) {
+      // Show warning and redirect to profile
+      checkAndRedirect({
+        showMessage: true,
+        redirectPath: "/vendor/profile",
+        message: `Please complete your profile (${profileCompleteness}%) to access ${item.label}`
+      });
+      return;
+    }
+    
+    // Navigate to the intended route
+    navigate(item.to);
+    closeSidebarOnMobile();
+  };
+
   /* ---------- MOBILE CLOSE ---------- */
   const closeSidebarOnMobile = () => {
     if (window.innerWidth < 768) {
@@ -293,6 +337,32 @@ const menuItems = useMemo(() => {
             <X className="h-5 w-5" />
           </button>
         </div>
+
+        {/* ---------- PROFILE COMPLETENESS INDICATOR (VENDOR ONLY) ---------- */}
+        {role === "vendor" && !profileLoading && (
+          <div className="px-4 py-3 border-b border-[#3E6E91]">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium">Profile Status</span>
+              <span className={`text-xs font-bold ${canAccessManagement() ? 'text-green-400' : 'text-yellow-400'}`}>
+                {profileCompleteness}%
+              </span>
+            </div>
+            <div className="w-full bg-[#1a4a6a] rounded-full h-2">
+              <div 
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  canAccessManagement() ? 'bg-green-400' : 'bg-yellow-400'
+                }`}
+                style={{ width: `${profileCompleteness}%` }}
+              />
+            </div>
+            {!canAccessManagement() && (
+              <p className="text-xs text-yellow-400 mt-2 flex items-center">
+                <AlertCircle className="h-3 w-3 mr-1" />
+                Complete profile to access all features
+              </p>
+            )}
+          </div>
+        )}
 
         {/* ---------- NAV ---------- */}
         <nav className="mt-6 flex flex-col gap-1">
@@ -342,22 +412,41 @@ const menuItems = useMemo(() => {
               );
             }
 
+            // Check if item is restricted and profile is incomplete
+            const isRestricted = role === "vendor" && item.restricted && !canAccessManagement();
+            
             return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                onClick={() => {
-                  setOpenMenu(null);
-                  closeSidebarOnMobile();
-                }}
-                className={({ isActive }) =>
-                  `flex items-center px-4 py-2 transition ${isActive ? "bg-[#49799b]" : "hover:bg-[#28527A]"
-                  }`
-                }
-              >
-                {Icon && <Icon className="h-5 w-5 mr-3" />}
-                <span>{item.label}</span>
-              </NavLink>
+              <div key={item.to} className="relative">
+                {isRestricted ? (
+                  // Restricted item - show with lock icon and custom click handler
+                  <button
+                    onClick={(e) => handleMenuClick(item, e)}
+                    className={`w-full flex items-center px-4 py-2 transition cursor-not-allowed opacity-60 hover:bg-[#28527A]`}
+                    title={`Profile incomplete (${profileCompleteness}%) - Complete profile to access`}
+                  >
+                    {Icon && <Icon className="h-5 w-5 mr-3" />}
+                    <Lock className="h-4 w-4 mr-2 text-yellow-400" />
+                    <span>{item.label}</span>
+                    <AlertCircle className="h-4 w-4 ml-auto text-yellow-400" />
+                  </button>
+                ) : (
+                  // Normal navigation item
+                  <NavLink
+                    to={item.to}
+                    onClick={() => {
+                      setOpenMenu(null);
+                      closeSidebarOnMobile();
+                    }}
+                    className={({ isActive }) =>
+                      `flex items-center px-4 py-2 transition ${isActive ? "bg-[#49799b]" : "hover:bg-[#28527A]"
+                      }`
+                    }
+                  >
+                    {Icon && <Icon className="h-5 w-5 mr-3" />}
+                    <span>{item.label}</span>
+                  </NavLink>
+                )}
+              </div>
             );
           })}
         </nav>

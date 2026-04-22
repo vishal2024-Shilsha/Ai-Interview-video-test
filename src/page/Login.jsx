@@ -106,7 +106,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import logo from "../assets/ebench_logo.png";
+import logo from "../assets/ebench_white.png";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import { useLoginMutation } from "../redux/services/authApi";
@@ -155,6 +155,8 @@ window.scrollTo(0, 0)
               id: result?.vendor_id,
               planName: result?.plan_name,
               status: result?.is_subscribed,
+              profile_complete_percentage:result?.profile_complete_percentage || 0,
+              last_login:result?.last_login
             },
           })
         );
@@ -216,16 +218,16 @@ window.scrollTo(0, 0)
               flex: "1 1 300px",
               minWidth: 280,
               background: "linear-gradient(180deg, #0F2744, #1A3F6E)",
-              padding: "48px 40px",
+              padding: "4px 40px",
               display: "flex",
               flexDirection: "column",
-              justifyContent: "space-between",
+              // justifyContent: "space-between",
               minHeight: 560,
             }}
           >
             {/* Logo */}
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <img src={logo} alt="eBench Logo" style={{ width: 110, objectFit: "contain" }} />
+            <div style={{ display: "flex", alignItems: "center",  }}>
+              <img src={logo} alt="eBench Logo" style={{ width: 250, objectFit: "contain" }} />
             </div>
 
             {/* Middle content */}

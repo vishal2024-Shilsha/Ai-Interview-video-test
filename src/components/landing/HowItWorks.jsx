@@ -9,8 +9,8 @@ function HowItWorks() {
 const steps = [
   {
     num: "01",
-    title: "Vendor Uploads Candidate Data",
-    desc: "Vendors import candidate details into the platform. This creates a structured talent pool ready for assessments and tracking.",
+    title: "Campus Uploads Candidate Data",
+    desc: "Campus import candidate details into the platform. This creates a structured talent pool ready for assessments and tracking.",
     color: "#2B7FFF",
     icon: "📥"
   },
