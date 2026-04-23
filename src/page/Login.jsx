@@ -456,44 +456,7 @@ window.scrollTo(0, 0)
                     )}
                   </button>
                 </div>
-              </div>
-
-              {/* ── Remember me ── */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  marginBottom: 24,
-                  cursor: "pointer",
-                  marginTop: 14,
-                }}
-                onClick={() => setRemember((r) => !r)}
-              >
-                <div
-                  style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 6,
-                    border: `2px solid ${remember ? "#2B7FFF" : "#C3D8EF"}`,
-                    background: remember ? "#2B7FFF" : "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    transition: "all 0.2s",
-                  }}
-                >
-                  {remember && (
-                    <svg width="11" height="11" fill="none" viewBox="0 0 24 24">
-                      <path d="M5 13l4 4L19 7" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  )}
-                </div>
-                <span style={{ fontSize: 14, color: "#3A5068" }}>
-                  Remember me for 30 days
-                </span>
-              </div>
+              </div>            
 
               {/* ── Submit ── */}
               <button
@@ -501,6 +464,7 @@ window.scrollTo(0, 0)
                 disabled={isLoading}
                 style={{
                   width: "100%",
+                  marginTop: 20,
                   padding: "14px 0",
                   background: isLoading
                     ? "linear-gradient(135deg, #93C5FD, #7DD3FC)"

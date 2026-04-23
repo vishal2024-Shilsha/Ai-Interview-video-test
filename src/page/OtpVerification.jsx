@@ -346,12 +346,19 @@ const OtpVerification = () => {
         }
       } else {
         const result = await verifyOtp({ email, otp: finalOtp }).unwrap();
-        if (result?.status) {
+        if (result?.status) { 
+          debugger;
           dispatch(setCredentials({
             token: result?.access_token,
             module: result?.module,
             user: result.role,
-            detail: { name: result?.name, email: result?.email, id: result?.vendor_id },
+            detail: { name: result?.name, email: result?.email, id: result?.vendor_id,
+               planName: result?.plan_name,
+              status: result?.is_subscribed,
+              profile_complete_percentage:result?.profile_complete_percentage || 0,
+              last_login:result?.last_login,
+              remaining_credits:result?.remaining_credits || 0
+             },
           }));
           toast.success("OTP Verified Successfully!");
           setTimeout(() => navigate("/vendor/dashboard"), 800);
