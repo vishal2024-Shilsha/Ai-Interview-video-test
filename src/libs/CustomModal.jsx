@@ -17,7 +17,7 @@ const CustomModal = ({
         
         {/* TITLE */}
         {title && (
-          <h2 className="text-lg font-semibold text-[#286a94] mb-3">
+          <h2 className="text-lg font-semibold text-[#286a94] border-b-1 border-gray-200 pb-2 mb-5">
             {title}
           </h2>
         )}
