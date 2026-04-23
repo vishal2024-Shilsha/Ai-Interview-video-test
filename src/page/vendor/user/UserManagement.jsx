@@ -603,7 +603,7 @@ export function Pagination({ page = 0, totalPages = 0, setPage }) {
 
       {/* Current page button */}
       <button
-        className="px-3 py-1 text-sm rounded-md border bg-[#598aa8] text-white border-[#598aa8]"
+        className="px-3 py-1 text-sm rounded-md border bg-[#598aa8] text-white border-[#598aa8] cursor-pointer"
         disabled
       >
         {page}

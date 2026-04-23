@@ -1777,7 +1777,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={() => setIsEditing(true)}
-                className="px-6 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-200 transition-all"
+                className="px-6 py-2.5 cursor-pointer rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-200 transition-all"
               >
                 ✏️ Edit Profile
               </button>

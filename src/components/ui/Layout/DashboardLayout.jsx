@@ -397,14 +397,14 @@ function Header({ onMenuToggle }) {
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <button className="relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100 text-gray-500">
+      <div className="flex cursor-pointer items-center gap-3">
+        <button className="relative w-9 cursor-pointer h-9 flex items-center justify-center rounded-xl hover:bg-gray-100 text-gray-500">
           🔔
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
         </button>
         <button
           onClick={() => navigate("/vendor/profile")}
-          className="flex items-center gap-2 hover:bg-gray-50 px-2 py-1.5 rounded-xl transition-colors"
+          className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-2 py-1.5 rounded-xl transition-colors"
         >
           <div className="w-8 h-8 rounded-full bg-linear-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
             {(profile?.campusName || authUser?.campusName || "CA").slice(0, 2).toUpperCase()}
