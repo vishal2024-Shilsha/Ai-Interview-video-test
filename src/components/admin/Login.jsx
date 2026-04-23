@@ -28,7 +28,7 @@ export default function AdminLoginPage() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-
+        // debugger;
         try {
             const result = await adminLogin(formdata);
             // console.log("res", result)

@@ -6,12 +6,36 @@ const AuthContext = createContext();
 
 // AuthProvider Component
 export const AuthProvider = ({ children }) => {
+  const role = localStorage.getItem('role');
+
+  // For admin users, skip all profile processing but still provide context
+  if (role === 'admin') {
+    const adminValue = {
+      profileCompleteness: 100,
+      isLoading: false,
+      isProfileComplete: () => true,
+      canAccessManagement: () => true,
+      redirectToProfileIfIncomplete: () => false,
+      getProfileCompleteness: () => 100,
+      updateProfileCompleteness: () => {},
+      getMissingFields: () => [],
+      getRemainsCredit: () => 0,
+      role,
+      isLoggedIn: !!localStorage.getItem('token')
+    };
+
+    return (
+      <AuthContext.Provider value={adminValue}>
+        {children}
+      </AuthContext.Provider>
+    );
+  }
 
   const [profileCompleteness, setProfileCompleteness] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   
   // Get user data from Redux store
-  const { user, isLoggedIn, role } = useSelector((state) => state.auth);
+  const { user, isLoggedIn } = useSelector((state) => state.auth);
   
   // Get user details from localStorage (fallback)
   const getUserFromStorage = () => {
