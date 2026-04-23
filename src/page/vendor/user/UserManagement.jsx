@@ -835,19 +835,9 @@ export default function CandidatesPage() {
   const [selectedIds, setSelectedIds] = useState([]);
   const [bulkMode, setBulkMode] = useState(false);
 
-  const toggleSelectOne = (id) =>
-    setSelectedIds(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    );
-
-  const toggleSelectAll = () =>
-    setSelectedIds(isAllSelected ? [] : filteredData.map(c => c.id));
-  // ────────────────────────────────────────────────────────────
-
-
-  const branches = [...new Set(candidates.map(c => c.branch))];
-
   const role = localStorage.getItem("role");
+
+
   const { data, isLoading, error } =
     role === "sub_vendor"
       ? useGetAllCandidatesBySubVendorQuery(
@@ -862,19 +852,6 @@ export default function CandidatesPage() {
         },
         { refetchOnMountOrArgChange: false }
       );
-
-  const { data: countryData, isLoading: countryLoading } = useGetCountryDataQuery();
-
-  if (error?.status === 401) {
-    window.location.href = "/login";
-    localStorage.clear();
-    return;
-  }
-
-
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedQuery, filterNationality, filterStatus, pageSize, fromDate, toDate, minCgpa, maxCgpa]);
 
   // ── Transform API data ──────────────────────────────────────
   const transformedData =
@@ -898,6 +875,41 @@ export default function CandidatesPage() {
   // ── Filter + Sort (runs on transformedData, not stale mock) ─
   const filteredData = transformedData
 
+  const toggleSelectOne = (id) =>
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+
+  const isAllSelected =
+    filteredData.length > 0 &&
+    filteredData.every((c) => selectedIds.includes(c.id));
+
+
+  const toggleSelectAll = () => {
+    console.log("toggleSelectAll", isAllSelected, filteredData);
+    setSelectedIds(isAllSelected ? [] : filteredData?.filter((c) => c?.testSent === false && c?.cooldown_active === false).map(c => c.id));
+  };
+  // ────────────────────────────────────────────────────────────
+
+
+  const branches = [...new Set(candidates.map(c => c.branch))];
+
+
+  const { data: countryData, isLoading: countryLoading } = useGetCountryDataQuery();
+
+  if (error?.status === 401) {
+    window.location.href = "/login";
+    localStorage.clear();
+    return;
+  }
+
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedQuery, filterNationality, filterStatus, pageSize, fromDate, toDate, minCgpa, maxCgpa]);
+
+
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteUser, { isLoading: deleteLoading }] = useDeleteCandidateByCandidateIdMutation();
 
@@ -920,26 +932,12 @@ export default function CandidatesPage() {
   }
 
 
-  const isAllSelected =
-    filteredData.length > 0 &&
-    filteredData.every((c) => selectedIds.includes(c.id));
 
   // Clear selections when filters change
   useEffect(() => {
     setSelectedIds([]);
   }, [filterStatus, filterBranch, filterTestStatus, debouncedQuery, sortScore]);
   // ────────────────────────────────────────────────────────────
-
-  const validate = () => {
-    const e = {};
-    if (!form.name.trim()) e.name = "Name is required";
-    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      e.email = "Valid email required";
-    if (!form.phone.trim() || !/^\d{10}$/.test(form.phone))
-      e.phone = "Valid 10-digit phone required";
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
 
 
 
@@ -974,7 +972,7 @@ export default function CandidatesPage() {
       formdata.append("cgpa", cgpa);
       formdata.append("roll_number", roll_number);
       formdata.append("department", department);
-      formdata.append("is_pursuing", is_persuing ? true:false)
+      formdata.append("is_pursuing", is_persuing ? true : false)
     }
 
     try {
@@ -985,8 +983,8 @@ export default function CandidatesPage() {
       }
       if (result?.data?.status) {
         setTimeout(() => {
-        toast.success(result?.data?.message ?? "CAndidate Added Successfully");
-        },200)
+          toast.success(result?.data?.message ?? "CAndidate Added Successfully");
+        }, 200)
         setShowModal(false);
         setShowImportModal(false);
         return;
@@ -1025,6 +1023,7 @@ export default function CandidatesPage() {
     }
   }
 
+  console.log("deactive-model",deleteUserDetails);
 
   const openAdd = () => {
     setEditCandidate(null);
@@ -1050,9 +1049,9 @@ export default function CandidatesPage() {
       }).unwrap();
 
       if (result?.status) {
-        setTimeout(() =>{
-        toast.success(`Test link sent successfully`);
-        },200)
+        setTimeout(() => {
+          toast.success(`Test link sent successfully`);
+        }, 200)
         setSelectedIds([]);
       }
 
@@ -1251,10 +1250,10 @@ export default function CandidatesPage() {
                       setDeleteUserDetails(row);
                       setShowActiveInactiveModal(true);
                     }}
-                    className={`px-3 text-xs cursor-pointer py-2 rounded text-white ${row?.status == "active"
-                      ? "bg-red-500 hover:bg-red-600"
+                    className={`px-3 text-xs cursor-pointer py-2 rounded text-white font-semibold ${row?.status == "active"
+                      ? "bg-red-600 hover:bg-red-700 shadow-red-200"
                       : "bg-green-500 hover:bg-green-600"
-                      } transition-colors`}
+                      } transition-all transform hover:scale-105 shadow-md`}
                   >
                     {row?.status == "active" ? "Deactivate" : "Activate"}
                   </button>
@@ -1505,27 +1504,89 @@ export default function CandidatesPage() {
         isOpen={showactiveInactiveModal}
         onClose={() => [setShowActiveInactiveModal(false), setDeleteUserDetails(null)]}
         onConfirm={handleActiveInactive}
-        title={`${deleteUserDetails?.is_active ? `Deactivate Candidate` : 'Activate Candidate  '}`}
-        confirmText={`${deleteUserDetails?.is_active ? `Yes, Deactivate` : 'Yes, Activate  '}`}
+        title={`${deleteUserDetails?.status == "active" ? `Deactivate Candidate` : 'Activate Candidate  '}`}
+        confirmText={`${deleteUserDetails?.status == "active" ? `Yes, Deactivate` : 'Yes, Activate  '}`}
         loading={userLoading}
       >
-        {`Are you sure you want to ${deleteUserDetails?.is_active ? 'Deactivate' : 'Activate'}  this candidate?`}
+        {deleteUserDetails?.status == "active" && (
+          <div className="flex items-center gap-2 mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <div className="flex-shrink-0">
+              <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-red-800">Deactivation Warning</h3>
+              <p className="text-xs text-red-700 mt-1">This action will immediately revoke the candidate's access and testing privileges.</p>
+            </div>
+          </div>
+        )}
+        
+        {deleteUserDetails?.status == "inactive" && (
+          <div className="flex items-center gap-2 mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex-shrink-0">
+              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-green-800">Activation Confirmation</h3>
+              <p className="text-xs text-green-700 mt-1">This will restore the candidate's access and testing privileges.</p>
+            </div>
+          </div>
+        )}
 
-        <div
-          className={`mt-3 p-3 border rounded ${deleteUserDetails?.is_active
-            ? "bg-red-50 border-red-200"
-            : "bg-green-50 border-green-200"
+        <div className="relative">
+          <div
+            className={`absolute inset-0 rounded-lg transition-opacity duration-300 ${
+              deleteUserDetails?.status == "active"
+                ? "bg-gradient-to-r from-red-500 to-red-600 opacity-10"
+                : "bg-gradient-to-r from-green-500 to-green-600 opacity-5"
             }`}
-        >
-          <p
-            className={`font-semibold ${deleteUserDetails?.is_active ? "text-red-700" : "text-green-700"
-              }`}
+          />
+          <div
+            className={`relative border rounded-xl p-3 backdrop-blur-sm ${
+              deleteUserDetails?.status == "active"
+                ? "bg-white/90 border-red-200 shadow-red-100"
+                : "bg-white/90 border-green-200"
+            } shadow-xl`}
           >
-            {deleteUserDetails?.first_name} {deleteUserDetails?.last_name}
-          </p>
-          <p className="text-sm text-gray-600">
-            {deleteUserDetails?.email}
-          </p>
+            <div className="space-y-3">
+              <div className="border-b border-gray-100 pb-3">
+                <h4 className={`text-lg font-semibold text-center ${
+                  deleteUserDetails?.status == "active" ? "text-red-900" : "text-green-900"
+                }`}>
+                  {deleteUserDetails?.first_name} {deleteUserDetails?.last_name}
+                </h4>
+                <div className="text-center mt-2 space-y-1">
+                  <p className="text-sm text-gray-500">{deleteUserDetails?.email}</p>
+                  <div className="flex items-center justify-center gap-4 text-xs text-gray-600">
+                    <span>📍 {deleteUserDetails?.country || "—"}</span>
+                    <span>📞 +{deleteUserDetails?.mobile || "—"}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex justify-around items-center">
+                <div className="text-center">
+                  <div className={`inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium ${
+                    deleteUserDetails?.status == "active"
+                      ? "bg-red-50 text-red-700 border border-red-200"
+                      : "bg-green-50 text-green-700 border border-green-200"
+                  }`}>
+                    {deleteUserDetails?.status == "active" ? "● Active" : "○ Inactive"}
+                  </div>
+                </div>
+                {deleteUserDetails?.testCount > 0 && (
+                  <div className="text-center">
+                    <div className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-50 text-gray-600 border border-gray-200">
+                      📊 {deleteUserDetails?.testCount} Tests
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
 
