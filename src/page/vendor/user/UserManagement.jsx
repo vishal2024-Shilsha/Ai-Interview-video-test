@@ -1,7 +1,7 @@
 // import { useEffect, useState } from "react";
 import UserForm from "./UserForm";
 import ImportUsers from "./ImportUsers";
-import { useActiveInactiveCandidateMutation, useAddCampusVendorMutation, useAddVendorMutation, useDeleteCandidateByCandidateIdMutation, useGetAllUserByVendorQuery, useImportCampusVendorMutation, useImportVendorMutation, useSendTestLinkToUserMutation } from "../../../redux/services/vendorApi";
+import { useActiveInactiveCandidateMutation, useAddCampusVendorMutation, useDeleteCandidateByCandidateIdMutation, useGetAllUserByVendorQuery, useImportCampusVendorMutation, useSendTestLinkToUserMutation } from "../../../redux/services/vendorApi";
 // import { Trash2 } from "lucide-react";
 // import profileImg from '../../../assets/userImg.jpg'
 import useDebounce from "../../../libs/useDebounce";
@@ -30,7 +30,7 @@ import CustomModal from "../../../libs/CustomModal";
 //   const [selectedUsers, setSelectedUsers] = useState([]);
 //   const [showSendLinkModal, setShowSendLinkModal] = useState(false);
 //   const [isCheckboxEnabled, setIsCheckboxEnabled] = useState(false);
-  // const [showactiveInactiveModal, setShowActiveInactiveModal] = useState(false);
+// const [showactiveInactiveModal, setShowActiveInactiveModal] = useState(false);
 //   // Your existing API hooks
 //   const [addVendor, { isLoading: isVendorAdding }] = role == "sub_vendor" ? useAddCandidateBySubVendorMutation() : useAddVendorMutation();
 //   const [importVendor, { isLoading: isVendorImporting }] = role == "sub_vendor" ? useImportCandidateBySubVendorMutation() : useImportVendorMutation();
@@ -246,16 +246,16 @@ import CustomModal from "../../../libs/CustomModal";
 //               </label>
 
 //               {/* Filters */}
-              // <select value={filterNationality} onChange={(e) => setFilterNationality(e.target.value)}
-              //   className="px-3 py-2 outline-none w-48  rounded-md shadow shadow-[#dcdedf] text-[#286a94] bg-white">
-              //   <option value="">Nationality (All)</option>
-              //   {
-              //     countryData?.data?.length > 0 &&
-              //     countryData?.data?.map((item) => (
-              //       <option value={item?.name}>{item?.name}</option>
-              //     ))
-              //   }
-              // </select>
+// <select value={filterNationality} onChange={(e) => setFilterNationality(e.target.value)}
+//   className="px-3 py-2 outline-none w-48  rounded-md shadow shadow-[#dcdedf] text-[#286a94] bg-white">
+//   <option value="">Nationality (All)</option>
+//   {
+//     countryData?.data?.length > 0 &&
+//     countryData?.data?.map((item) => (
+//       <option value={item?.name}>{item?.name}</option>
+//     ))
+//   }
+// </select>
 
 //               <select value={filterResidence} onChange={(e) => setFilterResidence(e.target.value)}
 //                 className="px-3 py-2 w-48 rounded-md shadow shadow-[#dcdedf] text-[#286a94] bg-white">
@@ -814,13 +814,13 @@ export default function CandidatesPage() {
   const [showImportModal, setShowImportModal] = useState(false)
 
   const [fromDate, setFromDate] = useState("");
-const [toDate, setToDate] = useState("");
-const [minCgpa, setMinCgpa] = useState("");
-const [maxCgpa, setMaxCgpa] = useState("");
-const [showCalendar, setShowCalendar] = useState(false);
-const [selectingEnd, setSelectingEnd] = useState(false);
-const [calViewYear, setCalViewYear] = useState(new Date().getFullYear());
-const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
+  const [toDate, setToDate] = useState("");
+  const [minCgpa, setMinCgpa] = useState("");
+  const [maxCgpa, setMaxCgpa] = useState("");
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [selectingEnd, setSelectingEnd] = useState(false);
+  const [calViewYear, setCalViewYear] = useState(new Date().getFullYear());
+  const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
 
   const [editCandidate, setEditCandidate] = useState(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", branch: "CSE", year: "1st" });
@@ -830,7 +830,6 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
   const [addImportVendor, { isLoading: isVendorImporting }] = useImportCampusVendorMutation()
   const [activateInactivateUser, { isLoading: userLoading }] = useActiveInactiveCandidateMutation()
 
-  const moduleType = localStorage.getItem('module')
 
   // ── Bulk selection ──────────────────────────────────────────
   const [selectedIds, setSelectedIds] = useState([]);
@@ -856,9 +855,11 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
         { refetchOnMountOrArgChange: false }
       )
       : useGetAllUserByVendorQuery(
-{ page, pageSize, search: debouncedQuery, status: filterStatus,
-    filterNationality, filterResidence, fromDate, toDate,
-    min_cgpa: minCgpa, max_cgpa: maxCgpa },
+        {
+          page, pageSize, search: debouncedQuery, status: filterStatus,
+          filterNationality, filterResidence, fromDate, toDate,
+          min_cgpa: minCgpa, max_cgpa: maxCgpa
+        },
         { refetchOnMountOrArgChange: false }
       );
 
@@ -870,10 +871,10 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
     return;
   }
 
-  
+
   useEffect(() => {
-  setPage(1);
-}, [debouncedQuery, filterNationality, filterStatus, pageSize, fromDate, toDate, minCgpa, maxCgpa]);
+    setPage(1);
+  }, [debouncedQuery, filterNationality, filterStatus, pageSize, fromDate, toDate, minCgpa, maxCgpa]);
 
   // ── Transform API data ──────────────────────────────────────
   const transformedData =
@@ -940,32 +941,6 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (!validate()) return;
-    if (editCandidate) {
-      setCandidates((prev) =>
-        prev.map((c) => (c.id === editCandidate.id ? { ...c, ...form } : c))
-      );
-      addToast("Candidate updated successfully!");
-    } else {
-      const newC = {
-        id: Date.now(),
-        ...form,
-        status: "active",
-        testSent: false,
-        testCompleted: false,
-        score: null,
-        testDate: null,
-      };
-      setCandidates((prev) => [...prev, newC]);
-      addToast("Candidate added successfully!");
-    }
-    setShowModal(false);
-    setEditCandidate(null);
-    setForm({ name: "", email: "", phone: "", branch: "CSE", year: "1st" });
-    setErrors({});
-  };
-
 
 
   async function handleFormSubmit(data, status = false) {
@@ -1001,16 +976,19 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
     }
 
     try {
-      const result = !status ? moduleType == "campus" ? await addCampusVendor(formdata) : await addVendor(formdata).unwrap() : moduleType == "campus" ? await addImportVendor(formdata) : await importVendor(formdata).unwrap();
-
+      const result = !status ? await addCampusVendor(formdata) : await addImportVendor(formdata);
       if (result?.error) {
         // console.log("eww", result)
         return toast.error(result?.error?.data?.detail ?? "Pls Fill Correct Info")
       }
-      if (result?.data?.status) toast.success(result?.data?.message ?? "CAndidate Added Successfully");
-
-      if (!status) setShowAddModal(false);
-      else setShowImportModal(false);
+      if (result?.data?.status) {
+        setTimeout(() => {
+        toast.success(result?.data?.message ?? "CAndidate Added Successfully");
+        },200)
+        setShowModal(false);
+        setShowImportModal(false);
+        return;
+      }
 
 
     } catch (err) {
@@ -1027,7 +1005,7 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
     // console.log("partner",deleteUserDetails) 
     const data = {
       candidate_ids: [deleteUserDetails?.id],
-      is_active: deleteUserDetails?.status=="active" ? false: true
+      is_active: deleteUserDetails?.status == "active" ? false : true
     }
     try {
       const result = await activateInactivateUser(data).unwrap?.();
@@ -1045,12 +1023,6 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
     }
   }
 
-  const openEdit = (c) => {
-    setEditCandidate(c);
-    setForm({ name: c.name, email: c.email, phone: c.phone, branch: c.branch, year: c.year });
-    setErrors({});
-    setShowModal(true);
-  };
 
   const openAdd = () => {
     setEditCandidate(null);
@@ -1076,9 +1048,10 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
       }).unwrap();
 
       if (result?.status) {
-        toast.success(`Test link sent to ${selectedIds.length} candidate(s)!`);
+        setTimeout(() =>{
+        toast.success(`Test link sent successfully`);
+        },200)
         setSelectedIds([]);
-        setIsCheckboxEnabled(prev => !prev);
       }
 
     } catch (err) {
@@ -1149,18 +1122,18 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
     { key: "mobile", label: "Contact No." },
 
     {
-  key: "status",
-  label: "Status",
-  render: (v, row) => {
-    console.log("jojo", v, row);
+      key: "status",
+      label: "Status",
+      render: (v, row) => {
+        console.log("jojo", v, row);
 
-    return (
-      <Badge variant={v === "active" ? "green" : "red"}>
-        {v === "active" ? "Active" : "Inactive"}
-      </Badge>
-    );
-  },
-},
+        return (
+          <Badge variant={v === "active" ? "green" : "red"}>
+            {v === "active" ? "Active" : "Inactive"}
+          </Badge>
+        );
+      },
+    },
 
     {
       key: "testSent",
@@ -1276,12 +1249,12 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
                       setDeleteUserDetails(row);
                       setShowActiveInactiveModal(true);
                     }}
-                    className={`px-3 text-xs cursor-pointer py-2 rounded text-white ${row?.status=="active"
-                        ? "bg-red-500 hover:bg-red-600"
-                        : "bg-green-500 hover:bg-green-600"
+                    className={`px-3 text-xs cursor-pointer py-2 rounded text-white ${row?.status == "active"
+                      ? "bg-red-500 hover:bg-red-600"
+                      : "bg-green-500 hover:bg-green-600"
                       } transition-colors`}
                   >
-                    {row?.status=="active" ? "Deactivate" : "Activate"}
+                    {row?.status == "active" ? "Deactivate" : "Activate"}
                   </button>
                 ) : (
                   <button
@@ -1303,7 +1276,7 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
     },
   ];
 
-  console.log("jo-code",minCgpa,maxCgpa);
+  console.log("jo-code", minCgpa, maxCgpa);
 
   return (
     <div className="p-2 space-y-6">
@@ -1338,121 +1311,121 @@ const [calViewMonth, setCalViewMonth] = useState(new Date().getMonth());
       </div>
 
       {/* Filters */}
-     {/* Filters */}
-<div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-wrap gap-3">
-  {/* Search */}
-  <div className="flex-1 min-w-48">
-    <input placeholder="🔍 Search by name or email..." value={search}
-      onChange={(e) => setSearch(e.target.value)}
-      className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50" />
-  </div>
+      {/* Filters */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-wrap gap-3">
+        {/* Search */}
+        <div className="flex-1 min-w-48">
+          <input placeholder="🔍 Search by name or email..." value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50" />
+        </div>
 
-  {/* Status */}
-  <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
-    className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-400 bg-white">
-    <option value="">All Status</option>
-    <option value="active">Active</option>
-    <option value="inactive">Inactive</option>
-  </select>
+        {/* Status */}
+        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
+          className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-400 bg-white">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
 
-  {/* Nationality */}
-  <select value={filterNationality} onChange={(e) => setFilterNationality(e.target.value)}
-    className="border max-w-48 outline-none border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-white">
-    <option value="">Nationality (All)</option>
-    {countryData?.data?.map((item) => <option key={item.name} value={item.name}>{item.name}</option>)}
-  </select>
+        {/* Nationality */}
+        <select value={filterNationality} onChange={(e) => setFilterNationality(e.target.value)}
+          className="border max-w-48 outline-none border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-white">
+          <option value="">Nationality (All)</option>
+          {countryData?.data?.map((item) => <option key={item.name} value={item.name}>{item.name}</option>)}
+        </select>
 
-  {/* Date Range Picker */}
-  <div className="relative">
-    <button onClick={() => setShowCalendar(p => !p)}
-      className={`border rounded-xl px-3 py-2.5 text-sm bg-white min-w-[200px] text-left
+        {/* Date Range Picker */}
+        <div className="relative">
+          <button onClick={() => setShowCalendar(p => !p)}
+            className={`border rounded-xl px-3 py-2.5 text-sm bg-white min-w-[200px] text-left
         ${fromDate && toDate ? 'border-indigo-400 text-indigo-600' : 'border-gray-200 text-gray-500'}`}>
-      {fromDate && toDate ? `${fromDate} → ${toDate}` : '📅 Select date range'}
-    </button>
+            {fromDate && toDate ? `${fromDate} → ${toDate}` : '📅 Select date range'}
+          </button>
 
-    {showCalendar && (
-      <div className="absolute z-50 mt-1 bg-white border border-gray-200 rounded-2xl shadow-xl p-4 w-72">
-        {/* Calendar Header */}
-        <div className="flex items-center justify-between mb-3">
-          <button onClick={() => { if(calViewMonth===0){setCalViewMonth(11);setCalViewYear(y=>y-1);}else setCalViewMonth(m=>m-1); }}
-            className="p-1 hover:bg-gray-100 rounded-lg text-gray-500">‹</button>
-          <span className="text-sm font-semibold">
-            {['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][calViewMonth]} {calViewYear}
-          </span>
-          <button onClick={() => { if(calViewMonth===11){setCalViewMonth(0);setCalViewYear(y=>y+1);}else setCalViewMonth(m=>m+1); }}
-            className="p-1 hover:bg-gray-100 rounded-lg text-gray-500">›</button>
-        </div>
+          {showCalendar && (
+            <div className="absolute z-50 mt-1 bg-white border border-gray-200 rounded-2xl shadow-xl p-4 w-72">
+              {/* Calendar Header */}
+              <div className="flex items-center justify-between mb-3">
+                <button onClick={() => { if (calViewMonth === 0) { setCalViewMonth(11); setCalViewYear(y => y - 1); } else setCalViewMonth(m => m - 1); }}
+                  className="p-1 hover:bg-gray-100 rounded-lg text-gray-500">‹</button>
+                <span className="text-sm font-semibold">
+                  {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][calViewMonth]} {calViewYear}
+                </span>
+                <button onClick={() => { if (calViewMonth === 11) { setCalViewMonth(0); setCalViewYear(y => y + 1); } else setCalViewMonth(m => m + 1); }}
+                  className="p-1 hover:bg-gray-100 rounded-lg text-gray-500">›</button>
+              </div>
 
-        {/* Day Labels */}
-        <div className="grid grid-cols-7 mb-1">
-          {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d =>
-            <div key={d} className="text-center text-xs text-gray-400 font-medium py-1">{d}</div>)}
-        </div>
+              {/* Day Labels */}
+              <div className="grid grid-cols-7 mb-1">
+                {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d =>
+                  <div key={d} className="text-center text-xs text-gray-400 font-medium py-1">{d}</div>)}
+              </div>
 
-        {/* Days */}
-        <div className="grid grid-cols-7 gap-0.5">
-          {Array(new Date(calViewYear, calViewMonth, 1).getDay()).fill(null).map((_, i) =>
-            <div key={`e${i}`} />)}
-          {Array(new Date(calViewYear, calViewMonth + 1, 0).getDate()).fill(null).map((_, i) => {
-            const d = i + 1;
-            const key = `${calViewYear}-${String(calViewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-            const isStart = key === fromDate, isEnd = key === toDate;
-            const inRange = fromDate && toDate && key > fromDate && key < toDate;
-            return (
-              <button key={key} onClick={() => {
-                if (!fromDate || (fromDate && toDate)) {
-                  setFromDate(key); setToDate(""); setSelectingEnd(true);
-                } else {
-                  if (key < fromDate) { setToDate(fromDate); setFromDate(key); }
-                  else setToDate(key);
-                  setSelectingEnd(false);
-                }
-              }}
-                className={`text-xs py-1.5 rounded-lg text-center transition-colors
+              {/* Days */}
+              <div className="grid grid-cols-7 gap-0.5">
+                {Array(new Date(calViewYear, calViewMonth, 1).getDay()).fill(null).map((_, i) =>
+                  <div key={`e${i}`} />)}
+                {Array(new Date(calViewYear, calViewMonth + 1, 0).getDate()).fill(null).map((_, i) => {
+                  const d = i + 1;
+                  const key = `${calViewYear}-${String(calViewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                  const isStart = key === fromDate, isEnd = key === toDate;
+                  const inRange = fromDate && toDate && key > fromDate && key < toDate;
+                  return (
+                    <button key={key} onClick={() => {
+                      if (!fromDate || (fromDate && toDate)) {
+                        setFromDate(key); setToDate(""); setSelectingEnd(true);
+                      } else {
+                        if (key < fromDate) { setToDate(fromDate); setFromDate(key); }
+                        else setToDate(key);
+                        setSelectingEnd(false);
+                      }
+                    }}
+                      className={`text-xs py-1.5 rounded-lg text-center transition-colors
                   ${isStart || isEnd ? 'bg-indigo-600 text-white' : ''}
                   ${inRange ? 'bg-indigo-50 text-indigo-700' : ''}
                   ${!isStart && !isEnd && !inRange ? 'hover:bg-gray-100 text-gray-700' : ''}
                 `}>
-                {d}
-              </button>
-            );
-          })}
+                      {d}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Hint */}
+              <p className="text-xs text-gray-400 mt-2 text-center">
+                {!fromDate ? 'Select start date' : !toDate ? 'Select end date' : `${fromDate} → ${toDate}`}
+              </p>
+
+              {/* Footer */}
+              <div className="flex justify-between mt-3">
+                <button onClick={() => { setFromDate(""); setToDate(""); setSelectingEnd(false); }}
+                  className="text-xs text-gray-500 hover:text-gray-700">Clear</button>
+                <button onClick={() => setShowCalendar(false)}
+                  className="text-xs bg-indigo-600 text-white px-3 py-1 rounded-lg">Apply</button>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Hint */}
-        <p className="text-xs text-gray-400 mt-2 text-center">
-          {!fromDate ? 'Select start date' : !toDate ? 'Select end date' : `${fromDate} → ${toDate}`}
-        </p>
-
-        {/* Footer */}
-        <div className="flex justify-between mt-3">
-          <button onClick={() => { setFromDate(""); setToDate(""); setSelectingEnd(false); }}
-            className="text-xs text-gray-500 hover:text-gray-700">Clear</button>
-          <button onClick={() => setShowCalendar(false)}
-            className="text-xs bg-indigo-600 text-white px-3 py-1 rounded-lg">Apply</button>
-        </div>
+        {/* CGPA Range Dropdown */}
+        <select
+          onChange={(e) => {
+            const val = e.target.value;
+            if (!val) { setMinCgpa(""); setMaxCgpa(""); }
+            else { const [mn, mx] = val.split(","); setMinCgpa(mn); setMaxCgpa(mx); }
+          }}
+          className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-400 bg-white">
+          <option value="">All CGPA</option>
+          <option value="0,4">Below 4.0</option>
+          <option value="4,5">4.0 – 5.0</option>
+          <option value="5,6">5.0 – 6.0</option>
+          <option value="6,7">6.0 – 7.0</option>
+          <option value="7,8">7.0 – 8.0</option>
+          <option value="8,9">8.0 – 9.0</option>
+          <option value="9,10">9.0 – 10.0</option>
+        </select>
       </div>
-    )}
-  </div>
-
-  {/* CGPA Range Dropdown */}
-  <select
-    onChange={(e) => {
-      const val = e.target.value;
-      if (!val) { setMinCgpa(""); setMaxCgpa(""); }
-      else { const [mn, mx] = val.split(","); setMinCgpa(mn); setMaxCgpa(mx); }
-    }}
-    className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-400 bg-white">
-    <option value="">All CGPA</option>
-    <option value="0,4">Below 4.0</option>
-    <option value="4,5">4.0 – 5.0</option>
-    <option value="5,6">5.0 – 6.0</option>
-    <option value="6,7">6.0 – 7.0</option>
-    <option value="7,8">7.0 – 8.0</option>
-    <option value="8,9">8.0 – 9.0</option>
-    <option value="9,10">9.0 – 10.0</option>
-  </select>
-</div>
 
       {/* ── Bulk action bar (visible only when rows are checked) ── */}
       {selectedIds.length > 0 && (
