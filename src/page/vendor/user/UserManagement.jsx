@@ -944,7 +944,9 @@ export default function CandidatesPage() {
 
 
   async function handleFormSubmit(data, status = false) {
-    console.log("jojo", data)
+    // debugger;
+    // console.log("jojo", data)
+
     const formdata = new FormData();
     if (status) {
       formdata.append('file', data);
@@ -972,7 +974,7 @@ export default function CandidatesPage() {
       formdata.append("cgpa", cgpa);
       formdata.append("roll_number", roll_number);
       formdata.append("department", department);
-      formdata.append("is_pursuing", is_persuing)
+      formdata.append("is_pursuing", is_persuing ? true:false)
     }
 
     try {
