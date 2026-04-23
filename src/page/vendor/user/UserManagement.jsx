@@ -835,19 +835,9 @@ export default function CandidatesPage() {
   const [selectedIds, setSelectedIds] = useState([]);
   const [bulkMode, setBulkMode] = useState(false);
 
-  const toggleSelectOne = (id) =>
-    setSelectedIds(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    );
-
-  const toggleSelectAll = () =>
-    setSelectedIds(isAllSelected ? [] : filteredData.map(c => c.id));
-  // ────────────────────────────────────────────────────────────
-
-
-  const branches = [...new Set(candidates.map(c => c.branch))];
-
   const role = localStorage.getItem("role");
+
+
   const { data, isLoading, error } =
     role === "sub_vendor"
       ? useGetAllCandidatesBySubVendorQuery(
@@ -862,19 +852,6 @@ export default function CandidatesPage() {
         },
         { refetchOnMountOrArgChange: false }
       );
-
-  const { data: countryData, isLoading: countryLoading } = useGetCountryDataQuery();
-
-  if (error?.status === 401) {
-    window.location.href = "/login";
-    localStorage.clear();
-    return;
-  }
-
-
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedQuery, filterNationality, filterStatus, pageSize, fromDate, toDate, minCgpa, maxCgpa]);
 
   // ── Transform API data ──────────────────────────────────────
   const transformedData =
@@ -898,6 +875,41 @@ export default function CandidatesPage() {
   // ── Filter + Sort (runs on transformedData, not stale mock) ─
   const filteredData = transformedData
 
+  const toggleSelectOne = (id) =>
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+
+  const isAllSelected =
+    filteredData.length > 0 &&
+    filteredData.every((c) => selectedIds.includes(c.id));
+
+
+  const toggleSelectAll = () => {
+    console.log("toggleSelectAll", isAllSelected, filteredData);
+    setSelectedIds(isAllSelected ? [] : filteredData?.filter((c) => c?.testSent === false && c?.cooldown_active === false).map(c => c.id));
+  };
+  // ────────────────────────────────────────────────────────────
+
+
+  const branches = [...new Set(candidates.map(c => c.branch))];
+
+
+  const { data: countryData, isLoading: countryLoading } = useGetCountryDataQuery();
+
+  if (error?.status === 401) {
+    window.location.href = "/login";
+    localStorage.clear();
+    return;
+  }
+
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedQuery, filterNationality, filterStatus, pageSize, fromDate, toDate, minCgpa, maxCgpa]);
+
+
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteUser, { isLoading: deleteLoading }] = useDeleteCandidateByCandidateIdMutation();
 
@@ -920,26 +932,12 @@ export default function CandidatesPage() {
   }
 
 
-  const isAllSelected =
-    filteredData.length > 0 &&
-    filteredData.every((c) => selectedIds.includes(c.id));
 
   // Clear selections when filters change
   useEffect(() => {
     setSelectedIds([]);
   }, [filterStatus, filterBranch, filterTestStatus, debouncedQuery, sortScore]);
   // ────────────────────────────────────────────────────────────
-
-  const validate = () => {
-    const e = {};
-    if (!form.name.trim()) e.name = "Name is required";
-    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      e.email = "Valid email required";
-    if (!form.phone.trim() || !/^\d{10}$/.test(form.phone))
-      e.phone = "Valid 10-digit phone required";
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
 
 
 
@@ -974,7 +972,7 @@ export default function CandidatesPage() {
       formdata.append("cgpa", cgpa);
       formdata.append("roll_number", roll_number);
       formdata.append("department", department);
-      formdata.append("is_pursuing", is_persuing ? true:false)
+      formdata.append("is_pursuing", is_persuing ? true : false)
     }
 
     try {
@@ -985,8 +983,8 @@ export default function CandidatesPage() {
       }
       if (result?.data?.status) {
         setTimeout(() => {
-        toast.success(result?.data?.message ?? "CAndidate Added Successfully");
-        },200)
+          toast.success(result?.data?.message ?? "CAndidate Added Successfully");
+        }, 200)
         setShowModal(false);
         setShowImportModal(false);
         return;
@@ -1050,9 +1048,9 @@ export default function CandidatesPage() {
       }).unwrap();
 
       if (result?.status) {
-        setTimeout(() =>{
-        toast.success(`Test link sent successfully`);
-        },200)
+        setTimeout(() => {
+          toast.success(`Test link sent successfully`);
+        }, 200)
         setSelectedIds([]);
       }
 
