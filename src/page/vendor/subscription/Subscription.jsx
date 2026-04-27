@@ -484,7 +484,7 @@ import { Tag } from "lucide-react"
 
 function AddonCreditsModal({ isOpen, onClose, onPurchase }) {
 
-    const { data, isLoading, isError } = useGetAddonCreditsQuery(undefined, {
+    const { data, isLoading, isError ,error} = useGetAddonCreditsQuery(undefined, {
         skip: !isOpen,
     })
 
@@ -520,6 +520,8 @@ function AddonCreditsModal({ isOpen, onClose, onPurchase }) {
         }
     }
 
+    console.log("errorro",error);
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl p-6">
@@ -532,7 +534,7 @@ function AddonCreditsModal({ isOpen, onClose, onPurchase }) {
 
                 {/* Title */}
                 <h2 className="text-xl font-bold text-indigo-600 mb-1">Add Credits</h2>
-                <p className="text-sm text-gray-500 mb-6">
+                <p className="text-sm text-gray-500 border-b pb-3 border-gray-100 mb-6">
                     Purchase additional credits for your active plan
                 </p>
 
@@ -545,8 +547,8 @@ function AddonCreditsModal({ isOpen, onClose, onPurchase }) {
 
                 {/* Error */}
                 {isError && (
-                    <p className="text-center text-red-500 py-6">
-                        Failed to load addon credits. Please try again.
+                    <p className="text-center text-sm text-red-500 py-6">
+                        {error?.data?.detail??"Failed to load addon credits. Please try again."}
                     </p>
                 )}
 

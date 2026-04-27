@@ -73,7 +73,7 @@ export const vendorApi = api.injectEndpoints({
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         }
       }),
-      invalidatesTags: ['Vendor'],
+      invalidatesTags: ['Vendor','vendorDashboard'],
     }),
     importCampusVendor: builder.mutation({
       query: (vendor) => ({
@@ -84,7 +84,7 @@ export const vendorApi = api.injectEndpoints({
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         }
       }),
-      invalidatesTags: ['Vendor'],
+      invalidatesTags: ['Vendor','vendorDashboard'],
     }),
     sendTestLinkToUser: builder.mutation({
       query: (data) => (
@@ -97,7 +97,7 @@ export const vendorApi = api.injectEndpoints({
           }
         }
       ),
-      invalidatesTags: ['Vendor'],
+      invalidatesTags: ['Vendor','vendorDashboard'],
     }),
     activeInactiveCandidate: builder.mutation({
       query: (data) => (
@@ -110,7 +110,7 @@ export const vendorApi = api.injectEndpoints({
           }
         }
       ),
-      invalidatesTags: ['Vendor'],
+      invalidatesTags: ['Vendor','vendorDashboard'],
     }),
     getVendorProfile: builder.query({
       query: () => ({
@@ -231,8 +231,9 @@ export const vendorApi = api.injectEndpoints({
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         },
-        method: "GET"
-      })
+        method: "GET",
+      }),
+      providesTags:["vendorDashboard"]
     }),
     resultManagementData: builder.query({
       query: (

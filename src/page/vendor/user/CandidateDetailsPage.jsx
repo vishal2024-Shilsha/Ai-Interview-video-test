@@ -76,7 +76,7 @@ export default function CandidateDetailsPage() {
     <div className="p-6 pt-3 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl shadow-lg border border-indigo-200 p-6 mb-6">
+        <div className="bg-linear-to-r from-indigo-50 to-blue-50 rounded-2xl shadow-lg border border-indigo-200 p-6 mb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button

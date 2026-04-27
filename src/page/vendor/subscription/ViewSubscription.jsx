@@ -116,7 +116,7 @@
 //         ) : (
 //           <div className="text-center py-10 bg-white">
 //             <p className="text-gray-500 mb-4">No subscription available</p>
-//             <button onClick={() => navigate('/vendor/subscription/plan')} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+//             <button onClick={() => navigate('/vendor/subscription/plan')} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer">
 //               Purchase
 //             </button>
 //           </div>
@@ -218,6 +218,16 @@ const theme = {
 export const MySubscriptions = () => {
   const { data, isLoading } = useViewSubscriptionListQuery();
   console.log("Dd", data)
+  
+  // Update localStorage with credits from subscription data
+  useEffect(() => {
+    if (data?.data?.credits) {
+      const userData = JSON.parse(localStorage.getItem('user') || '{}');
+      userData.remaining_credits = data?.data?.credits;
+      localStorage.setItem('user', JSON.stringify(userData));
+    }
+  }, [data]);
+  
   if (isLoading) {
     return <Loader />
   }
@@ -364,7 +374,7 @@ export const MySubscriptions = () => {
 };
 
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // import SubscriptionCard from "./SubscriptionCard";
 
 const plans = [

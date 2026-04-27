@@ -32,13 +32,13 @@ export default function UserTable({ users, onEdit, onDelete }) {
                 <td className="p-3 flex gap-2">
                   <button
                     onClick={() => onEdit(u)}
-                    className="text-blue-500 hover:text-blue-700"
+                    className="text-blue-500 hover:text-blue-700 cursor-pointer"
                   >
                     <Pencil size={18} />
                   </button>
                   <button
                     onClick={() => onDelete(u.id)}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-500 hover:text-red-700 cursor-pointer"
                   >
                     <Trash2 size={18} />
                   </button>

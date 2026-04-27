@@ -61,7 +61,7 @@ export default function ImportUsers({ onClose, onSubmit, isVendorImporting }) {
         </p>
         
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-sm text-gray-600">Need a template?</span>
+          <span className="text-sm text-gray-600">Need a sample file?</span>
           <button
             onClick={handleDownloadReference}
             disabled={isDownloading}

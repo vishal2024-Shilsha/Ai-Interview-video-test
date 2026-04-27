@@ -1224,10 +1224,10 @@ import { useForm, Controller } from "react-hook-form";
 import { useGetVendorProfileQuery, useUpdateVendorProfileMutation } from "../../redux/services/vendorApi";
 import toast from "react-hot-toast";
 import { useAuth } from "../../libs/AuthProvider";
+import { useLocationData } from "../../hooks/useLocationData";
 
 // --- Mock hooks / components (replace with your actual imports) ---
 const addToast = (msg, type) => console.log(`[${type}] ${msg}`);
-
 
 // ─── Progress Bar ─────────────────────────────────────────────────────────────
 const ProgressBar = ({ value, showLabel, color }) => (
@@ -1242,16 +1242,16 @@ const ProgressBar = ({ value, showLabel, color }) => (
 
 // ─── Country Codes ────────────────────────────────────────────────────────────
 const COUNTRY_CODES = [
-  { code: "+91", flag: "🇮🇳", country: "IN" },
-  { code: "+1", flag: "🇺🇸", country: "US" },
-  { code: "+44", flag: "🇬🇧", country: "GB" },
-  { code: "+61", flag: "🇦🇺", country: "AU" },
-  { code: "+971", flag: "🇦🇪", country: "AE" },
-  { code: "+65", flag: "🇸🇬", country: "SG" },
-  { code: "+49", flag: "🇩🇪", country: "DE" },
-  { code: "+33", flag: "🇫🇷", country: "FR" },
-  { code: "+81", flag: "🇯🇵", country: "JP" },
-  { code: "+86", flag: "🇨🇳", country: "CN" },
+  { code: "+91", flag: "", country: "IN" },
+  { code: "+1", flag: "", country: "US" },
+  { code: "+44", flag: "", country: "GB" },
+  { code: "+61", flag: "", country: "AU" },
+  { code: "+971", flag: "", country: "AE" },
+  { code: "+65", flag: "", country: "SG" },
+  { code: "+49", flag: "", country: "DE" },
+  { code: "+33", flag: "", country: "FR" },
+  { code: "+81", flag: "", country: "JP" },
+  { code: "+86", flag: "", country: "CN" },
 ];
 
 // ─── Input Component ──────────────────────────────────────────────────────────
@@ -1450,6 +1450,21 @@ export default function ProfilePage() {
   const [updateProfile, { isLoading }] = useUpdateVendorProfileMutation();
   const { updateProfileCompleteness } = useAuth();
 
+  // ── Location data ───────────────────────────────────────────────────────────
+  const {
+    states,
+    cities,
+    selectedState,
+    selectedCity,
+    loadingStates,
+    loadingCities,
+    statesError,
+    citiesError,
+    handleStateChange,
+    handleCityChange,
+    getStateCodeByName
+  } = useLocationData('IN');
+
   // ── Edit mode state ──────────────────────────────────────────────────────────
   const [isEditing, setIsEditing] = useState(false);
 
@@ -1479,21 +1494,33 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (data) {
+      const campusData = data?.campus || {};
       reset({
         campusName: data?.vendor?.name || "",
-        university: data?.campus?.university || "",
-        established: data?.campus?.established || "",
-        address: data?.campus?.address || "",
-        city: data?.campus?.city || "",
-        state: data?.campus?.state || "",
-        pincode: data?.campus?.pincode || "",
-        totalStudents: data?.campus?.total_students || "",
+        university: campusData.university || "",
+        established: campusData.established || "",
+        address: campusData.address || "",
+        city: campusData.city || "",
+        state: campusData.state || "",
+        pincode: campusData.pincode || "",
+        totalStudents: campusData.total_students || "",
         contactEmail: data?.vendor?.email || "",
-        contactPhone: data?.campus?.contact_phone || "",
-        website: data?.campus?.website || "",
+        contactPhone: campusData.contact_phone || "",
+        website: campusData.website || "",
       });
+
+      // Set initial location data if exists
+      if (campusData.state) {
+        const stateCode = getStateCodeByName(campusData.state);
+        if (stateCode) {
+          handleStateChange(stateCode);
+          if (campusData.city) {
+            handleCityChange(campusData.city);
+          }
+        }
+      }
     }
-  }, [data, reset]);
+  }, [data, reset, getStateCodeByName, handleStateChange, handleCityChange]);
 
   // Generate year options
   const currentYear = new Date().getFullYear();
@@ -1514,8 +1541,19 @@ export default function ProfilePage() {
   // ── Submit ───────────────────────────────────────────────────────────────────
   const onSubmit = async (formdata) => {
     try {
+      // Get state name from code for submission
+      const selectedStateObj = states.find(state => state.iso2 === selectedState);
+      const stateName = selectedStateObj ? selectedStateObj.name : '';
+      
+      // Prepare form data with proper state and city names
+      const submissionData = {
+        ...formdata,
+        state: stateName,
+        city: selectedCity
+      };
+
       const payload = new FormData();
-      payload.append("campus", JSON.stringify(formdata));
+      payload.append("campus", JSON.stringify(submissionData));
 
       const result = await updateProfile(payload).unwrap();
 
@@ -1567,7 +1605,7 @@ export default function ProfilePage() {
             className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl ${previewCompletion === 100 ? "bg-emerald-100" : "bg-indigo-50"
               }`}
           >
-            {previewCompletion === 100 ? "✅" : "🏛"}
+            {previewCompletion === 100 ? "" : ""}
           </div>
           <div className="flex-1">
             <div className="font-semibold text-gray-900">
@@ -1603,14 +1641,14 @@ export default function ProfilePage() {
                   : "bg-gray-100 text-gray-500 border border-gray-200"
                 }`}
             >
-              {isEditing ? "✏️ Edit Mode" : "👁 View Mode"}
+              {isEditing ? "" : ""}
             </span>
           </div>
 
           {/* Edit mode hint banner */}
           {isEditing && (
             <div className="flex items-center gap-2 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-2.5 mb-5 text-sm text-indigo-700">
-              <span>✏️</span>
+              <span></span>
               <span>Fields are now editable — make your changes and click <strong>Save Profile</strong>.</span>
             </div>
           )}
@@ -1659,24 +1697,109 @@ export default function ProfilePage() {
               {...register("address", { required: "Address is required" })}
             />
 
-            {/* City */}
-            <Input
-              label="City"
-              required
-              placeholder="Hyderabad"
-              disable={!isEditing}
-              error={errors.city}
-              {...register("city", { required: "City is required" })}
+            {/* City Dropdown */}
+            <Controller
+              name="city"
+              control={control}
+              rules={{ required: "City is required" }}
+              render={({ field }) => (
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-medium text-gray-700">
+                    City <span className="text-red-500 ml-0.5">*</span>
+                  </label>
+                  <select
+                    {...field}
+                    disabled={!isEditing || loadingCities || !selectedState}
+                    value={selectedCity}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value);
+                      handleCityChange(value);
+                    }}
+                    className={`px-3 py-2.5 rounded-xl border text-sm outline-none transition-all
+                      ${!isEditing || loadingCities || !selectedState
+                        ? "bg-gray-50 text-gray-500 cursor-default border-gray-100"
+                        : errors.city
+                          ? "border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                          : "border-gray-200 bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                      }`}
+                  >
+                    <option value="">Select City</option>
+                    {cities.map((city) => (
+                      <option key={city.id} value={city.name}>
+                        {city.name}
+                      </option>
+                    ))}
+                  </select>
+                  {loadingCities && (
+                    <span className="text-xs text-gray-500">Loading cities...</span>
+                  )}
+                  {citiesError && (
+                    <span className="text-xs text-red-500 flex items-center gap-1 mt-0.5">
+                      <span>⚠</span> {citiesError}
+                    </span>
+                  )}
+                  {!selectedState && !loadingStates && (
+                    <span className="text-xs text-gray-500">Please select a state first</span>
+                  )}
+                  {errors.city && (
+                    <span className="text-xs text-red-500 flex items-center gap-1 mt-0.5">
+                      <span>⚠</span> {errors.city.message}
+                    </span>
+                  )}
+                </div>
+              )}
             />
 
-            {/* State */}
-            <Input
-              label="State"
-              required
-              placeholder="Telangana"
-              disable={!isEditing}
-              error={errors.state}
-              {...register("state", { required: "State is required" })}
+            {/* State Dropdown */}
+            <Controller
+              name="state"
+              control={control}
+              rules={{ required: "State is required" }}
+              render={({ field }) => (
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-medium text-gray-700">
+                    State <span className="text-red-500 ml-0.5">*</span>
+                  </label>
+                  <select
+                    {...field}
+                    disabled={!isEditing || loadingStates}
+                    value={selectedState}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value);
+                      handleStateChange(value);
+                    }}
+                    className={`px-3 py-2.5 rounded-xl border text-sm outline-none transition-all
+                      ${!isEditing || loadingStates
+                        ? "bg-gray-50 text-gray-500 cursor-default border-gray-100"
+                        : errors.state
+                          ? "border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                          : "border-gray-200 bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                      }`}
+                  >
+                    <option value="">Select State</option>
+                    {states.map((state) => (
+                      <option key={state.iso2} value={state.iso2}>
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
+                  {loadingStates && (
+                    <span className="text-xs text-gray-500">Loading states...</span>
+                  )}
+                  {statesError && (
+                    <span className="text-xs text-red-500 flex items-center gap-1 mt-0.5">
+                      <span>⚠</span> {statesError}
+                    </span>
+                  )}
+                  {errors.state && (
+                    <span className="text-xs text-red-500 flex items-center gap-1 mt-0.5">
+                      <span>⚠</span> {errors.state.message}
+                    </span>
+                  )}
+                </div>
+              )}
             />
 
             {/* Pincode */}
@@ -1743,7 +1866,6 @@ export default function ProfilePage() {
                 },
               })}
             />
-
           </div>
 
           {/* ── Action Buttons ── */}
@@ -1754,7 +1876,7 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+                  className="border cursor-pointer border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
                 >
                   ✕ Cancel
                 </button>
@@ -1777,7 +1899,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={() => setIsEditing(true)}
-                className="px-6 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-200 transition-all"
+                className="px-6 py-2.5 cursor-pointer rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-200 transition-all"
               >
                 ✏️ Edit Profile
               </button>

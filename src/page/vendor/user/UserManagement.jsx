@@ -603,7 +603,7 @@ export function Pagination({ page = 0, totalPages = 0, setPage }) {
 
       {/* Current page button */}
       <button
-        className="px-3 py-1 text-sm rounded-md border bg-[#598aa8] text-white border-[#598aa8]"
+        className="px-3 py-1 text-sm rounded-md border bg-[#598aa8] text-white border-[#598aa8] cursor-pointer"
         disabled
       >
         {page}
@@ -861,7 +861,7 @@ export default function CandidatesPage() {
         name: `${item.first_name} ${item.last_name}`,
         email: item.email,
         country: item.nationality || "—",
-        mobile: item?.mobile || "—",
+        mobile: item?.mobile && `+${item.mobile}` || "—",
         status: item?.is_active ? "active" : "inactive",
         testSent: item.test_sent_count > 0,
         testCompleted: item?.test_status,
@@ -1023,7 +1023,7 @@ export default function CandidatesPage() {
     }
   }
 
-  console.log("deactive-model",deleteUserDetails);
+  console.log("deactive-model", deleteUserDetails);
 
   const openAdd = () => {
     setEditCandidate(null);
@@ -1211,7 +1211,7 @@ export default function CandidatesPage() {
         //     {row.status === "active" ? "Deactivate" : "Activate"}
         //   </button>
         // </div>
-        console.log("rr", row)
+        // console.log("rr", row)
         return (
           <>
             <div className="flex items-center gap-2">
@@ -1521,7 +1521,7 @@ export default function CandidatesPage() {
             </div>
           </div>
         )}
-        
+
         {deleteUserDetails?.status == "inactive" && (
           <div className="flex items-center gap-2 mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
             <div className="flex-shrink-0">
@@ -1538,24 +1538,21 @@ export default function CandidatesPage() {
 
         <div className="relative">
           <div
-            className={`absolute inset-0 rounded-lg transition-opacity duration-300 ${
-              deleteUserDetails?.status == "active"
+            className={`absolute inset-0 rounded-lg transition-opacity duration-300 ${deleteUserDetails?.status == "active"
                 ? "bg-gradient-to-r from-red-500 to-red-600 opacity-10"
                 : "bg-gradient-to-r from-green-500 to-green-600 opacity-5"
-            }`}
+              }`}
           />
           <div
-            className={`relative border rounded-xl p-3 backdrop-blur-sm ${
-              deleteUserDetails?.status == "active"
+            className={`relative border rounded-xl p-3 backdrop-blur-sm ${deleteUserDetails?.status == "active"
                 ? "bg-white/90 border-red-200 shadow-red-100"
                 : "bg-white/90 border-green-200"
-            } shadow-xl`}
+              } shadow-xl`}
           >
             <div className="space-y-3">
               <div className="border-b border-gray-100 pb-3">
-                <h4 className={`text-lg font-semibold text-center ${
-                  deleteUserDetails?.status == "active" ? "text-red-900" : "text-green-900"
-                }`}>
+                <h4 className={`text-lg font-semibold text-center ${deleteUserDetails?.status == "active" ? "text-red-900" : "text-green-900"
+                  }`}>
                   {deleteUserDetails?.first_name} {deleteUserDetails?.last_name}
                 </h4>
                 <div className="text-center mt-2 space-y-1">
@@ -1566,14 +1563,13 @@ export default function CandidatesPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex justify-around items-center">
                 <div className="text-center">
-                  <div className={`inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium ${
-                    deleteUserDetails?.status == "active"
+                  <div className={`inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium ${deleteUserDetails?.status == "active"
                       ? "bg-red-50 text-red-700 border border-red-200"
                       : "bg-green-50 text-green-700 border border-green-200"
-                  }`}>
+                    }`}>
                     {deleteUserDetails?.status == "active" ? "● Active" : "○ Inactive"}
                   </div>
                 </div>
