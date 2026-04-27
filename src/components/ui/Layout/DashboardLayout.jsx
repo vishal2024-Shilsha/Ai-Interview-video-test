@@ -146,9 +146,17 @@ import { Outlet, NavLink, useNavigate } from "react-router-dom";
 //             <span>Logout</span>
 //           </button>
 //         </div>
-//       </aside>
-//     </>
-//   );
+//         <button
+//           onClick={handleLogout}
+//           className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+//         >
+//           <span>🚪</span>
+//           <span>Logout</span>
+//         </button>
+//       </div>
+//     </aside>
+//   </>
+// );
 // }
 
 import { useLocation } from "react-router-dom";
@@ -157,9 +165,23 @@ import eBenchLogo from "../../../assets/eBenchCampu.png";
 
 export function Sidebar({ isOpen, onClose }) {
   const { getProfileCompleteness, canAccessManagement, getRemainsCredit } = useAuth();
+  const [credits, setCredits] = useState(getRemainsCredit());
   let profileCompletion = getProfileCompleteness()
-  let credits = getRemainsCredit()
   const [logout, { isLoading }] = useLogoutMutation();
+
+  // Update credits when localStorage changes
+  useEffect(() => {
+    const handleCreditsUpdate = () => {
+      setCredits(getRemainsCredit());
+    };
+
+    // Listen for custom events from localStorage updates
+    window.addEventListener('localStorageUserUpdate', handleCreditsUpdate);
+
+    return () => {
+      window.removeEventListener('localStorageUserUpdate', handleCreditsUpdate);
+    };
+  }, [getRemainsCredit]);
 
   console.log("canAccess", canAccessManagement);
   console.log("pp", profileCompletion)

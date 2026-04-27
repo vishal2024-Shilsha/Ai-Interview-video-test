@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
 
   const [profileCompleteness, setProfileCompleteness] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [storageUpdate, setStorageUpdate] = useState(0);
   
   // Get user data from Redux store
   const { user, isLoggedIn } = useSelector((state) => state.auth);
@@ -47,6 +48,32 @@ export const AuthProvider = ({ children }) => {
       return null;
     }
   };
+
+  // Listen for localStorage changes
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'user') {
+        // Trigger re-render when localStorage user data changes
+        setStorageUpdate(prev => prev + 1);
+      }
+    };
+
+    // Custom event listener for same-tab localStorage changes
+    const handleLocalStorageUpdate = () => {
+      setStorageUpdate(prev => prev + 1);
+    };
+
+    // Add event listener for storage changes (cross-tab)
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Add custom event listener for same-tab changes
+    window.addEventListener('localStorageUserUpdate', handleLocalStorageUpdate);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('localStorageUserUpdate', handleLocalStorageUpdate);
+    };
+  }, []);
 
   // Update profile completeness from user data
   useEffect(() => {
@@ -72,7 +99,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     updateProfileCompleteness();
-  }, [user]);
+  }, [user, storageUpdate]);
 
   // Check if profile is complete
   const isProfileComplete = () => {
@@ -104,7 +131,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const getRemainsCredit = () => {
-    return getUserFromStorage()?.remaining_credits || 0;
+    const userData = getUserFromStorage();
+    console.log("Getting remaining credits from localStorage:", userData?.remaining_credits);
+    return userData?.remaining_credits || 0;
   };
 
   // Update profile completeness manually (for when user updates profile)
