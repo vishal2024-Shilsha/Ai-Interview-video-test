@@ -153,6 +153,7 @@ import { Outlet, NavLink, useNavigate } from "react-router-dom";
 
 import { useLocation } from "react-router-dom";
 // import { useEffect } from "react";
+import eBenchLogo from "../../../assets/eBenchCampu.png";
 
 export function Sidebar({ isOpen, onClose }) {
   const { getProfileCompleteness, canAccessManagement, getRemainsCredit } = useAuth();
@@ -225,12 +226,14 @@ export function Sidebar({ isOpen, onClose }) {
         {/* Logo */}
         <div className="p-6 py-5 border-b sticky top-0 bg-white z-20 border-gray-100">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-linear-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
-              CMS
-            </div>
+            <img 
+              src={eBenchLogo} 
+              alt="eBench Campus" 
+              className="w-14 h-9 rounded-xl object-cover"
+            />
             <div>
               <div className="font-bold text-gray-900 text-sm leading-tight">
-                Campus Manager
+                eBench Campus
               </div>
               <div className="text-xs text-gray-400">
                 Placement Portal
