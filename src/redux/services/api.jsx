@@ -6,10 +6,8 @@ export const base = import.meta.env.VITE_BASE_URL;
 const baseQueryWith401Handling = async (args, api, extraOptions) => {
   const result = await rawBaseQuery(args, api, extraOptions);
   let localValue=null
-  debugger;
   if ((result?.error?.status === 401 || result?.error?.status ===403) && (window.location.pathname !== "/login" && window.location.pathname !=='/admin-login' && window.location.pathname !=='/employee/login')) {
     // ✅ Clear storage
-    debugger;
     if(localStorage.getItem('role')=="sub_vendor"){
       localValue="sub_vendor"
     }

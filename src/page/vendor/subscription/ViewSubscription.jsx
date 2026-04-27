@@ -217,19 +217,17 @@ const theme = {
 
 export const MySubscriptions = () => {
   const { data, isLoading } = useViewSubscriptionListQuery();
-  console.log("Dd", data)
+  // console.log("Dd", data)
   
   // Update localStorage with credits from subscription data
   useEffect(() => {
     if (data?.data?.credits) {
-      debugger;
       const userData = JSON.parse(localStorage.getItem('user') || '{}');
       userData.remaining_credits = data?.data?.credits;
       localStorage.setItem('user', JSON.stringify(userData));
       
       // Dispatch custom event to notify AuthProvider of localStorage change
       window.dispatchEvent(new CustomEvent('localStorageUserUpdate'));
-      debugger;
     }
   }, [data]);
   
