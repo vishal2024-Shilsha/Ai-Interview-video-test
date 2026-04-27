@@ -31,7 +31,7 @@ jobs:
           echo "VITE_API_ID=${{ secrets.VITE_API_ID }}" >> .env
           echo "VITE_MEASUREMENT_ID=${{ secrets.VITE_MEASUREMENT_ID }}" >> .env
           echo "VITE_KEY_PAIR=${{ secrets.VITE_KEY_PAIR }}" >> .env
-
+          echo "VITE_CSC_API_KEY=${{ secrets.VITE_CSC_API_KEY }}" >> .env
       # Reliable install + build
       - name: Build Frontend
         env:
