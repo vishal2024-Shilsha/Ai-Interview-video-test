@@ -1350,7 +1350,6 @@ export default function RecordInterviewPage() {
       // console.log("result from api", result);
 
     } catch (err) {
-      debugger;
       // console.log("ee", e);
       toast.error(err?.message ?? "Something went wrong Pls try again.")
     }

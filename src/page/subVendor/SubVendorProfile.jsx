@@ -902,7 +902,7 @@ export default function EmployeeProfile() {
               }
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-                <InfoRow label="Employee ID" value={subvendor.id} icon={icons.id} />
+                {/* <InfoRow label="Employee ID" value={subvendor.id} icon={icons.id} /> */}
                 <InfoRow label="Joined Date" value={formatDate(subvendor.created_at)} icon={icons.calendar} />
                 <div className="sm:col-span-2">
                   <InfoRow label="Address" value={subvendor.sub_vendor_address} icon={icons.location} />

@@ -57,7 +57,7 @@ export function Sidebar({ isOpen, onClose }) {
 
   // AUTO REDIRECT LOGIC
   useEffect(() => {
-    console.log("pr", profileCompletion)
+    // console.log("pr", profileCompletion)
     if (
       profileCompletion < 100 &&
       location.pathname !== "/vendor/profile"
@@ -186,11 +186,11 @@ export function Sidebar({ isOpen, onClose }) {
             </div>
 
             <div className="text-2xl font-bold text-indigo-800">
-              {credits.toLocaleString()}
+              {credits}
             </div>
 
             <div className="mt-2 h-1.5 bg-indigo-100 rounded-full overflow-hidden">
-              <div
+              {/* <div
                 className="h-full bg-indigo-500"
                 style={{
                   width: `${Math.min(
@@ -198,7 +198,7 @@ export function Sidebar({ isOpen, onClose }) {
                     (credits / 500) * 100
                   )}%`,
                 }}
-              />
+              /> */}
             </div>
           </div>
 

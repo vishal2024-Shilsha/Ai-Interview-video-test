@@ -399,12 +399,12 @@ export default function ProfilePage() {
           }`}
       >
         <div className="flex items-center gap-4 mb-3">
-          <div
+          {/* <div
             className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl ${previewCompletion === 100 ? "bg-emerald-100" : "bg-indigo-50"
               }`}
           >
-            {previewCompletion === 100 ? "" : ""}
-          </div>
+            {previewCompletion === 100 ? "jfeiojf" : ""}
+          </div> */}
           <div className="flex-1">
             <div className="font-semibold text-gray-900">
               {previewCompletion === 100
@@ -755,12 +755,18 @@ export default function ProfilePage() {
               required={true}
               error={errors.website}
               {...register("website", {
+                required: "Website URL is required",
                 pattern: {
                   value: /^https?:\/\/.+\..+/,
                   message: "Enter a valid URL starting with http:// or https://",
                 },
               })}
             />
+            {/* {errors.website && (
+              <span className="text-xs text-red-500 flex items-center gap-1 mt-0.5">
+                <span>⚠</span> {errors.website.message}
+              </span>
+            )} */}
           </div>
 
           {/* ── Action Buttons ── */}

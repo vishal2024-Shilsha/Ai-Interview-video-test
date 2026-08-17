@@ -239,13 +239,14 @@ import { ProgressBar } from "../../components/ui/Layout/DashboardLayout";
 import { StatCard } from "../../libs/Ui";
 import { useVendorDashboardApiQuery } from "../../redux/services/vendorApi";
 import { useAuth } from "../../libs/AuthProvider";
+import { useEffect } from "react";
 // import ProgressBar from "../components/ProgressBar";
 
 export default function DashboardPage() {
   // const { candidates,  } = useApp();
   const navigate = useNavigate();
 
-  const { getProfileCompleteness, canAccessManagement } = useAuth();
+  const { getProfileCompleteness, updateProfileCompleteness } = useAuth();
   let profileCompletion = getProfileCompleteness()
   // debugger;
   if (profileCompletion < 100) {
@@ -256,7 +257,16 @@ export default function DashboardPage() {
 
   const { vendor, address, branches, credits_summary, candidates_summary, recent_candidates, recent_activity, dashboard_stats } = data || {};
 
-  console.log("ddlj", vendor)
+
+  useEffect(() => {
+  if (data?.credits!== undefined) {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    user.remaining_credits = data.credits;
+
+    localStorage.setItem("user", JSON.stringify(user));
+  }
+}, [data?.credits]);
 
   // If no data is available, show no data message
   if (!data || (!vendor && !dashboard_stats)) {
@@ -295,6 +305,13 @@ export default function DashboardPage() {
   // ];
 
   const RECENT_ACTIVITY = recent_activity ?? []
+
+
+  // if (result?.profile_complete_percentage !== undefined) {
+  //   // console.log("Profile completeness updated to:", result.profile_complete_percentage);
+  //   updateProfileCompleteness(result.profile_complete_percentage);
+  //   toast.success("Profile updated successfully!");
+  // }
 
   return (
     <div className="p-4 lg:p-3 space-y-6">

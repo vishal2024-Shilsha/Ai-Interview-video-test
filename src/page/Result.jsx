@@ -1,71 +1,10 @@
-import userImg from '../assets/userImg.jpg'
-
-
-// ── Small primitives ──────────────────────────────────────────────────────────
-function Chip({ children }) {
-    return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-200 bg-slate-50 text-xs text-slate-500 whitespace-nowrap">
-            {children}
-        </span>
-    );
-}
-
-function Tag({ children, accent }) {
-    return (
-        <span
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium border"
-            style={accent ? { background: accent + "18", color: accent, borderColor: accent + "40" } : { background: "#f1f5f9", color: "#64748b", borderColor: "#e2e8f0" }}
-        >
-            {children}
-        </span>
-    );
-}
-
-function DarkTag({ children }) {
-    return (
-        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-900 text-slate-100 border border-slate-900">
-            {children}
-        </span>
-    );
-}
-
-function StatBox({ val, label }) {
-    return (
-        <div className="bg-slate-50 rounded-lg px-3.5 py-2.5 text-center min-w-[72px]">
-            <div className="text-base font-semibold text-slate-900 leading-tight">{val}</div>
-            <div className="text-[11px] text-slate-400 mt-0.5">{label}</div>
-        </div>
-    );
-}
-
-// ── Section card ──────────────────────────────────────────────────────────────
-function SectionCard({ sec, accent }) {
-    return (
-        <div
-            className={`bg-white rounded-xl border p-4 flex flex-col gap-2 hover:border-slate-300 transition-colors`}
-            style={sec.star ? { borderColor: "#FDE68A" } : { borderColor: "#e2e8f0" }}
-        >
-            <div className="flex items-start gap-2">
-                <span className="text-[11px] text-slate-300 font-semibold mt-0.5 w-5 flex-shrink-0">{sec.sectionId}</span>
-                <span className="text-base leading-none mt-0.5">{sec.icon}</span>
-                <span className="text-[13px] font-medium text-slate-800 leading-snug flex-1">{sec?.name || sec?.title}</span>
-            </div>
-            <p className="text-[12px] text-slate-500 leading-relaxed pl-7">{sec.description}</p>
-            <div className="flex flex-wrap items-center gap-1.5 pl-7">
-                {sec.qs && <Tag>{sec.qs}</Tag>}
-                <Tag accent={accent}>⏱ {sec.timeLimit}</Tag>
-                {/* {sec.marks && <DarkTag>{sec.marks}</DarkTag>} */}
-                {sec.star && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold" style={{ background: "#FFFBEB", color: "#B45309", border: "0.5px solid #FDE68A" }}>
-                        ★ Highest weightage
-                    </span>
-                )}
-            </div>
-        </div>
-    );
-}
-
 import CampusLogo from '../assets/ebenchCampu.png';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useBeginTestMutation, useCookiesGenerateQuery, useLazyGetProfileQuery, useVerifyUserOtpMutation } from '../redux/services/userApi';
+import { motion } from "framer-motion";
+import toast from 'react-hot-toast';
+
 
 
 export default function ProfilePage() {
@@ -73,8 +12,7 @@ export default function ProfilePage() {
     const [searchParams] = useSearchParams();
     const [agreed, setAgreed] = useState(false);
 
-    const candidate_id = searchParams.get("candidate_id");
-    const token = searchParams.get("token");
+    const token = searchParams.get("t")
 
     const [isOtpOpen, setIsOtpOpen] = useState(true);
     const [otp, setOtp] = useState("");
@@ -89,7 +27,7 @@ export default function ProfilePage() {
         isError,
         isLoading: dataLoading,
         refetch
-    } = useCookiesGenerateQuery({ candidate_id, token });
+    } = useCookiesGenerateQuery({ token });
 
     const [
         fetchCandidate,
@@ -102,11 +40,11 @@ export default function ProfilePage() {
 
 
     // console.log("candidateData--000", candidateData);
-    const CANDIDATE = candidateData?.candidate || { name: "fjdkjf", age: "32", phone: "9876543210" };
+    const CANDIDATE = candidateData?.candidate;
 
     const TEST = candidateData?.test;
     const lv = {
-        key: candidateData?.level_id || '1',
+        key: candidateData?.level_id,
         bc: TEST?.levelName,
         title: TEST?.title,
         sub: TEST?.subtitle,
@@ -133,7 +71,6 @@ export default function ProfilePage() {
         }
 
         const form = new FormData();
-        form.append("candidate_id", candidate_id);
         form.append("otp", otp);
 
         try {
@@ -141,11 +78,9 @@ export default function ProfilePage() {
 
             if (res?.status) {
                 toast.success("Authentication Successfully");
-
-                // 🔥 Refetch cookie to update verified status
-                await refetch();
-
                 setIsOtpOpen(false);
+                await fetchCandidate();
+
             } else {
                 setOtp("");
             }
@@ -153,6 +88,7 @@ export default function ProfilePage() {
             toast.error(err?.data?.detail ?? "Something went wrong");
         }
     };
+
 
     // 🔐 OTP input validation handler
     const handleOtpChange = (e) => {
@@ -162,15 +98,6 @@ export default function ProfilePage() {
         setOtp(cleaned);
     };
 
-    // 📦 Fetch data ONLY AFTER verification
-    useEffect(() => {
-        if (!cookieData?.verified) return;
-
-        fetchCandidate({
-            id: candidate_id,
-            token: token
-        });
-    }, [cookieData?.verified, candidate_id, token]);
 
     const [beginTest] = useBeginTestMutation();
 
@@ -477,6 +404,71 @@ export function TestLinkExpired() {
                 <p className="text-center text-xs text-slate-400 mt-6">
                     eBench Campus &middot; Assessment Platform
                 </p>
+            </div>
+        </div>
+    );
+}
+
+
+// ── Small primitives ──────────────────────────────────────────────────────────
+export function Chip({ children }) {
+    return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-200 bg-slate-50 text-xs text-slate-500 whitespace-nowrap">
+            {children}
+        </span>
+    );
+}
+
+function Tag({ children, accent }) {
+    return (
+        <span
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium border"
+            style={accent ? { background: accent + "18", color: accent, borderColor: accent + "40" } : { background: "#f1f5f9", color: "#64748b", borderColor: "#e2e8f0" }}
+        >
+            {children}
+        </span>
+    );
+}
+
+function DarkTag({ children }) {
+    return (
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-900 text-slate-100 border border-slate-900">
+            {children}
+        </span>
+    );
+}
+
+function StatBox({ val, label }) {
+    return (
+        <div className="bg-slate-50 rounded-lg px-3.5 py-2.5 text-center min-w-[72px]">
+            <div className="text-base font-semibold text-slate-900 leading-tight">{val}</div>
+            <div className="text-[11px] text-slate-400 mt-0.5">{label}</div>
+        </div>
+    );
+}
+
+// ── Section card ──────────────────────────────────────────────────────────────
+function SectionCard({ sec, accent }) {
+    return (
+        <div
+            className={`bg-white rounded-xl border p-4 flex flex-col gap-2 hover:border-slate-300 transition-colors`}
+            style={sec.star ? { borderColor: "#FDE68A" } : { borderColor: "#e2e8f0" }}
+        >
+            <div className="flex items-start gap-2">
+                <span className="text-[11px] text-slate-300 font-semibold mt-0.5 w-5 flex-shrink-0">{sec.sectionId}</span>
+                <span className="text-base leading-none mt-0.5">{sec.icon}</span>
+                <span className="text-[13px] font-medium text-slate-800 leading-snug flex-1">{sec?.name || sec?.title}</span>
+            </div>
+            <p className="text-[12px] text-slate-500 leading-relaxed pl-7">{sec.description}</p>
+            <div className="flex flex-wrap items-center gap-1.5 pl-7">
+                {sec.qs && <Tag>{sec.qs}</Tag>}
+                <Tag accent={accent}>⏱ {sec.timeLimit}</Tag>
+                {/* {sec.marks && <DarkTag>{sec.marks}</DarkTag>} */}
+                {sec.star && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold" style={{ background: "#FFFBEB", color: "#B45309", border: "0.5px solid #FDE68A" }}>
+                        ★ Highest weightage
+                    </span>
+                )}
             </div>
         </div>
     );

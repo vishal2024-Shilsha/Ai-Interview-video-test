@@ -3,12 +3,11 @@ import { api } from './api';
 export const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getProfile: builder.query({
-      query: ({ id, token }) => {
-        // console.log("Fetching profile for ID:", token);
+      query: () => {
         return {
-          url: `/candidate/details?candidate_id=${id}`,
+          url: `/candidate/details`,
           method: "GET",
-          // credentials:'include'
+          credentials: "include",
         };
       },
       providesTags: ["User"],
@@ -21,8 +20,8 @@ export const userApi = api.injectEndpoints({
       }),
     }),
     cookiesGenerate: builder.query({
-      query: ({ candidate_id, token }) => ({
-        url: `/candidate/start_test?candidate_id=${candidate_id}&token=${token}`,
+      query: ({ token }) => ({
+        url: `/candidate/start_test?t=${token}`,
         method: "GET",
         // no credentials here either
       }),
