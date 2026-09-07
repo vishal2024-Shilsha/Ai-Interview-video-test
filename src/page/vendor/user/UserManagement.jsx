@@ -600,7 +600,7 @@ export default function CandidatesPage() {
           <button onClick={() => setShowCalendar(p => !p)}
             className={`border rounded-xl px-3 py-2.5 text-sm bg-white min-w-[200px] text-left
         ${fromDate && toDate ? 'border-indigo-400 text-indigo-600' : 'border-gray-200 text-gray-500'}`}>
-            {fromDate && toDate ? `${fromDate} → ${toDate}` : '📅 Select a date range to view past dates'}
+            {fromDate && toDate ? `${fromDate} → ${toDate}` : '📅 Select a date range to view past data'}
           </button>
 
           {showCalendar && (

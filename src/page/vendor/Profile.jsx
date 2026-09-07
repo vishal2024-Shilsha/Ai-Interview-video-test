@@ -8,6 +8,38 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
 
+// Determine user's country from timezone
+function getCountryFromTimeZone() {
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const timeZoneMap = {
+    // Asia
+    'Asia/Dubai': 'AE',
+    'Asia/Calcutta': 'IN',
+    'Asia/Kolkata': 'IN',
+    'Asia/Dhaka': 'BD',
+    'Asia/Tokyo': 'JP',
+    'Asia/Shanghai': 'CN',
+    'Asia/Singapore': 'SG',
+    'Asia/Hong_Kong': 'HK',
+    // Americas
+    'America/New_York': 'US',
+    'America/Los_Angeles': 'US',
+    'America/Chicago': 'US',
+    'America/Toronto': 'CA',
+    'America/Mexico_City': 'MX',
+    'America/Sao_Paulo': 'BR',
+    // Europe
+    'Europe/London': 'GB',
+    'Europe/Paris': 'FR',
+    'Europe/Berlin': 'DE',
+    'Europe/Rome': 'IT',
+    'Europe/Madrid': 'ES',
+    // Add more as needed
+  };
+  // console.log("timeZone", timeZone, timeZoneMap[timeZone])
+  return timeZoneMap[timeZone] || null;
+}
+
 // ─── Progress Bar ─────────────────────────────────────────────────────────────
 const ProgressBar = ({ value, showLabel, color }) => (
   <div className="w-full bg-gray-100 rounded-full h-2">
@@ -112,7 +144,7 @@ const AddressAutocomplete = ({ value, setAddress, setLocation, disabled, setStat
       const autocomplete = new window.google.maps.places.Autocomplete(
         inputRef.current,
         {
-          componentRestrictions: { country: "in" },
+          componentRestrictions: { country: (getCountryFromTimeZone() || 'in').toLowerCase() },
           fields: ["formatted_address", "address_components", "geometry"],
         }
       );
@@ -203,6 +235,10 @@ const AddressAutocomplete = ({ value, setAddress, setLocation, disabled, setStat
 };
 
 export default function ProfilePage() {
+  // Determine user's country based on timezone
+  const userCountry = getCountryFromTimeZone() || 'IN';
+  const countryDialCodeMap = { IN: '+91', US: '+1', GB: '+44', AU: '+61', CA: '+1' };
+  const defaultCountryCode = countryDialCodeMap[userCountry] || '+91';
   const { data } = useGetVendorProfileQuery();
   const [updateProfile, { isLoading }] = useUpdateVendorProfileMutation();
   const { updateProfileCompleteness } = useAuth();
@@ -220,7 +256,7 @@ export default function ProfilePage() {
     handleStateChange,
     handleCityChange,
     getStateCodeByName
-  } = useLocationData('IN');
+  } = useLocationData(userCountry);
 
   // ── Edit mode state ──────────────────────────────────────────────────────────
   const [isEditing, setIsEditing] = useState(false);
@@ -246,7 +282,7 @@ export default function ProfilePage() {
       contactEmail: "",
       contactPhone: "",
       website: "",
-      countryCode: "+91",
+      countryCode: defaultCountryCode,
       latitude: "",
       longitude: "",
     },
@@ -684,7 +720,7 @@ export default function ProfilePage() {
                     Contact Phone <span className="text-red-500 ml-0.5">*</span>
                   </label>
                   <PhoneInput
-                    country="in"
+                    country={userCountry.toLowerCase()}
                     disabled={!isEditing}
                     value={field.value ? `${watch("countryCode") || "+91"}${field.value}` : ""}
                     inputStyle={{ width: "100%" }}

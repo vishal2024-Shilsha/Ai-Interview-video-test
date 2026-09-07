@@ -10,8 +10,10 @@ import { ClockFading, X } from "lucide-react";
 import { useGetDegreeCampusDetailsQuery, useGetDepartmentCampusDetailsQuery, useGetSpecializationCampusDetailsQuery } from "../../../redux/services/vendorApi";
 
 const validationSchema = yup.object().shape({
-    firstName: yup.string().required("First Name is required").max(30, "First Name cannot exceed 30 characters.").matches(/^\S+$/, "First Name cannot contain spaces."),
-    lastName: yup.string().required("Last Name is required").max(30, "Last Name cannot exceed 30 characters.").matches(/^\S+$/, "Last Name cannot contain spaces."),
+    firstName: yup.string().required("First Name is required").max(50, "First Name cannot exceed 50 characters.").min(2, "First Name must be at least 2 characters.")
+        .matches(/^\S+$/, "First Name cannot contain spaces."),
+    lastName: yup.string().required("Last Name is required").min(2, "Last Name must be at least 2 characters.")
+        .max(50, "Last Name cannot exceed 50 characters.").matches(/^\S+$/, "Last Name cannot contain spaces."),
 
     // birthCountry: yup.object().nullable().required("Birth Country is required"),
     nationality: yup.object().nullable().required("Nationality is required"),
@@ -31,7 +33,7 @@ const validationSchema = yup.object().shape({
             "valid-10-digit",
             "Enter a valid 10-digit mobile number",
             (value) => !!value && /^[1-9][0-9]{9}$/.test(value)
-        ),  
+        ),
     degree: yup.string().when([], {
         then: (schema) => schema.required("Degree is required"),
     }),
@@ -166,7 +168,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
 
     // console.log("specializations",specializations)
 
-    console.log("errr", errors)
+    // console.log("errr", errors)
 
     return (
         <motion.div
@@ -416,7 +418,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
                             </option>
 
                             {departments?.data?.length > 0 && departments?.data?.map((dept) => (
-                                <option key={dept.name} value={dept.id}>
+                                <option key={dept.name} value={dept.name}>
                                     {dept.name}
                                 </option>
                             ))}
@@ -451,7 +453,7 @@ export default function UserForm({ onSubmit, isVendorAdding, onClose }) {
                             </option>
 
                             {specializations?.data?.length > 0 && specializations?.data?.map((spec) => (
-                                <option key={spec.name} value={spec.id}>
+                                <option key={spec.name} value={spec.name}>
                                     {spec.name}
                                 </option>
                             ))}
