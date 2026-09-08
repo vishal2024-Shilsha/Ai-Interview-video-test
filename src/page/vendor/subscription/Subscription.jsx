@@ -29,7 +29,6 @@ const VendorSubscriptionPage = () => {
 
             const result = await checkoutPage(formdata)
             // console.log("res", result)
-            debugger;
             if (result?.data?.checkout_url) {
                 window.location.href = result?.data?.checkout_url;
                 return;

@@ -138,13 +138,22 @@ export default function CandidateDetailsPage() {
                 <div className="p-2 bg-indigo-100 rounded-lg">
                   <Mail className="h-4 w-4 text-indigo-600" />
                 </div>
-                <span className="text-indigo-800 font-medium">{candidate?.email || 'N/A'}</span>
+                <span
+                  className="text-indigo-800 font-medium truncate max-w-xs inline-block"
+                  title={candidate?.email || ''}
+                >
+                  {candidate?.email
+                    ? candidate.email.length > 20
+                      ? `${candidate.email.slice(0, 20)}...`
+                      : candidate.email
+                    : 'N/A'}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="p-2 bg-indigo-100 rounded-lg">
                   <Phone className="h-4 w-4 text-indigo-600" />
                 </div>
-                <span className="text-indigo-800 font-medium">{candidate?.mobile ? `+${candidate.mobile}` : 'N/A'}</span>
+                <span className="text-indigo-800 font-medium">{candidate?.mobile ? `${candidate.mobile}` : 'N/A'}</span>
               </div>
             </div>
           </div>
@@ -172,7 +181,7 @@ export default function CandidateDetailsPage() {
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Email Address</label>
               <div className="flex items-center gap-2 mt-2">
                 <Mail className="h-4 w-4 text-gray-400" />
-                <p className="text-base font-medium text-gray-900">{candidate.email || 'N/A'}</p>
+                <p className="text-base font-medium text-gray-900 truncate max-w-xs" title={candidate.email || ''}>{candidate.email ? (candidate.email.length > 20 ? `${candidate.email.slice(0, 20)}...` : candidate.email) : 'N/A'}</p>
               </div>
             </div>
 
@@ -188,10 +197,7 @@ export default function CandidateDetailsPage() {
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Birth Country</label>
               <p className="text-base font-medium text-gray-900 mt-2">{candidate.birth_country || 'N/A'}</p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Nationality</label>
-              <p className="text-base font-medium text-gray-900 mt-2">{candidate.nationality || 'N/A'}</p>
-            </div>
+
             <div className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Country of Residence</label>
               <p className="text-base font-medium text-gray-900 mt-2">{candidate.country_of_residence || 'N/A'}</p>
@@ -293,7 +299,7 @@ export default function CandidateDetailsPage() {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Currently Pursuing</label>
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Graduation Status</label>
               <div className="mt-2">
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${candidate.is_pursuing ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
                   {candidate.is_pursuing ? 'Active Student' : 'Graduated'}
@@ -362,19 +368,15 @@ export default function CandidateDetailsPage() {
             </div>
           </div>
 
-          {candidate.test_history && candidate.test_history.length > 0 ? (
+          {candidate?.test_history && candidate?.test_history?.length > 0 ? (
             <div className="space-y-4">
-              {candidate.test_history.map((test, index) => (
+              {candidate?.test_history?.map((test, index) => (
                 <div key={test.result_id} className="border border-gray-200 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-2">
-                        {test.successful ? (
-                          <CheckCircle className="h-5 w-5 text-green-500" />
-                        ) : (
-                          <XCircle className="h-5 w-5 text-red-500" />
-                        )}
-                        <span className="font-medium text-gray-900">Test #{index + 1}</span>
+                        
+                        <span className="font-medium text-gray-900">{test?.level_id} : {test?.level_name}</span>
                       </div>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(test.successful ? 'completed' : 'failed')}`}>
                         {test.successful ? 'Completed' : 'Failed'}
@@ -385,7 +387,7 @@ export default function CandidateDetailsPage() {
                       <div className="text-right">
                         <div className="text-sm text-gray-500">Score</div>
                         <div className={`text-lg font-bold ${getScoreColor(test.final_score)}`}>
-                          {(test.final_score * 100).toFixed(1)}%
+                          {test.final_score}%
                         </div>
                       </div>
 
